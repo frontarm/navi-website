@@ -75,11 +75,12 @@
 
     pre, code { font-family: Inconsolata, monospace; line-height: 3rem }
     code { background-color: #f3f4f4; }
+    pre > code { background-color: transparent; }
     pre, pre[class*="language-"] {
       padding: 2rem;
       margin: 2rem -2rem;
       border-radius: 3px;
-      color: rgb(205, 205, 205);
+      color: rgb(40, 40, 40);
     }
     pre code { font-size: 1.6rem; white-space: pre-wrap; }
     code { font-size: 2rem; }
@@ -182,6 +183,10 @@
     }
     a:hover {
       text-decoration: underline;
+    }
+
+    :not(pre) > code[class*="language-"], pre[class*="language-"] {
+      background: #f6f9f8;
     }
 
     h1, h2, h3, h4, h5, h6 {

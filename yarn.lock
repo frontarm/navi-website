@@ -876,10 +876,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@frontarm/document@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@frontarm/document/-/document-0.1.0.tgz#cb418b04d6fbe611152be331ff4e1a03d53db218"
-  integrity sha512-GNY+BHGBDriFu82/IDQh43VdfEu+k4kFs1MgWPWlLIWnM7xPCpP8mOrzpwYOSXaXMMxK4lqZcleYvdaVOye3og==
+"@frontarm/document@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@frontarm/document/-/document-0.1.1.tgz#8944cc6ca99f8b0312c1a0aa73182b6b3e76d4c2"
+  integrity sha512-qlcgoRSl5YSZqG9Rh9OT57teYcJ4BP5WACaBF6u2NWpixtikRBMwEEz+inJWAtZxf0OrE6Ih0MMSx+aG2U5b+Q==
   dependencies:
     classnames "^2.0.0"
 
