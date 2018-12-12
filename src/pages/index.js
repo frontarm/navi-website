@@ -51,10 +51,10 @@ export default Navi.createSwitch({
           getContent: env => getPageContent(env, import('./guides/static-rendering.md')),
         }),
 
-        '/authenticated-routes': Navi.createPage({
-          title: 'Authenticated Routes',
-          getContent: env => getPageContent(env, import('./guides/authenticated-routes.md')),
-        }),
+        // '/authenticated-routes': Navi.createPage({
+        //   title: 'Authenticated Routes',
+        //   getContent: env => getPageContent(env, import('./guides/authenticated-routes.md')),
+        // }),
 
     //     '/integrating-express': Navi.createPage({
     //       title: 'Server Rendering with Express',
@@ -63,20 +63,20 @@ export default Navi.createSwitch({
       }
     }),
 
-    '/integrations': Navi.createSwitch({
-      title: 'Integrations',
-      paths: {
-        '/react': Navi.createPage({
-          title: 'React',
-          getContent: env => getPageContent(env, import('./integrations/react.md')),
-        }),
+    // '/integrations': Navi.createSwitch({
+    //   title: 'Integrations',
+    //   paths: {
+    //     '/react': Navi.createPage({
+    //       title: 'React',
+    //       getContent: env => getPageContent(env, import('./integrations/react.md')),
+    //     }),
 
-        '/react-router': Navi.createPage({
-          title: 'react-router',
-          getContent: env => getPageContent(env, import('./integrations/react-router.md')),
-        }),
-      },
-    }),
+    //     // '/react-router': Navi.createPage({
+    //     //   title: 'react-router',
+    //     //   getContent: env => getPageContent(env, import('./integrations/react-router.md')),
+    //     // }),
+    //   },
+    // }),
 
     '/reference': Navi.createSwitch({
       title: 'API Reference',
@@ -85,18 +85,18 @@ export default Navi.createSwitch({
           title: 'Declaring pages',
           getContent: env => getPageContent(env, import('./reference/defining-pages.md')),
         }),
-        '/navigation': Navi.createPage({
-          title: 'Navigation',
-          getContent: env => getPageContent(env, import('./reference/navigation.md')),
-        }),
-        '/routes-segments-urls': Navi.createPage({
-          title: 'Routes, Segments and URL Descriptors',
-          getContent: env => getPageContent(env, import('./reference/routes-and-segments.md')),
-        }),
-        '/router': Navi.createPage({
-          title: 'Router',
-          getContent: env => getPageContent(env, import('./reference/router.md')),
-        }),
+        // '/navigation': Navi.createPage({
+        //   title: 'Navigation',
+        //   getContent: env => getPageContent(env, import('./reference/navigation.md')),
+        // }),
+        // '/routes-segments-urls': Navi.createPage({
+        //   title: 'Routes, Segments and URL Descriptors',
+        //   getContent: env => getPageContent(env, import('./reference/routes-and-segments.md')),
+        // }),
+        // '/router': Navi.createPage({
+        //   title: 'Router',
+        //   getContent: env => getPageContent(env, import('./reference/router.md')),
+        // }),
       }
     }),
   },
