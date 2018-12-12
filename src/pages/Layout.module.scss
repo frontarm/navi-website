@@ -76,7 +76,7 @@
     pre, code { font-family: Inconsolata, monospace; line-height: 3rem }
     code { background-color: #f3f4f4; }
     pre > code { background-color: transparent; }
-    pre, pre[class*="language-"] {
+    pre[class*="language-"] {
       padding: 2rem;
       margin: 2rem -2rem;
       border-radius: 3px;

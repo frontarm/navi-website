@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.1.0",
-    "@frontarm/document": "^0.1.1",
+    "@frontarm/document": "^0.1.4",
     "@svgr/webpack": "2.4.1",
     "@types/node": "^10.12.12",
     "babel-core": "7.0.0-bridge.0",

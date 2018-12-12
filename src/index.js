@@ -17,6 +17,9 @@ Navi.app({
     async main() {
         let navigation = Navi.createBrowserNavigation({
             pages,
+            context: {
+                getDocumentComponents: () => {},
+            }
         })
 
         // Wait until the navigation has loaded the page's content,

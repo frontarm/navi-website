@@ -1,4 +1,10 @@
 export const filename = __filename
+export const demoboardHelpers = {
+  'App.js': require('!raw-loader!./minimal-example/App.js'),
+  'index.js': require('!raw-loader!./minimal-example/index.js'),
+  'pages.js': require('!raw-loader!./minimal-example/pages.js'),
+  'pages/Reference.js': require('!raw-loader!./minimal-example/Reference.js'),
+}
 
 Static Rendering
 ================
@@ -33,12 +39,12 @@ To let Navi know what to render, you'll need to call `Navi.app()` from within `s
 Assuming that you're using the default `src/index.js` from create-react-app, here's what it'll look after adding a call to `Navi.app()`:
 
 ```js
+//--- index.js
 import * as Navi from 'navi'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import pages from './pages'
-import { App } from './App'
-import './index.css'
+import App from './App'
 
 Navi.app({
   // Specify the pages that navi-app should statically build, by passing
@@ -73,6 +79,9 @@ Navi.app({
     )
   }
 })
+//--- pages.js <-- pages.js
+//--- pages/Reference.js <-- pages/Reference.js
+//--- App.js <-- App.js
 ```
 
 Note that `Navi.app()` will call the provided `main()` function when appropriate, so you won't need to manually call `main()`.

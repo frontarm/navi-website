@@ -56,7 +56,7 @@ The `navi-scripts` package facilitates SEO by generating static HTML for each of
 npm install --save-dev navi-scripts
 ```
 
-If you're using `create-react-app`, **setting up `navi-scripts` just takes a one line change in your package.json**. To learn how, click through to the [static rendering guide &raquo;](/guides/static-rendering)
+If you're using `create-react-app`, **setting up `navi-scripts` just takes a one line change in your package.json**. To learn how, click through to the [static rendering guide &raquo;](./guides/static-rendering)
 
 <!--
 ### create-navi-app
@@ -78,7 +78,7 @@ Who uses Navi?
 --------------
 
 - [Frontend Armory](https://frontarm.com)
-- *Do you use Navi? [Edit this page!](https://github.com/frontarm/navi/edit/master/packages/website/src/pages/start-here.md)*
+- *Do you use Navi? [Edit this page!](https://github.com/frontarm/navi-website/edit/master/src/pages/start-here.md)*
 
 
 License

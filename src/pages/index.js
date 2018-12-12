@@ -7,6 +7,7 @@ export default Navi.createSwitch({
     <Layout
       currentUser={{}}
       isPro={true}
+      repositoryRoot={env.context.repositoryRoot || ''}
       rootPathname={env.pathname || '/'}
       siteMap={await env.router.resolveSiteMap(env.pathname)}
     />,
@@ -110,5 +111,11 @@ async function getPageContent(env, modulePromise) {
     console.warn(`The content for URL "${env.pathname}" should export a "filename" string.`)
   }
 
-  return { Component, demoboardHelpers, tableOfContents, filename }
+  return {
+    Component,
+    demoboardHelpers,
+    tableOfContents,
+    filename,
+    documentComponents: await env.context.getDocumentComponents(),
+  }
 }

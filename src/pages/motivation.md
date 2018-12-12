@@ -74,4 +74,4 @@ Navi assumes that you're building for the web. It does not -- and will not -- su
 
 There's just one last thing: while this sounds great and all, how do you know that it'll actually work? Well as it happens, you're using Navi right now! You see, Navi started its life as the routing code for Frontend Armory. It's the reason that this site is snappy, interactive, and social-media friendly -- just [tweet this page](https://twitter.com/intent/tweet?text=Navi%20is%20a%20new%20router%20for%20%23reactjs%20that%20lets%20you%20build%20big%2C%20fast%2C%20CDN-delivered%20sites%20with%20vanilla%20create-react-app.%20I'm%20definitely%20giving%20this%20a%20try!%20https%3A%2F%2Ffrontarm.com%2Fnavi%2F) to see for yourself!
 
-[Jump into the Minimal Example &raquo;](/guides/minimal-example)
+[Jump into the Minimal Example &raquo;](../guides/minimal-example)

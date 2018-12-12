@@ -1,4 +1,10 @@
 export const filename = __filename
+export const demoboardHelpers = {
+  'App.js': require('!raw-loader!./minimal-example/App.js'),
+  'index.js': require('!raw-loader!./minimal-example/index.js'),
+  'pages.js': require('!raw-loader!./minimal-example/pages.js'),
+  'pages/Reference.js': require('!raw-loader!./minimal-example/Reference.js'),
+}
 
 The Minimal Example
 ===================
@@ -18,29 +24,10 @@ Step 1: Declare some pages
 To declare your pages, you'll use Navi's `createSwitch()` and `createPage()` functions. Switches are used to map URL paths to pages. Pages represent individual locations that you can navigate to.
 
 ```js
-//--- pages.js
-import { createPage, createSwitch } from 'navi'
-import * as React from 'react'
-import { NavLink } from 'react-navi'
-
-export default createSwitch({
-  paths: {
-    '/': createPage({
-      title: "Navi",
-      content:
-        <div>
-          <h2>Navi</h2>
-          <p>A router/loader for React</p>
-          <nav><NavLink href='/reference'>API Reference</NavLink></nav>
-        </div>
-    }),
-
-    '/reference': createPage({
-      title: "API Reference",
-      getContent: () => import('./reference.js')
-    }),
-  }
-})
+//--- pages.js <-- pages.js
+//--- pages/Reference.js <-- pages/Reference.js
+//--- index.js <-- index.js
+//--- App.js <-- App.js
 ```
 
 As you'll see later, your content can be *anything*. You can return markdown, JSON, or even arbitrary functions! But `react-navi` has special support for React elements and components, so let's start by defining the content that way.
@@ -48,18 +35,12 @@ As you'll see later, your content can be *anything*. You can return markdown, JS
 But what about the `/reference` page? It's not returning an element or component. It's returning a *Promise* to a component -- and this is where Navi shines. When the user clicks the "API reference" link, instead of immediately rendering a blank page, Navi will wait until `reference.js` has loaded --  and *then* it'll render the page.
 
 ```js
-// pages/reference.js
-import * as React from 'react'
-import { Link } from 'react-navi'
-
-export default function Reference() {
-  retrun (
-    <div>
-      <h2>Reference</h2>
-      <p>Coming soon.</p>
-    </div>
-  )
-}
+//---
+  editorFilename: "/pages/Reference.js"
+//--- pages.js <-- pages.js
+//--- pages/Reference.js <-- pages/Reference.js
+//--- index.js <-- index.js
+//--- App.js <-- App.js
 ```
 
 Step 2: Create `navigation`
@@ -70,27 +51,12 @@ Navi does all of the hard work within a `Navigation` object. This is where Navi 
 To create a `Navigation`, just call `createBrowserNavigation()` within `index.js`, passing in the `pages` object that you defined earlier. Once you have a `Navigation`, just wait for its initial content to become available -- and then render it!
 
 ```js
-// index.js
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { createBrowserNavigation } from 'navi'
-import pages from './pages'
-import App from './App'
-
-async function main() {
-  let navigation = createBrowserNavigation({ pages })
-
-  // Wait until async content is ready (or has failed).
-  await navigation.steady()
-
-  ReactDOM.render(
-    <App navigation={navigation} />,
-    document.getElementById('root')
-  );
-}
-
-// Start the app
-main()
+//---
+  editorFilename: "/index.js"
+//--- pages.js <-- pages.js
+//--- pages/Reference.js <-- pages/Reference.js
+//--- index.js <-- index.js
+//--- App.js <-- App.js
 ```
 
 
@@ -108,39 +74,12 @@ To start out, you'll only need three components:
 Here's an example:
 
 ```js
-// App.js
-import * as React from 'react'
-import { NavLink, NavProvider, NavRoute } from 'react-navi'
-import './App.css'
-
-class App extends Component {
-  render() {
-    return (
-      <NavProvider navigation={this.props.navigation}>
-        <div className="App">
-          <header className="App-header">
-            <h1 className="App-title">
-              <NavLink href='/'>Navi</NavLink>
-            </h1>
-          </header>
-          <NavNotFoundBoundary render={renderNotFound}>
-            <NavRoute />
-          </NavNotFoundBoundary>
-        </div>
-      </NavProvider>
-    );
-  }
-}
-
-function renderNotFound() {
-  return (
-    <div className='App-error'>
-      <h1>404 - Not Found</h1>
-    </div>
-  )
-} 
-
-export default App;
+//---
+  editorFilename: "/App.js"
+//--- pages.js <-- pages.js
+//--- pages/Reference.js <-- pages/Reference.js
+//--- index.js <-- index.js
+//--- App.js <-- App.js
 ```
 
 And that's it -- you've built a working app with asynchronous content! Of course, this tiny app is just an example, but Navi handles real-world apps with ease. In fact, [Frontend Armory](https://frontarm.com) is built with Navi.
@@ -154,10 +93,56 @@ Bonus: Loading indicators
 Navi doesn't render the new pages until they have loaded, so there can sometimes be a large delay between clicking a link seeing the result. In cases like this, it's important to keep the user in the loop. And to do so, you can wrap your route with a `<NavLoading>` component:
 
 ```js
-import React from 'react'
+//---
+  editorFilename: "/App.js"
+//--- pages.js
+/**
+ * This version of pages.js adds delays to content loading to
+ * give the loading bar time to display.
+ */
+
+import { createPage, createSwitch } from 'navi'
+import * as React from 'react'
+import { NavLink } from 'react-navi'
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+export default createSwitch({
+  paths: {
+    '/': createPage({
+      title: "Navi",
+      getContent: async () => {
+        await delay(1000)
+
+        return (
+          <div>
+            <h2>Navi</h2>
+            <p>A router/loader for React</p>
+            <nav><NavLink href='/reference'>API Reference</NavLink></nav>
+          </div>
+        )
+      }
+    }),
+
+    '/reference': createPage({
+      title: "API Reference",
+      getContent: async () => {
+        await delay(1000)
+        return import('./pages/Reference')
+      }
+    }),
+  }
+})
+//--- pages/Reference.js <-- pages/Reference.js
+//--- index.js <-- index.js
+//--- App.js
+import * as React from 'react'
+import { NavLink, NavProvider, NavRoute, NavLoading, NavNotFoundBoundary } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
 
-class App extends Component {
+class App extends React.Component {
   render() {
     return (
       <NavProvider navigation={this.props.navigation}>
@@ -174,7 +159,9 @@ class App extends Component {
                   <NavLink href='/'>Navi</NavLink>
                 </h1>
               </header>
-              <NavRoute />
+              <NavNotFoundBoundary render={renderNotFound}>
+                <NavRoute />
+              </NavNotFoundBoundary>
             </div>
           }
         </NavLoading>
@@ -182,8 +169,16 @@ class App extends Component {
     );
   }
 }
-///pages.js
-// TODO: add a delay to the pages so that the busy indicator is visible
+
+function renderNotFound() {
+  return (
+    <div className='App-error'>
+      <h1>404 - Not Found</h1>
+    </div>
+  )
+} 
+
+export default App;
 ```
 
 The `<NavLoading>` component accepts a render function as its children, to which it passes a boolean that indicates whether its nested `<NavRoute>` component is waiting for  content. You're free to render this boolean however you'd like, but you can save yourself the trouble by importing and using `react-busy-indicator` -- the same loading bar used on this site.
