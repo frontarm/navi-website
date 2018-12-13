@@ -17,6 +17,7 @@
     "case-sensitive-paths-webpack-plugin": "2.1.2",
     "chalk": "2.4.1",
     "classnames": "^2.2.6",
+    "cross-env": "^5.2.0",
     "css-loader": "1.0.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
@@ -72,7 +73,7 @@
   "scripts": {
     "clean": "rimraf build",
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js && navi-scripts build",
+    "build": "node scripts/build.js && cross-env CANONICAL_URL=https://frontarm.com/navi navi-scripts build",
     "map": "node scripts/build.js && navi-scripts map",
     "test": "node scripts/test.js --env=jsdom",
     "serve": "navi-scripts serve"

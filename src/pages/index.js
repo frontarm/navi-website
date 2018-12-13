@@ -126,6 +126,7 @@ async function getPageContent(env, modulePromise) {
     demoboardHelpers,
     tableOfContents,
     filename,
-    documentComponents: await env.context.getDocumentComponents(),
+    documentComponents:
+      env.context.getDocumentComponents ? await env.context.getDocumentComponents() : {},
   }
 }
