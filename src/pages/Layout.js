@@ -8,7 +8,7 @@ import styles from './Layout.module.scss'
 
 const cx = classNames.bind(styles)
 
-export function Layout({ siteMap, repositoryRoot, rootPathname, currentUser, isPro }) {
+export function Layout({ siteMap, repositoryRoot, rootPathname, isPro }) {
   return (
     <NavContentSegment>
       {({ route }) => {

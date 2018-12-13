@@ -5,8 +5,7 @@ import { Layout } from './Layout'
 export default Navi.createSwitch({
   getContent: async env =>
     <Layout
-      currentUser={{}}
-      isPro={true}
+      isPro={env.context.isPro}
       repositoryRoot={env.context.repositoryRoot || ''}
       rootPathname={env.pathname || '/'}
       siteMap={await env.router.resolveSiteMap(env.pathname)}

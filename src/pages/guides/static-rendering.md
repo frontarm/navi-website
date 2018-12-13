@@ -39,6 +39,8 @@ To let Navi know what to render, you'll need to call `Navi.app()` from within `s
 Assuming that you're using the default `src/index.js` from create-react-app, here's what it'll look after adding a call to `Navi.app()`:
 
 ```js
+//---
+restricted: true
 //--- index.js
 import * as Navi from 'navi'
 import React from 'react'
@@ -140,8 +142,8 @@ Here's an example `navi.config.js` that configures a custom renderer that matche
 import he from 'he'
 import * as Navi from 'navi'
 import React from 'react'
+import ReactDOMServer from 'react-dom/server'
 import { renderCreateReactAppTemplate } from 'react-navi/create-react-app'
-import { renderToString } from 'react-dom/server'
 
 export async function renderPageToString({
   // The URL to be rendered
@@ -157,7 +159,10 @@ export async function renderPageToString({
   siteMap,
 }) {
   // Create an in-memory Navigation object with the given URL
-  let navigation = Navi.createMemoryNavigation({ pages, url })
+  let navigation = Navi.createMemoryNavigation({
+    pages,
+    url,
+  })
 
   // Wait for any asynchronous content to finish fetching
   await navigation.steady()
@@ -168,7 +173,7 @@ export async function renderPageToString({
   // Render the <App> element to a string, passing in
   // `navigation` and `siteMap` objects as props
   let appHTML = ReactDOMServer.renderToString(
-    React.createElement(exports.App, {
+    React.createElement(exports, {
       navigation,
       siteMap,
     })
@@ -176,8 +181,9 @@ export async function renderPageToString({
 
   // Generate metadata 
   let metaHTML =
-    `\n<title>${route.title || 'Untitled'}</title>\n` +
-    Object.entries(route.meta || {}).map(([key, value]) =>
+    `\n<title>${title || 'Untitled'}</title>\n` +
+    `<link rel="canonical" href="${process.env.PUBLIC_URL+url.href}" />\n`+
+    Object.entries(meta || {}).map(([key, value]) =>
       `<meta name="${he.encode(key)}" content="${he.encode(value)}" />`
     ).concat('').join('\n')
 
