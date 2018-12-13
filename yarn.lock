@@ -876,10 +876,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@frontarm/document@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@frontarm/document/-/document-0.1.4.tgz#accf706ddbef3e724532a98251624ffac78b30ab"
-  integrity sha512-WyAZ9c7oNpVZBF4TfexVSwOKGqvKQEPP3jYKZ+At1C8AHXfF0nPnog5qlYzcgmEgOdbjeTaJwT9gge90tRfz7A==
+"@frontarm/document@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@frontarm/document/-/document-0.1.5.tgz#a2b0b68e49a4ab501af03b6a4254b4e3a4c63243"
+  integrity sha512-WqSckuMfmj6E1YgPK/XGNJkEv34o20XCY0TizRa0jkeWWKhnq10xUC+8BKkKPwv+awNQpS/c4jrASu49+3kEtg==
   dependencies:
     classnames "^2.0.0"
 
@@ -2734,6 +2734,14 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     ripemd160 "^2.0.0"
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
+
+cross-env@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.2.0.tgz#6ecd4c015d5773e614039ee529076669b9d126f2"
+  integrity sha512-jtdNFfFW1hB7sMhr/H6rW1Z45LFqyI431m3qU6bFXcQ3Eh7LtBuG3h74o7ohHZ3crrRkkqHlo4jYHFPcjroANg==
+  dependencies:
+    cross-spawn "^6.0.5"
+    is-windows "^1.0.0"
 
 cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
@@ -5486,7 +5494,7 @@ is-whitespace-character@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-whitespace-character/-/is-whitespace-character-1.0.2.tgz#ede53b4c6f6fb3874533751ec9280d01928d03ed"
   integrity sha512-SzM+T5GKUCtLhlHFKt2SDAX2RFzfS6joT91F2/WSi9LxgFdsnhfPK/UIA+JhRR2xuyLdrCys2PiFDrtn1fU5hQ==
 
-is-windows@^1.0.1, is-windows@^1.0.2:
+is-windows@^1.0.0, is-windows@^1.0.1, is-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
   integrity sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==
@@ -6918,19 +6926,19 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
-navi-bar@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/navi-bar/-/navi-bar-0.8.0.tgz#2112aa40c0f49d975e342b19ab33dc37a15be846"
-  integrity sha512-YdW3AiLlzgux58EHnNu29LvGjsfxBa3u/vDh/QLRGFqgnUhT3wCZqS9awPFeD1Bn9ebvWAC59Fpkr/GA7INufg==
+navi-bar@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/navi-bar/-/navi-bar-0.8.2.tgz#87c76f4e0e344f774c98d8299e08a9ca9a5c0863"
+  integrity sha512-m0B+JZ+bbsFd+a5Zona4bWufdiiGyPWqPCyToBD+ihZQaCe2cyIxoX4TX0dzK5cPBglKwteF80PE/6DXIid81w==
   dependencies:
     "@types/history" "^4.6.2"
     "@types/react" "^16.4.6"
     "@types/react-dom" "^16.0.6"
 
-navi-scripts@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/navi-scripts/-/navi-scripts-0.8.0.tgz#7ab4a096e37cd0b4e53ebf16b4b247d565077f66"
-  integrity sha512-bYbNPGmOIErWv0rjSjIY6VtRSNxwHhrn43yD6c51sIxkU4f6//oUpdIik/qypuo/rfknn9Kghlhw5nkD5Vo+gA==
+navi-scripts@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/navi-scripts/-/navi-scripts-0.8.2.tgz#0a6e9bddf37a4c98d5de251bdfa3d5f27a6fbbd0"
+  integrity sha512-zcZUQVaZVTfDvZpY7YvhUJTVgO/FCI5d0SRIyECuNv/GyGR2ldVcpxpJcEuMqjhO94zoqnl3LR6paA0LTFL60g==
   dependencies:
     "@babel/core" "^7.1.2"
     "@babel/preset-env" "^7.1.0"
@@ -6946,10 +6954,10 @@ navi-scripts@^0.8.0:
     raf "^3.4.0"
     serve-static "^1.11.2"
 
-navi@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/navi/-/navi-0.8.0.tgz#09781b1c1450665861f3821bc26d4a2359e98a1c"
-  integrity sha512-zgjTo0nXUMQ4s3OUEB38KOotfAkkgCH+Hwe01kIqRwi6+Y3Qg2ZvPxQRCJJRaKCloM1rFvclUxzLwHeRiMy5jQ==
+navi@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/navi/-/navi-0.8.2.tgz#656d757adcc84481ba9a9e6a3c9b935d586dc350"
+  integrity sha512-SocnmPLne5WuGAbWb6w0Q7G+l+luqE3ibB7Gh6lHEEWabH46ffS+4UF+Nhvbjhm4SPVL3Ib+gofj+uw9LnHulg==
   dependencies:
     "@types/history" "^4.6.2"
     history "^4.7.2"
@@ -8688,10 +8696,10 @@ react-error-overlay@^5.1.0:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.0.tgz#c516995a5652e7bfbed8b497910d5280df74a7e8"
   integrity sha512-akMy/BQT5m1J3iJIHkSb4qycq2wzllWsmmolaaFVnb+LPV9cIJ/nTud40ZsiiT0H3P+/wXIdbjx2fzF61OaeOQ==
 
-react-navi@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/react-navi/-/react-navi-0.8.1.tgz#062f3750e3b743f66d777e879e11b6afe3930d2e"
-  integrity sha512-DlZqf9QJeb73Y4VJb7ZZATh7VfOQia0FicooI6V2Ic9h6rbxore9Ke3AAE++KnuQnc/dqjDxxvfQAD5HS/VzFA==
+react-navi@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/react-navi/-/react-navi-0.8.2.tgz#837f12d1431340ae5e604d1beb2a83a4b11c4676"
+  integrity sha512-pqJh+AV7GYZhVSvpawJ77nhURAIIsmSKNN/7NGWanOuGO75zoSt2xi69TQVI63tEJteywtG4NRawmiCQYxbIIQ==
   dependencies:
     "@types/history" "^4.6.2"
     "@types/react" "^16.4.6"
