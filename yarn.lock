@@ -876,10 +876,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@frontarm/document@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@frontarm/document/-/document-0.1.1.tgz#8944cc6ca99f8b0312c1a0aa73182b6b3e76d4c2"
-  integrity sha512-qlcgoRSl5YSZqG9Rh9OT57teYcJ4BP5WACaBF6u2NWpixtikRBMwEEz+inJWAtZxf0OrE6Ih0MMSx+aG2U5b+Q==
+"@frontarm/document@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@frontarm/document/-/document-0.1.4.tgz#accf706ddbef3e724532a98251624ffac78b30ab"
+  integrity sha512-WyAZ9c7oNpVZBF4TfexVSwOKGqvKQEPP3jYKZ+At1C8AHXfF0nPnog5qlYzcgmEgOdbjeTaJwT9gge90tRfz7A==
   dependencies:
     classnames "^2.0.0"
 
@@ -8608,6 +8608,14 @@ raw-body@2.3.3:
     http-errors "1.6.3"
     iconv-lite "0.4.23"
     unpipe "1.0.0"
+
+raw-loader@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/raw-loader/-/raw-loader-1.0.0.tgz#3f9889e73dadbda9a424bce79809b4133ad46405"
+  integrity sha512-Uqy5AqELpytJTRxYT4fhltcKPj0TyaEpzJDcGz7DFJi+pQOOi3GjR/DOdxTkTsF+NzhnldIoG6TORaBlInUuqA==
+  dependencies:
+    loader-utils "^1.1.0"
+    schema-utils "^1.0.0"
 
 rc@^1.2.7:
   version "1.2.8"
