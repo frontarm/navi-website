@@ -100,6 +100,16 @@ export default Navi.createSwitch({
         // }),
       }
     }),
+
+    '/deploy': Navi.createSwitch({
+      title: 'Deploying',
+      paths: {
+        '/now': Navi.createPage({
+          title: 'Deploying with ZEIT Now',
+          getContent: env => getPageContent(env, import('./deploy/now.md')),
+        }),
+      }
+    }),
   },
 })
 
