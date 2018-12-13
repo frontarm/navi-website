@@ -28,7 +28,10 @@ export const Nav = React.forwardRef((props, ref) =>
               {children}
 
               <section className={cx('page')}>
-                <a href="https://github.com/frontarm/navi" className={cx('link')}>GitHub &raquo;</a>
+                <a href="https://github.com/frontarm/navi" className={cx('link', 'github')}>
+                  <img src={require('./github-icon.png')} alt="GitHub icon" /> 
+                  GitHub &raquo;
+                </a>
               </section>
             </nav>
           </nav>

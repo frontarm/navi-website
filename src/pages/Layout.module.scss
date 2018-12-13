@@ -74,11 +74,11 @@
     }
 
     pre, code { font-family: Inconsolata, monospace; line-height: 3rem }
-    code { background-color: #f3f4f4; }
+    code { background-color: #f0f4fc; }
     pre > code { background-color: transparent; }
     pre[class*="language-"] {
       padding: 2rem;
-      margin: 2rem -2rem;
+      margin: 2rem 0;
       border-radius: 3px;
       color: rgb(40, 40, 40);
     }
@@ -167,7 +167,7 @@
     }
 
     aside {
-      margin: 0 0 0 -2rem;
+      margin: 0;
       font-size: 1.8rem;
       border: 2px solid $primary;
       border-radius: 3px;
@@ -187,7 +187,7 @@
     }
 
     :not(pre) > code[class*="language-"], pre[class*="language-"] {
-      background: #f6f9f8;
+      background: #f0f4fc;
     }
 
     h1, h2, h3, h4, h5, h6 {

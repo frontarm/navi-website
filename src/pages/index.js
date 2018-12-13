@@ -13,17 +13,19 @@ export default Navi.createSwitch({
 
   paths: {
     '/': Navi.createPage({
-      title: "Start Here",
+      title: "Navi – A JavaScript router and static renderer",
       getContent: env =>
         getPageContent(env, import('./start-here.md')),
       meta: {
+        navTitle: 'Start Here',
         socialTitle: 'Navi',
-        metaDescription: 'Blazing fast static websites with vanilla create-react-app.',
+        socialImageURL: require('./social-media-card.png'),
+        metaDescription: 'Create big, fast, CDN-delivered websites with great SEO & SMO, and all with vanilla create-react-app.',
       },
     }),
 
     '/motivation': Navi.createPage({
-      title: 'Motivation',
+      title: 'Why Navi?',
       getContent: env => getPageContent(env, import('./motivation.md')),
     }),
 
@@ -43,13 +45,19 @@ export default Navi.createSwitch({
 
       paths: {
         '/minimal-example': Navi.createPage({
-          title: 'A Minimal Example',
+          title: 'A Minimal Example of Navi',
           getContent: env => getPageContent(env, import('./guides/minimal-example.md')),
+          meta: {
+            navTitle: 'A Minimal Example'
+          },
         }),
 
         '/static-rendering': Navi.createPage({
-          title: 'Static Rendering',
+          title: 'Static Rendering with Navi',
           getContent: env => getPageContent(env, import('./guides/static-rendering.md')),
+          meta: {
+            navTitle: 'Static Rendering'
+          },
         }),
 
         // '/authenticated-routes': Navi.createPage({
@@ -64,27 +72,33 @@ export default Navi.createSwitch({
       }
     }),
 
-    // '/integrations': Navi.createSwitch({
-    //   title: 'Integrations',
-    //   paths: {
-    //     '/react': Navi.createPage({
-    //       title: 'React',
-    //       getContent: env => getPageContent(env, import('./integrations/react.md')),
-    //     }),
+    '/integrations': Navi.createSwitch({
+      title: 'Integrations',
+      paths: {
+        '/react': Navi.createPage({
+          title: 'Integrating Navi with React',
+          getContent: env => getPageContent(env, import('./integrations/react.md')),
+          meta: {
+            navTitle: 'React',
+          }
+        }),
 
-    //     // '/react-router': Navi.createPage({
-    //     //   title: 'react-router',
-    //     //   getContent: env => getPageContent(env, import('./integrations/react-router.md')),
-    //     // }),
-    //   },
-    // }),
+        // '/react-router': Navi.createPage({
+        //   title: 'react-router',
+        //   getContent: env => getPageContent(env, import('./integrations/react-router.md')),
+        // }),
+      },
+    }),
 
     '/reference': Navi.createSwitch({
       title: 'API Reference',
       paths: {
         '/declarations': Navi.createPage({
-          title: 'Declaring pages',
+          title: 'Declaring pages with Navi',
           getContent: env => getPageContent(env, import('./reference/defining-pages.md')),
+          meta: {
+            navTitle: 'Declaring pages',
+          }
         }),
         // '/navigation': Navi.createPage({
         //   title: 'Navigation',
@@ -105,8 +119,11 @@ export default Navi.createSwitch({
       title: 'Deploying',
       paths: {
         '/now': Navi.createPage({
-          title: 'Deploying with ZEIT Now',
+          title: 'Deploying Navi with ZEIT Now',
           getContent: env => getPageContent(env, import('./deploy/now.md')),
+          meta: {
+            navTitle: 'Deploying with ZEIT Now',
+          }
         }),
       }
     }),

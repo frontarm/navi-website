@@ -61,6 +61,25 @@
     code {
       font-size: inherit;
     }
+
+    &.github img {
+      height: 20px;
+      width: 20px;
+      vertical-align: middle;
+      margin-right: 6px;
+      opacity: 0.73;
+    }
+
+    &:hover {
+      color: $primary;
+
+      &.github {
+        color: rgba(0, 0, 0, 0.83);
+        img {
+          opacity: 0.83;
+        }
+      }
+    }
   }
 
   .section {
@@ -103,6 +122,10 @@
     padding: 0.666rem 0 0.666rem 2rem;
     font-size: 1.4rem;
     line-height: 2rem;
+
+    &:hover {
+      color: lighten(desaturate($primary, 25%), 8%);
+    }
   }
   .heading.active > .link {
     color: $primary;

@@ -123,7 +123,7 @@ class App extends Component {
 }
 ```
 
-
+<!--
 ## `<NavSegment>`
 
 TODO
@@ -132,3 +132,4 @@ TODO
 ## `<NavContentSegment>`
 
 TODO
+-->
