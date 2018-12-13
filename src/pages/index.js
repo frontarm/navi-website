@@ -18,7 +18,8 @@ export default Navi.createSwitch({
       getContent: env =>
         getPageContent(env, import('./start-here.md')),
       meta: {
-        description: 'A batteries-included router for React.',
+        socialTitle: 'Navi',
+        metaDescription: 'Blazing fast static websites with vanilla create-react-app.',
       },
     }),
 
