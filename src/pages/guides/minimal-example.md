@@ -4,6 +4,7 @@ export const demoboardHelpers = {
   'index.js': require('!raw-loader!./minimal-example/index.js'),
   'pages.js': require('!raw-loader!./minimal-example/pages.js'),
   'pages/Reference.js': require('!raw-loader!./minimal-example/Reference.js'),
+  'styles.css': require('!raw-loader!./minimal-example/styles.css'),
 }
 
 The Minimal Example
@@ -28,6 +29,7 @@ To declare your pages, you'll use Navi's `createSwitch()` and `createPage()` fun
 //--- pages/Reference.js <-- pages/Reference.js
 //--- index.js <-- index.js
 //--- App.js <-- App.js
+//--- styles.css <-- styles.css
 ```
 
 As you'll see later, your content can be *anything*. You can return markdown, JSON, or even arbitrary functions! But `react-navi` has special support for React elements and components, so let's start by defining the content that way.
@@ -41,6 +43,7 @@ But what about the `/reference` page? It's not returning an element or component
 //--- pages/Reference.js <-- pages/Reference.js
 //--- index.js <-- index.js
 //--- App.js <-- App.js
+//--- styles.css <-- styles.css
 ```
 
 Step 2: Create `navigation`
@@ -57,6 +60,7 @@ To create a `Navigation`, just call `createBrowserNavigation()` within `index.js
 //--- pages/Reference.js <-- pages/Reference.js
 //--- index.js <-- index.js
 //--- App.js <-- App.js
+//--- styles.css <-- styles.css
 ```
 
 
@@ -80,6 +84,7 @@ Here's an example:
 //--- pages/Reference.js <-- pages/Reference.js
 //--- index.js <-- index.js
 //--- App.js <-- App.js
+//--- styles.css <-- styles.css
 ```
 
 And that's it -- you've built a working app with asynchronous content! Of course, this tiny app is just an example, but Navi handles real-world apps with ease. In fact, [Frontend Armory](https://frontarm.com) is built with Navi.
@@ -120,7 +125,16 @@ export default createSwitch({
           <div>
             <h2>Navi</h2>
             <p>A router/loader for React</p>
-            <nav><NavLink href='/reference'>API Reference</NavLink></nav>
+            <p>
+              <em>
+                In this example, loading of page content is delayed by 1s{' '}
+                to simulate a slow connection. To see how this works, take{' '}
+                a look at the <code>page.js</code> file.
+              </em>
+            </p>
+            <nav>
+              <NavLink href='/reference'>Go to API Reference »</NavLink>
+            </nav>
           </div>
         )
       }
@@ -150,18 +164,23 @@ class App extends React.Component {
           {isLoading =>
             <div className="App">
               <BusyIndicator
-                color="#ff0000"
+                color="#1ee79e"
                 delayMs={333}
                 isBusy={isLoading}
               />
               <header className="App-header">
                 <h1 className="App-title">
-                  <NavLink href='/'>Navi</NavLink>
+                  <NavLink href='/'>
+                    <img src="https://frontarm.com/navi-logo.png" />
+                    <span>Navi</span>
+                  </NavLink>
                 </h1>
               </header>
-              <NavNotFoundBoundary render={renderNotFound}>
-                <NavRoute />
-              </NavNotFoundBoundary>
+              <main>
+                <NavNotFoundBoundary render={renderNotFound}>
+                  <NavRoute />
+                </NavNotFoundBoundary>
+              </main>
             </div>
           }
         </NavLoading>
@@ -179,6 +198,7 @@ function renderNotFound() {
 } 
 
 export default App;
+//--- styles.css <-- styles.css
 ```
 
 The `<NavLoading>` component accepts a render function as its children, to which it passes a boolean that indicates whether its nested `<NavRoute>` component is waiting for  content. You're free to render this boolean however you'd like, but you can save yourself the trouble by importing and using `react-busy-indicator` -- the same loading bar used on this site.
@@ -189,4 +209,4 @@ What next?
 
 If you'd like your site's content to be indexed by search engines and shared on social media, take a look at the [Static Rendering](../static-rendering) guide -- it'll only take you 2 minutes to complete!
 
-<!--But Navi isn't just for websites -- it works great for Single Page Apps too! So if you're building an SPA, head on over to the [Authenticated Routes](../authenticated-routes) guide and learn how to hide protected content from unauthenticated users.-->
+But Navi isn't just for websites -- it works great for Single Page Apps too! So if you're building an SPA, head on over to the [Authenticated Routes](../authenticated-routes/) guide and learn how to hide protected content from unauthenticated users.

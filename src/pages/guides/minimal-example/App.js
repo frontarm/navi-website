@@ -8,12 +8,17 @@ class App extends React.Component {
         <div className="App">
           <header className="App-header">
             <h1 className="App-title">
-              <NavLink href='/'>Navi</NavLink>
+              <NavLink href='/'>
+                <img src="https://frontarm.com/navi-logo.png" />
+                <span>Navi</span>
+              </NavLink>
             </h1>
           </header>
-          <NavNotFoundBoundary render={renderNotFound}>
-            <NavRoute />
-          </NavNotFoundBoundary>
+          <main>
+            <NavNotFoundBoundary render={renderNotFound}>
+              <NavRoute />
+            </NavNotFoundBoundary>
+          </main>
         </div>
       </NavProvider>
     );

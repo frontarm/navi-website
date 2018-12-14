@@ -4,6 +4,7 @@ export const demoboardHelpers = {
   'index.js': require('!raw-loader!./minimal-example/index.js'),
   'pages.js': require('!raw-loader!./minimal-example/pages.js'),
   'pages/Reference.js': require('!raw-loader!./minimal-example/Reference.js'),
+  'styles.css': require('!raw-loader!./minimal-example/styles.css'),
 }
 
 Static Rendering
@@ -84,6 +85,7 @@ Navi.app({
 //--- pages.js <-- pages.js
 //--- pages/Reference.js <-- pages/Reference.js
 //--- App.js <-- App.js
+//--- styles.css <-- styles.css
 ```
 
 Note that `Navi.app()` will call the provided `main()` function when appropriate, so you won't need to manually call `main()`.
@@ -196,3 +198,41 @@ export async function renderPageToString({
   })
 }
 ```
+
+
+## HTTP redirects
+
+By default, `navi-scripts` renders redirects as a HTML file with `<meta>`-based redirect. While this default will usually get the job done, it does have the issue of not being able to forward the URL `?search` through to the target URL. As a result, to use `?search` parameters with redirects, you'll need to set up HTTP redirects.
+
+Unfortunately, there's no common standard between hosting platforms by which you can configure HTTP redirects. However, you can easily configure your own method for rendering redirects by exporting a `createRedirectFiles()` function from `navi.config.js`. Here's the default implementation that renders each redirect as a HTML file with a single `<meta>` tag.
+
+```js
+// The 'fs-extra' package mirrors Node's 'fs' packages, but its functions
+// return promises, facilitating use within `async` functions.
+import fs from 'fs-extra'
+import path from 'path'
+
+export async function createRedirectFiles({ config, siteMap }) {
+  // The `siteMap.redirects` object contains all of the site's redirects,
+  // mapping the "from" URL to a Route object.
+  for (let { url, to } of Object.values(siteMap.redirects)) {
+    // Compute an `index.html` pathname, which will work on hosts that
+    // don't automatically map URLs to HTML files that share the same name.
+    let pathname =
+      url === '/'
+        ? 'index.html'
+        : path.join(url.pathname.slice(1), 'index.html')
+
+    console.log("[redirect] "+pathname+" -> "+to)
+
+    let filesystemPath = path.resolve(config.root, pathname)
+    let text = `<meta http-equiv="refresh" content="0; URL='${to}'" />`
+
+    // Make sure the directory exists before writing the redirect to
+    // a file in the directory.
+    await fs.ensureDir(path.dirname(filesystemPath))
+    await fs.writeFile(filesystemPath, text)
+  }
+}
+```
+

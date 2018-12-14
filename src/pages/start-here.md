@@ -1,4 +1,5 @@
 export const filename = __filename
+import { Document } from '@frontarm/document'
 
 Navi
 ====
@@ -20,6 +21,15 @@ Navi
 - [Jump into the minimal example &raquo;](./guides/minimal-example)
 - [Play with the demoboard &raquo;](https://frontarm.com/demoboard/?id=1229d493-ffaf-4133-b384-0f7dfec85af5)
 - [View the GitHub repository &raquo;](https://github.com/frontarm/navi)
+
+<Document.Block style={{marginTop: '6rem'}}>
+<aside>
+<h4>Navi ❤️ Async</h4>
+
+To get the most out of Navi, you'll need a solid understanding of JavaScript Promises and the new `async`/`await` syntax. If you need a hand getting there, just walk through Frontend Armory's [Mastering Async JavaScript](https://frontarm.com/courses/async-javascript/) course.
+
+</aside>
+</Document.Block>
 
 <!-- - [Start a project with create-navi-app &raquo;]() -->
 
@@ -45,7 +55,7 @@ The `react-navi` package provides a bunch of helpful React components.
 npm install --save react-navi
 ```
 
-<!-- For more details, check out the [components reference &raquo;](/reference/react-components) -->
+For more details, check out the [React integration guide &raquo;](/integrations/react/) -->
 
 
 ### navi-scripts

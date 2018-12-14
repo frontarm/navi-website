@@ -53,9 +53,20 @@ If specified, the linked page's content will be loaded as soon as the link is re
 
 Renders the content for the latest route that has complete content.
 
-If you'd like to render the next switch that corresponds to the next URL segment -- as opposed to rendering the innermost page - then use `<NavSegment>` or `<NavContentSegment>` instead.
+<!--If you'd like to render the next switch that corresponds to the next URL segment -- as opposed to rendering the innermost page - then use `<NavSegment>` or `<NavContentSegment>` instead.-->
 
-#### Example
+If the route's content is a React element or component, then the `render` prop is optional, and that content will be rendered by default. Otherwise, you'll need to provide a render prop to specify how to render the route content. 
+
+### Props
+
+#### `navigation: Navigation`
+
+A `Navigation` object, as returned from `createBrowserNavigation()` or `createMemoryNavigation()`
+
+
+### Examples
+
+#### Basic Usage
 
 ```js
 class App extends Component {
@@ -64,6 +75,24 @@ class App extends Component {
       <NavProvider navigation={this.props.navigation}>
         <div className="App">
           <NavRoute />
+        </div>
+      </NavProvider>
+    );
+  }
+}
+```
+
+#### Usage with render prop
+
+```js
+class App extends Component {
+  render() {
+    return (
+      <NavProvider navigation={this.props.navigation}>
+        <div className="App">
+          <NavRoute>
+            {route => route.content}
+          </NavRoute>
         </div>
       </NavProvider>
     );

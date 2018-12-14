@@ -34,12 +34,6 @@ export default Navi.createSwitch({
     //   getContent: env => getDocumentExports(import('./core-concepts.md')),
     // }),
 
-    // this really is a short course... probably should just add a redirect to it
-    // '/tutorial': Navi.createPage({
-    //   title: 'Tutorial: Make a blog',
-    //   getContent: env => getDocumentExports(import('./tutorial/make-a-blog.md')),
-    // }),
-
     '/guides': Navi.createSwitch({
       title: 'Guides',
 
@@ -60,10 +54,14 @@ export default Navi.createSwitch({
           },
         }),
 
-        // '/authenticated-routes': Navi.createPage({
-        //   title: 'Authenticated Routes',
-        //   getContent: env => getPageContent(env, import('./guides/authenticated-routes.md')),
-        // }),
+        '/authenticated-routes': Navi.createPage({
+          title: 'Authenticated Routes with Navi',
+          getContent: env => getPageContent(env, import('./guides/authenticated-routes.md')),
+          meta: {
+            navTitle: 'Authenticated Routes',
+            metaDescription: `Add authenticated routes to your statically rendered site, complete with redirects to and from the login screen.`,
+          }
+        }),
 
     //     '/integrating-express': Navi.createPage({
     //       title: 'Server Rendering with Express',

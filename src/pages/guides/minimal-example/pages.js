@@ -10,7 +10,11 @@ export default createSwitch({
         <div>
           <h2>Navi</h2>
           <p>A router/loader for React</p>
-          <nav><NavLink href='/reference'>API Reference</NavLink></nav>
+          <nav>
+            <NavLink href='/reference'>
+              Go to API Reference &raquo;
+            </NavLink>
+          </nav>
         </div>
     }),
 

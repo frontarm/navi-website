@@ -26,7 +26,7 @@ If you don't have an account, signup and then run the `now login` command to log
 
 ## Step 3: Preparing to Deploy
 
-With a project ready to go, you can prepare to deploy by creating a few pieces of configuration which will allow Now to understand how to build our project, what to deploy, and where to route users when serving your app.
+With a project ready to go, you can prepare to deploy by creating a few pieces of configuration which will allow Now to understand how to build your project, what to deploy, and where to route users when serving your app.
 
 The first piece of configuration is a `now.json` file, containing the following:
 
@@ -49,7 +49,7 @@ The first piece of configuration is a `now.json` file, containing the following:
 To explain the above briefly, this `now.json` file tells Now to:
 - Build using [the latest Now 2.0 platform](https://zeit.co/docs/v2/platform/overview/#versioning).
 - Set [a project name](https://zeit.co/docs/v2/deployments/configuration/#name) for all deployments.
-- Build our application using [the @now/static-build builder](https://zeit.co/docs/v2/deployments/official-builders/static-build-now-static-build/) and configure the builder to look in the `build` directory for the built app.
+- Build your application using [the @now/static-build builder](https://zeit.co/docs/v2/deployments/official-builders/static-build-now-static-build/) and configure the builder to look in the `build` directory for the built app.
 - Sets paths for Now to [route users](https://zeit.co/docs/v2/deployments/configuration/#routes) to depending on a specific path, otherwise fall back to the `index.html` file (the app).
 
 With this in place, the final piece of configuration is to tell the @now/static-build builder how to build the app for Now to serve from the `build` directory.
