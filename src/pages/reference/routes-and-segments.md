@@ -2,9 +2,20 @@ export const filename = __filename
 
 # Routes and Segments
 
+`Route` and `Segment` objects are immutable objects that contain the routing state for your app at a specific point in time.
+
+These types are all exported for use within TypeScript codebases.
+
 ## `Route`
 
 ```typescript
+enum RouteType {
+  Switch = 'switch',
+  Page = 'page',
+  Redirect = 'redirect',
+  Plaecholder = 'placeholder'
+}
+
 interface Route {
   url: URLDescriptor
 
@@ -41,13 +52,13 @@ interface Route {
 /**
  * A type that covers all Segment objects.
  */
-export type Segment =
+type Segment =
   | PlaceholderSegment
   | SwitchSegment
   | PageSegment
   | RedirectSegment
 
-export enum SegmentType {
+enum SegmentType {
   Placeholder = 'placeholder',
   Switch = 'switch',
   Page = 'page',
@@ -58,7 +69,7 @@ export enum SegmentType {
  * All segments extend this interface. It includes all information that can be
  * inferred from just a pattern string and a location.
  */
-export interface GenericSegment {
+interface GenericSegment {
   type: SegmentType
 
   /**
@@ -174,18 +185,12 @@ export interface SwitchSegment<Meta extends object = any, Content = any>
 }
 ```
 
-## URL Descriptors
-
-URL Descriptors are object that store the parts of a URL that can correspond to a a specific screen within your application.
+## `Status`
 
 ```typescript
-export type URLDescriptor = {
-  pathname: string,
-  search: string,
-  hash: string,
-  query: Params,
-  href: string,
-
-  state?: object,
+enum Status {
+  Ready = 'ready',
+  Busy = 'busy',
+  Error = 'error',
 }
 ```

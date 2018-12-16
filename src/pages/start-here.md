@@ -55,7 +55,7 @@ The `react-navi` package provides a bunch of helpful React components.
 npm install --save react-navi
 ```
 
-For more details, check out the [React integration guide &raquo;](/integrations/react/) -->
+For more details, check out the [React integration guide &raquo;](./integrations/react/)
 
 
 ### navi-scripts

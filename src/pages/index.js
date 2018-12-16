@@ -98,14 +98,34 @@ export default Navi.createSwitch({
             navTitle: 'Declaring pages',
           }
         }),
-        // '/navigation': Navi.createPage({
-        //   title: 'Navigation',
-        //   getContent: env => getPageContent(env, import('./reference/navigation.md')),
-        // }),
-        // '/routes-segments-urls': Navi.createPage({
-        //   title: 'Routes, Segments and URL Descriptors',
-        //   getContent: env => getPageContent(env, import('./reference/routes-and-segments.md')),
-        // }),
+        '/history': Navi.createPage({
+          title: "Navi's history object",
+          getContent: env => getPageContent(env, import('./reference/history.md')),
+          meta: {
+            navTitle: <code>history</code>,
+          }
+        }),
+        '/navigation': Navi.createPage({
+          title: "The Navigation object – Navi",
+          getContent: env => getPageContent(env, import('./reference/navigation.md')),
+          meta: {
+            navTitle: <code>navigation</code>,
+          }
+        }),
+        '/route-and-segment': Navi.createPage({
+          title: "Route objects – Navi",
+          getContent: env => getPageContent(env, import('./reference/routes-and-segments.md')),
+          meta: {
+            navTitle: <><code>Route</code> and <code>Segment</code></>,
+          }
+        }),
+        '/url-descriptor': Navi.createPage({
+          title: "URLDescriptor objects – Navi",
+          getContent: env => getPageContent(env, import('./reference/url-descriptor.md')),
+          meta: {
+            navTitle: <code>URLDescriptor</code>,
+          }
+        }),
         // '/router': Navi.createPage({
         //   title: 'Router',
         //   getContent: env => getPageContent(env, import('./reference/router.md')),

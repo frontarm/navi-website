@@ -49,9 +49,9 @@ But what about the `/reference` page? It's not returning an element or component
 Step 2: Create `navigation`
 ---------------------------
 
-Navi does all of the hard work within a `Navigation` object. This is where Navi watches for history events, matches URLs to pages and content, and turns all of this info into an object that you can use.
+Navi does all of the hard work within a [`Navigation` object](../../reference/navigation/). This is where Navi watches for history events, matches URLs to pages and content, and turns all of this info into an object that you can use.
 
-To create a `Navigation`, just call `createBrowserNavigation()` within `index.js`, passing in the `pages` object that you defined earlier. Once you have a `Navigation`, just wait for its initial content to become available -- and then render it!
+To create a `Navigation`, just call [`createBrowserNavigation()`](../../reference/navigation/#createbrowsernavigation) within `index.js`, passing in the `pages` object that you defined earlier. Once you have a `Navigation`, just wait for its initial content to become available -- and then render it!
 
 ```js
 //---

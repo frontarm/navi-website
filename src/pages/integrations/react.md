@@ -11,9 +11,9 @@ As a result, all other components must be rendered inside a `<NavProvider>`.
 
 ### Props
 
-#### `navigation: Navigation`
+#### `navigation`: [`Navigation`](../../reference/navigation/#navigation-interface)
 
-A `Navigation` object, as returned from `createBrowserNavigation()` or `createMemoryNavigation()`
+Your app's `Navigation` object, as returned from [`createBrowserNavigation()`](../../reference/navigation/#createbrowsernavigation) or [`createMemoryNavigation()`](../../reference/navigation/#creatememorynavigation)
 
 
 ## `<NavLink>`
@@ -59,10 +59,16 @@ If the route's content is a React element or component, then the `render` prop i
 
 ### Props
 
-#### `navigation: Navigation`
+#### <code>children: (route: [Route](../../reference/route-and-segment/#route)) => React.ReactNode</code> <small>(optional)</small>
 
-A `Navigation` object, as returned from `createBrowserNavigation()` or `createMemoryNavigation()`
+If provided, the component's `children` must be a [render prop](https://reactjs.org/docs/render-props.html) that takes the current [Route](../../reference/route-and-segment/#route), and returns React element to render.
 
+If not provided, the default behavior is:
+
+1. If `route.content` contains a React element, render it.
+2. If `route.content` contains a function, then call it to get the rendered content.
+3. Otherwise, if `route.status` is `busy`, don't render anything. 
+4. Finally, if `route.content` isn't a React element, and `route.status` isn't `busy`, then throw an error.
 
 ### Examples
 
@@ -151,6 +157,16 @@ class App extends Component {
   }
 }
 ```
+
+## `<NavHistory>`
+
+Allows you to access the [`history`](../../reference/history) property of your app's [`navigation`](../../reference/navigation) object, through a render prop passed to the `children` prop.
+
+This can be used to facilitate programmatic navigation.
+
+## `<NavConsumer>`
+
+Allows you to access the last [`NavigationSnapshot`](../../reference/navigation/#navigationsnapshot-objects) object published by your app's [`navigation`](../../reference/navigation/) object, through a render prop passed to the `children` prop.
 
 <!--
 ## `<NavSegment>`

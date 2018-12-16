@@ -32,7 +32,7 @@ createSwitch({
 
 While the above example will work for public content, imagine for a moment that the `fetchResource()` function requires some details about the current user, e.g. for authentication. If that information doesn't exist, then you'll be unable to call `fetchResource()` and so you'll need to display a login screen instead. In addition, you'll need some way of accessing the user's details *within* the getter function. And to do this, you can use `env.context`.
 
-When you pass a function to a Page's content or Switch's path, that function will receive an [Env object](../../reference/declarations/#env-objects) -- which contains a configurable `context` property. By storing the current authentication state on this object, it becomes possibles to declare pages that depend on authentication state. For example, here's one way that you render a link to the login screen for guest users:
+When you pass a function to a Page's content or Switch's path, that function will receive an [Env object](../../reference/declarations/#env-objects) -- which contains a configurable `context` property. By storing the current authentication state on this object, it becomes possibles to declare pages that depend on authentication state. For example, here's one way that you could render a link to the login screen for guest users:
 
 ```js
 //---
@@ -48,7 +48,7 @@ restricted: true
 
 ## Setting authentication state
 
-In order to access the `currentUser` object through `env.context.currentUser`, you'll first need to define it. To do so, just pass a `context` object through to `Navi.createBrowserNavigation()` when you first create your app's `Navigation` object:
+In order to access the `currentUser` object through `env.context.currentUser`, you'll first need to define it. To do so, just pass a `context` object through to [`createBrowserNavigation()`](../../reference/navigation/#createbrowsernavigation) when you first create your app's [`Navigation` object](../../reference/navigation/):
 
 ```js
 let navigation = Navi.createBrowserNavigation({
@@ -152,7 +152,7 @@ When serving a statically rendered site, each page's HTML will be generated ahea
 
 When building your app's HTML, Navi defaults to using an empty object for `env.context`. This means that using the redirect-to-login pattern discussed above, Navi will render authenticated routes as redirects to the login screen.
 
-The default behavior of `navi-scripts` is to render each of your site's redirects as a HTML file with a `<meta http-equiv="redirect>` tag. This means that out of the box, your redirect-to-login routes will work, even with static rendering! Here's what happens:
+The default behavior of `navi-scripts` is to render each of your site's redirects as a HTML file with a `<meta http-equiv="redirect">` tag. This means that out of the box, your redirect-to-login routes will work, even with static rendering! Here's what happens:
 
 -   When an unauthenticated user views an authenticated page, their browser will redirect to the login screen, just as expected.
 
