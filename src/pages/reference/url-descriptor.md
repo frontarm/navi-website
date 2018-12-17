@@ -51,6 +51,6 @@ export type URLDescriptor = {
 }
 ```
 
-When you're supplying a URL t Navi, you don't need to supply the entire object. You can just supply a **Partial URL Descriptor** that contains only some of the above properties, and the remaining properties will be given sane defaults.
+When you're supplying a URL to Navi, you don't need to supply the entire object. You can just supply a **Partial URL Descriptor** that contains only some of the above properties, and the remaining properties will be given sane defaults.
 
 In fact, you don't even need to supply objects at all -- whenever you need to pass Navi a URL, you can also pass it a URL string, like `/my-great-page?q=icecream#top`, and Navi will convert it into a URL object for internal use. The only exception to this rule is that when you need to provide a value for `state`, you'll need to use an object.
