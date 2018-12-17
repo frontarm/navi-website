@@ -10,7 +10,7 @@ export default Navi.createSwitch({
           // If no redirectTo is specified, default to `/welcome/`
           env.params.redirectTo
             ? decodeURIComponent(env.params.redirectTo)
-            : '/resource/favorite-foods/'
+            : '/welcome/'
         )
       ) : (
         Navi.createPage({
