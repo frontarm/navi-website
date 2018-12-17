@@ -20,7 +20,7 @@ Navi
 - [Why Navi?](./motivation)
 - [Jump into the minimal example &raquo;](./guides/minimal-example)
 - [Play with the demoboard &raquo;](https://frontarm.com/demoboard/?id=1229d493-ffaf-4133-b384-0f7dfec85af5)
-- [View the GitHub repository &raquo;](https://github.com/frontarm/navi)
+- [Get started with create-react-navi-app &raquo;](./create-react-navi-app)
 
 <Document.Block style={{marginTop: '6rem'}}>
 <aside>
@@ -31,7 +31,6 @@ To get the most out of Navi, you'll need a solid understanding of JavaScript Pro
 </aside>
 </Document.Block>
 
-<!-- - [Start a project with create-navi-app &raquo;]() -->
 
 Packages
 --------
@@ -69,21 +68,6 @@ npm install --save-dev navi-scripts
 
 If you're using `create-react-app`, **setting up `navi-scripts` just takes a one line change in your package.json**. To learn how, click through to the [static rendering guide &raquo;](./guides/static-rendering)
 
-<!--
-### create-navi-app
-
-TODO
-
-- it's easy to set up a navi app using create-react-app, you only need to make 3 changes
-- the first time you create a navi app, it's worth making those changes yourself, as it helps you build understanding
-- but the next time? save yourself the time and just use create-navi-app. it generates an app that:
-
-- has the navi, react-navi and navi-scripts packages pre-installed
-- has the `build` script configured to output static html
-- comes with a `/pages` directory and an index route
-- renders the current route within `<App>`
-- adds the required bootstrap code to `index.js`
--->
 
 Who uses Navi?
 --------------

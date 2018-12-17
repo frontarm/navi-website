@@ -29,6 +29,15 @@ export default Navi.createSwitch({
       getContent: env => getPageContent(env, import('./motivation.md')),
     }),
 
+    '/create-react-navi-app': Navi.createPage({
+      title: 'Create React/Navi App',
+      getContent: env => getPageContent(env, import('./create-react-navi-app.md')),
+      meta: {
+        metaDescription: 'Zero-configuration React apps with ready-to-go routing, mdx support, and static HTML generation.',
+        socialImageURL: require('./create-react-navi-app-social.png'),
+      },
+    }),
+
     // '/core-concepts': Navi.createPage({
     //   title: 'Core concepts',
     //   getContent: env => getDocumentExports(import('./core-concepts.md')),
@@ -81,10 +90,10 @@ export default Navi.createSwitch({
           }
         }),
 
-        // '/react-router': Navi.createPage({
-        //   title: 'react-router',
-        //   getContent: env => getPageContent(env, import('./integrations/react-router.md')),
-        // }),
+        '/react-router': Navi.createPage({
+          title: 'react-router',
+          getContent: env => getPageContent(env, import('./integrations/react-router.md')),
+        }),
       },
     }),
 

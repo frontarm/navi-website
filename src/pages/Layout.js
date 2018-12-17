@@ -66,7 +66,16 @@ export function Layout({ siteMap, repositoryRoot, rootPathname, isPro }) {
                       headingLink: (props) =>
                         <NavLink {...props} className={cx('headingLink')}>
                           #
-                        </NavLink>
+                        </NavLink>,
+                      Beware: ({ className, title, children, ...props }) =>
+                        <Document.Block className={cx('Beware')+' '+className}>
+                          <aside {...props}>
+                            <header>
+                              {title}
+                            </header>
+                            {children}
+                          </aside>
+                        </Document.Block>
                     }}
                     canAccessRestrictedContent={isPro}
                     className={cx('document')}
