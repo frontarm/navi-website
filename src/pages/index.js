@@ -83,16 +83,19 @@ export default Navi.createSwitch({
       title: 'Integrations',
       paths: {
         '/react': Navi.createPage({
-          title: 'Integrating Navi with React',
+          title: 'Using Navi with React',
           getContent: env => getPageContent(env, import('./integrations/react.md')),
           meta: {
-            navTitle: 'React',
+            navTitle: 'Usage with React',
           }
         }),
 
         '/react-router': Navi.createPage({
-          title: 'react-router',
+          title: 'Using Navi with react-router',
           getContent: env => getPageContent(env, import('./integrations/react-router.md')),
+          meta: {
+            navTitle: 'Usage with react-router',
+          }
         }),
       },
     }),

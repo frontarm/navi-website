@@ -170,7 +170,7 @@ export async function renderPageToString({
   await navigation.steady()
 
   // Get the `title` and `meta` for the matched page
-  let { title, meta } = navigation.getCurrentValue()
+  let { title, meta } = navigation.getCurrentValue().route
 
   // Render the <App> element to a string, passing in
   // `navigation` and `siteMap` objects as props

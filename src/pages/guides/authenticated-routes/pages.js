@@ -6,8 +6,8 @@ export default Navi.createSwitch({
     '/login': async env =>
       env.context.currentUser ? (
         Navi.createRedirect(
-          // Redirect to the value of the URL's `redirectTo` parameter.
-          // If no redirectTo is specified, default to `/welcome/`
+          // Redirect to the value of the URL's `redirectTo` parameter. If no
+          // redirectTo is specified, default to `/resource/favorite-foods/`.
           env.params.redirectTo
             ? decodeURIComponent(env.params.redirectTo)
             : '/resource/favorite-foods/'
