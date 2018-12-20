@@ -55,6 +55,7 @@ export const SidebarSection = ({ active, children, meta, title }) => (
 
 export const SidebarPage = ({ active, children, meta, title }) => (
   <section className={cx('page', { active })}>
+    {meta.exclusiveTo ? <span className={cx('pro')}>PRO</span> : null}
     <NaviBar.Anchor className={cx('link')}>{meta.navTitle || title}</NaviBar.Anchor>
     {children && <div className={cx('children')}>{children}</div>}
   </section>

@@ -107,6 +107,18 @@
   }
   .page {
     border-bottom: 1px solid $border;
+
+    .pro {
+      float: right;
+      font-size: 1.25rem;
+      font-weight: normal;
+      line-height: 2rem; 
+      border: 1px solid $primary;
+      border-radius: 2rem;
+      padding: 0 1rem;
+      margin: 0.9rem 0.75rem 0 0;
+      color: $primary;
+    }
   }
   .page.active > .link {
     background-color: $primary;

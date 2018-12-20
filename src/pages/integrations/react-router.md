@@ -213,6 +213,6 @@ body {
 
 Because react-router handles navigation synchronously while Navi handles it asynchronously, you'll always want your Navi routes to be nested *within* the react-router routes -- never the other way around.
 
-Unfortunately, this means that Navi's static generation tools will not work with an app that uses react-router.
+Unfortunately, this means that Navi's static generation tools will not work with an app that uses react-router -- but you'll still get async content, page title and scroll management, and all the rest of Navi's features!
 
 </Document.Beware>

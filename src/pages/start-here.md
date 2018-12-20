@@ -4,16 +4,12 @@ import { Document } from '@frontarm/document'
 Navi
 ====
 
-*Blazing fast websites with vanilla create-react-app.*
+*An async-first router for React.*
 
-🚀 Easy SEO with static HTML for each page<br />
-🔥 Ergonomic code splitting and page loading transitions<br />
-🗺️ Generate JSON site maps at runtime or build time<br />
-👌 A dead-simple API<br />
-🏷️ Great TypeScript support<br />
-📜 Scroll management that just works<br />
-♿️ Page `<title>` management for accessibility<br />
-⚠️ Console warnings when a `<Link>` points to a 404<br />
+<br />
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PkIS_Xgf1zc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<br />
+<br />
 
 *Just getting started?*
 

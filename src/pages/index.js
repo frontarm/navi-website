@@ -1,10 +1,12 @@
 import React from 'react'
 import * as Navi from 'navi'
 import { Layout } from './Layout'
+import { Exclusivity } from 'facore/types'
 
 export default Navi.createSwitch({
   getContent: async env =>
     <Layout
+      isAuthenticated={env.context.isAuthenticated}
       isPro={env.context.isPro}
       repositoryRoot={env.context.repositoryRoot || ''}
       rootPathname={env.pathname || '/'}
@@ -95,6 +97,15 @@ export default Navi.createSwitch({
           getContent: env => getPageContent(env, import('./integrations/react-router.md')),
           meta: {
             navTitle: 'Usage with react-router',
+          }
+        }),
+
+        '/react-helmet': Navi.createPage({
+          title: 'Using Navi with react-helmet',
+          getContent: env => getPageContent(env, import('./integrations/react-helmet.md')),
+          meta: {
+            exclusiveTo: Exclusivity.Pro,
+            navTitle: 'Usage with react-helmet',
           }
         }),
       },
