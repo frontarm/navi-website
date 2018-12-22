@@ -2,6 +2,7 @@ import React from 'react'
 import * as Navi from 'navi'
 import { Layout } from './Layout'
 import { Exclusivity } from 'facore/types'
+import path from 'path'
 
 export default Navi.createSwitch({
   getContent: async env =>
@@ -114,6 +115,13 @@ export default Navi.createSwitch({
     '/reference': Navi.createSwitch({
       title: 'API Reference',
       paths: {
+        '/data-types': Navi.createPage({
+          title: "Data Types – Navi",
+          getContent: env => getPageContent(env, import('./reference/data-types.md')),
+          meta: {
+            navTitle: "Data Types",
+          }
+        }),
         '/declarations': Navi.createPage({
           title: 'Declaring pages with Navi',
           getContent: env => getPageContent(env, import('./reference/defining-pages.md')),
@@ -135,24 +143,19 @@ export default Navi.createSwitch({
             navTitle: <code>navigation</code>,
           }
         }),
-        '/route-and-segment': Navi.createPage({
-          title: "Route objects – Navi",
-          getContent: env => getPageContent(env, import('./reference/routes-and-segments.md')),
+        '/route-and-segment': Navi.createRedirect(env =>
+          path.join(env.pathname, '..', 'data-types/')+env.hash
+        ),
+        '/url-descriptor': Navi.createRedirect(env =>
+          path.join(env.pathname, '..', 'data-types/#urldescriptor')
+        ),
+        '/router': Navi.createPage({
+          title: 'Router objects – Navi',
+          getContent: env => getPageContent(env, import('./reference/router.md')),
           meta: {
-            navTitle: <><code>Route</code> and <code>Segment</code></>,
+            navTitle: <code>router</code>,
           }
         }),
-        '/url-descriptor': Navi.createPage({
-          title: "URLDescriptor objects – Navi",
-          getContent: env => getPageContent(env, import('./reference/url-descriptor.md')),
-          meta: {
-            navTitle: <code>URLDescriptor</code>,
-          }
-        }),
-        // '/router': Navi.createPage({
-        //   title: 'Router',
-        //   getContent: env => getPageContent(env, import('./reference/router.md')),
-        // }),
       }
     }),
 

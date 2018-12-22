@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavProvider, NavLoading, NavNotFoundBoundary, NavContentSegment } from 'react-navi'
+import { NavProvider, NavLoading, NavNotFoundBoundary, NavSegment } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
 import Prism from 'prismjs'
 import { DocumentProvider } from '@frontarm/document'

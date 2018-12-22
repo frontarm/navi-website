@@ -1,7 +1,7 @@
 export const filename = __filename
 
-History
--------
+`history` objects
+=================
 
 Navi interacts with the browser history through a `history` object, created by the [history package](https://www.npmjs.com/package/history). Each app should have exactly *one* `history` object, which can be accessed through your [`navigation`](../navigation/) object's `history` property.  
 

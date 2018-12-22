@@ -1,9 +1,9 @@
 export const filename = __filename
 
-Navigation
-==========
+The `navigation` store
+======================
 
-Each Navi app has a `Navigation` object that holds its history, routing state, etc.
+Each Navi app has a `navigation` store that holds the app's [`history`](../history), [`router`](../router), and current navigation state.
 
 There are two ways to create a `Navigation` object:
 
