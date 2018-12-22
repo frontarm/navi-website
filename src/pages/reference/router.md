@@ -27,6 +27,6 @@ router.resolveSiteMap(url, options? :{
 })
 ```
 
-Returns a `Promise<`[`SiteMap`]()`>` that maps each of the URLs under and including `url` to a [Route object](../routes-segments-urls/#route).
+Returns a `Promise<`[`SiteMap`]()`>` that maps each of the URLs under and including `url` to a [Route object](../data-types/#route).
 
 This is useful for automatically generating lists of content, e.g. for a blog's index page, a static rendering tool, or a sidebar. In fact, this site's navigation sidebars are all generated using the result of `router.resolveSiteMap()`.

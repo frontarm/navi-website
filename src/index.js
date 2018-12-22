@@ -12,7 +12,9 @@ Navi.app({
 
     // The `exports` object is made available to the `renderPageToString`
     // function.
-    exports: App,
+    exports: {
+        App
+    },
 
     async main() {
         let navigation = Navi.createBrowserNavigation({

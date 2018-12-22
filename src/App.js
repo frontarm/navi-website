@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavProvider, NavLoading, NavNotFoundBoundary, NavSegment } from 'react-navi'
+import { NavProvider, NavLoading, NavNotFoundBoundary, NavContent } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
 import Prism from 'prismjs'
 import { DocumentProvider } from '@frontarm/document'
@@ -20,8 +20,8 @@ export class App extends React.Component {
   render() {
     return (
       <DocumentProvider components={{
-        Demoboard: ({ id, style, sources }) => {
-          let filename = Object.keys(sources)[0]
+        Demoboard: ({ editorFilename, id, style, sources }) => {
+          let filename = editorFilename || Object.keys(sources)[0]
           let extension = filename.split('.').reverse()[0]
           let language = languages[extension]
 
@@ -44,7 +44,7 @@ export class App extends React.Component {
               <>
                 <BusyIndicator isBusy={isLoading} />
                 <NavNotFoundBoundary render={() => <h1>Not Found</h1>}>
-                  <NavContentSegment />
+                  <NavContent />
                 </NavNotFoundBoundary>
               </>
             }

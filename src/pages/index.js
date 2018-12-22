@@ -1,7 +1,6 @@
 import React from 'react'
 import * as Navi from 'navi'
 import { Layout } from './Layout'
-import { Exclusivity } from 'facore/types'
 import path from 'path'
 
 export default Navi.createSwitch({
@@ -17,8 +16,7 @@ export default Navi.createSwitch({
   paths: {
     '/': Navi.createPage({
       title: "Navi – A JavaScript router and static renderer",
-      getContent: env =>
-        getPageContent(env, import('./start-here.md')),
+      getContent: env => getPageContent(env, import('./start-here.md')),
       meta: {
         navTitle: 'Start Here',
         socialTitle: 'Navi',
@@ -105,7 +103,7 @@ export default Navi.createSwitch({
           title: 'Using Navi with react-helmet',
           getContent: env => getPageContent(env, import('./integrations/react-helmet.md')),
           meta: {
-            exclusiveTo: Exclusivity.Pro,
+            exclusiveTo: 'Pro',
             navTitle: 'Usage with react-helmet',
           }
         }),

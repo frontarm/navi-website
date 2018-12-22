@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavContentSegment, NavLink } from 'react-navi'
+import { NavContent, NavLink } from 'react-navi'
 import { StickyContainer, Sticky } from 'react-sticky'
 import { Document } from '@frontarm/document'
 import classNames from 'classnames/bind'
@@ -10,28 +10,27 @@ const cx = classNames.bind(styles)
 
 export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated, isPro }) {
   return (
-    <NavContentSegment>
-      {({ route }) => {
+    <NavContent>
+      {(content, segment, route) => {
         let tableOfContents =
-          route &&
-          route.content &&
-          route.content.tableOfContents &&
-          route.content.tableOfContents()
+          content &&
+          content.tableOfContents &&
+          content.tableOfContents()
 
         // TODO:
         // - if this is a pro page, and the user isn't authenticated or isn't a pro member,
         //   then display an appropriate message
 
-        let content =
+        let mainContent =
           route &&
           // The `<Document>` component's renderers can be set via a
           // `<DocumentProvider>` context, allowing this app's theme to
           // be set by a parent application.
           <>
             <Document
-              Component={route.content.Component}
+              Component={content.Component}
               components={{
-                ...route.content.documentComponents,
+                ...content.documentComponents,
                 headingLink: (props) =>
                   <NavLink {...props} className={cx('headingLink')}>
                     #
@@ -48,20 +47,20 @@ export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated,
               }}
               canAccessRestrictedContent={isPro}
               className={cx('document')}
-              demoboardHelpers={route.content.demoboardHelpers}
+              demoboardHelpers={content.demoboardHelpers}
             />
             <footer>
               <a
                 className={cx("edit-link")}
-                href={'https://github.com/frontarm/navi-website/edit/master/'+route.content.filename.replace(repositoryRoot, '')}
+                href={'https://github.com/frontarm/navi-website/edit/master/'+content.filename.replace(repositoryRoot, '')}
               >
                 Edit this page on GitHub
               </a>
             </footer>
           </>
 
-        if (!isPro && route && route.meta.exclusiveTo) {
-          content =
+        if (!isPro && route.meta.exclusiveTo) {
+          mainContent =
             <div className={cx('document')}>
               <h1>This guide is exclusive to Pro members.</h1>
               <p>
@@ -108,11 +107,11 @@ export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated,
             </Sticky>
 
             <main className={cx("content")}>
-              {content}
+              {mainContent}
             </main>
           </StickyContainer>
         )
       }}
-    </NavContentSegment>
+    </NavContent>
   )
 }

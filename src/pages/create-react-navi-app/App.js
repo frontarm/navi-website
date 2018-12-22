@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavLink, NavLoading, NavProvider, NavRoute, NavNotFoundBoundary } from 'react-navi';
+import { NavLink, NavLoading, NavProvider, NavContent, NavNotFoundBoundary } from 'react-navi';
 import { MDXProvider } from '@mdx-js/tag';
 
 class App extends Component {
@@ -7,7 +7,7 @@ class App extends Component {
     return (
       <NavProvider navigation={this.props.navigation}>
         <NavLoading>
-          {isLoading =>
+          {loadingRoute =>
             <div className="App">
               <header className="App-header">
                 <nav className="App-nav">
@@ -28,7 +28,7 @@ class App extends Component {
                     // show or hide the loading bar.
                     className={`
                       App-loading-indicator
-                      ${isLoading ? 'active' : ''}
+                      ${loadingRoute ? 'active' : ''}
                     `}
                   />
                   <MDXProvider components={{
@@ -36,7 +36,7 @@ class App extends Component {
                     // Markdown files, ensuring navigation is handled by Navi.
                     a: NavLink,
                   }}>
-                    <NavRoute />
+                    <NavContent />
                   </MDXProvider>
                 </NavNotFoundBoundary>
               </main>
