@@ -110,9 +110,9 @@ editorFilename: /App.js
 Here's a quick breakdown of what the various Nav components do:
 
 - [`<NavProvider>`](../integrations/react/#navprovider) subscribes to the app's navigation state, and provides the latest state to its descendents via [React Context](https://reactjs.org/docs/context.html).
-- [`<NavRoute>`](../integrations/react/#navroute) renders the `content` property of the current route, or throws an error if no content could be found.
-- [`<NavNotFoundBoundary>`](../integrations/react/#navnotfoundboundary) catches `NotFoundError` exceptions thrown by `<NavRoute>`, and renders your provided 404 message until the user navigates to another page.
-- [`<NavLoading>`](../integrations/react/#navloading) provides acccess to the loading status of its nested `<NavRoute>` via a [render prop](https://reactjs.org/docs/render-props.html), allowing a loading overlay to be shown while the next page's content is loading.
+- [`<NavContent>`](../integrations/react/#navcontent) renders the first `content` object in a Switch or Page that matches the current URL.
+- [`<NavNotFoundBoundary>`](../integrations/react/#navnotfoundboundary) catches `NotFoundError` exceptions thrown by `<NavContent>`, and renders your provided 404 message until the user navigates to another page.
+- [`<NavLoading>`](../integrations/react/#navloading) provides acccess to the route that is currently loading (if it exists) via a [render prop](https://reactjs.org/docs/render-props.html). If there the current route has fully loaded, the render prop's argument will be `undefined`, allowing a loading overlay to be shown while the next page's content is loading.
 
 For more details on these components, see the [React Integration](../integrations/react/) guide.
 
