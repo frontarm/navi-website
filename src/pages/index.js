@@ -73,6 +73,14 @@ export default Navi.createSwitch({
           }
         }),
 
+        '/layouts-nested-content': Navi.createPage({
+          title: 'Layouts and Nested Content with Navi',
+          getContent: env => getPageContent(env, import('./guides/layouts-nested-content.md')),
+          meta: {
+            navTitle: "Layouts and Nested Content",
+          }
+        }),
+
     //     '/integrating-express': Navi.createPage({
     //       title: 'Server Rendering with Express',
     //       getContent: env => getDocumentExports(import('./guides/integrating-express.md')),
