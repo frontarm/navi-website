@@ -37,7 +37,7 @@ navigation.getCurrentValue(): NavigationSnapshot
 
 Returns a [`NavigationSnapshot`](#navigationsnapshot-interface), containing the current history location and current matched route.
 
-Note that the [`Route`](../route-and-segment/#route) in the returned object may be newer than the `Route` output by the React integration's `<NavRoute>` component. This is because `<NavRoute>` will pass out the latest *steady* route -- i.e. one where the `status` property is not `"busy"`.
+Note that the [`Route`](../route-and-segment/#route) in the returned object may be newer than the `Route` output by the React integration's `<NavContent>` and `<NavRoute>` components. This is because these components use the latest *steady* route -- i.e. the route where the `status` property is not `"busy"`.
 
 
 ### `navigation.getSteadyValue()`

@@ -49,21 +49,27 @@ The url to navigate to; identical to the `href` attribute of a HTML `<a>` tag.
 If specified, the linked page's content will be loaded as soon as the link is rendered.
 
 
-## `<NavRoute>`
+## `<NavContent>`
 
-Renders the content for the latest route that has complete content.
+Renders the content for the outermost `Switch` or `Page` which has content that hasn't been rendered yet.
 
-<!--If you'd like to render the next switch that corresponds to the next URL segment -- as opposed to rendering the innermost page - then use `<NavSegment>` or `<NavContentSegment>` instead.-->
+If the content is a React element or component, then the `render` prop is optional, and that content will be rendered by default. Otherwise, you'll need to provide a render prop to specify how to render the route content. 
 
-If the route's content is a React element or component, then the `render` prop is optional, and that content will be rendered by default. Otherwise, you'll need to provide a render prop to specify how to render the route content. 
+### Suspense
+
+*Available from react-navi* ***0.10+***
+
+When the page initially loads, it can be the case that *no* content is available -- even for previous routes. In this case, `<NavContent>` will use React Suspense to pause execution until content is available. By default, this will cause your `<NavProvider>` and everything inside it to be left blank until content is available, however, you can show a fallback element while loading anywhere outside the `<NavContent>` by wrapping it with React's `<Suspense fallback>` element -- just as you'd wrap a component that is returned by [`React.lazy()`](https://reactjs.org/docs/code-splitting.html#suspense).
+
+As React doesn't yet support Suspense for server-side rendering, you'll want to avoid using `<Suspense>` for statically rendered apps. Instead, wait for Navi's initial content to render before calling `ReactDOMServer.render()` by using [`navigation.steady()`](../../reference/navigation/#navigationsteady).
 
 ### Props
 
-#### <code>children: (route: [Route](../../reference/route-and-segment/#route)) => React.ReactNode</code> <small>(optional)</small>
+#### <code>children: (content, segment, route) => React.ReactNode</code> <small>(optional)</small>
 
-If provided, the component's `children` must be a [render prop](https://reactjs.org/docs/render-props.html) that takes the current [Route](../../reference/route-and-segment/#route), and returns React element to render.
+If provided, the component's `children` must be a [render prop](https://reactjs.org/docs/render-props.html) that takes three the content, [Segment](../../reference/data-types/#segment) and [Route](../../reference/data-types/#route) objects, and returns React element to render.
 
-If not provided, the default behavior is:
+If a `render` prop is not provided, the default behavior is:
 
 1. If `route.content` contains a React element, render it.
 2. If `route.content` contains a function, then call it to get the rendered content.
@@ -80,7 +86,7 @@ class App extends Component {
     return (
       <NavProvider navigation={this.props.navigation}>
         <div className="App">
-          <NavRoute />
+          <NavContent />
         </div>
       </NavProvider>
     );
@@ -90,15 +96,50 @@ class App extends Component {
 
 #### Usage with render prop
 
+By suppling a render prop, you can manually decide how to render your next route segment's content.
+
 ```js
 class App extends Component {
   render() {
     return (
       <NavProvider navigation={this.props.navigation}>
         <div className="App">
-          <NavRoute>
-            {route => route.content}
-          </NavRoute>
+          <NavContent>
+            {content => 
+              React.isValidElement(content)
+                ? content
+                : React.createElement(content)
+            }
+          </NavContent>
+        </div>
+      </NavProvider>
+    );
+  }
+}
+```
+
+#### Usage with React Suspense
+
+*Available from react-navi* ***0.10+***
+
+By wrapping your content in a React [`<Suspense>`](https://reactjs.org/docs/code-splitting.html#suspense) element, you can specify a fallback element to display while your app's initial content is loading.
+
+Note that this only makes sense for apps that are *not* pre-rendered with `ReactDOMServer.render()`. For static or server rendered apps, use [`navigation.steady()`](../../reference/navigation/#navigationsteady) to wait for the initial content to load before hydrating the pre-rendered HTML with `ReactDOM.hydrate()`.
+
+```js
+import { Suspense } from 'react'
+
+class App extends Component {
+  render() {
+    return (
+      <NavProvider navigation={this.props.navigation}>
+        <div className="App">
+          <AppNavbar />
+          <main>
+            <Suspense fallback={<LoadingSpinner />}>
+              <NavContent />
+            </Suspense>
+          </main>
         </div>
       </NavProvider>
     );
@@ -108,7 +149,9 @@ class App extends Component {
 
 ## `<NavLoading>`
 
-A headless component that outputs a boolean that will be true when it contains a `<NavRoute />`, `<NavSegment />` or `<NavContentSegment />` that is loading.
+A headless component that outputs the [`Route`](../../reference/data-types/#route) object for any page whose content is currently being fetche. If no page is currently being fetched, then it outputs `undefined`.
+
+Use `<NavLoading>` to display a loading overlay when the user has requested a navigation that hasn't completed yet. 
 
 ### Example
 
@@ -118,10 +161,10 @@ class App extends Component {
     return (
       <NavProvider navigation={this.props.navigation}>
         <NavLoading>
-          {loading =>
+          {loadingRoute =>
             <div className="App">
-              <BusyIndicator show={loading} />
-              <NavRoute />
+              <BusyIndicator show={!!loadingRoute} />
+              <NavContent />
             </div>
           }
         </NavLoading>
@@ -133,7 +176,7 @@ class App extends Component {
 
 ## `<NavNotFoundBoundary>`
 
-Catches not found errors thrown by `<NavRoute />`, `<NavSegment />` or `<NavContentSegment />` 
+Catches `NotFoundError` exceptions thrown by `<NavContent />`.
 
 ```js
 class App extends Component {
@@ -147,7 +190,7 @@ class App extends Component {
             }>
               <div className="App">
                 <BusyIndicator show={loading} />
-                <NavRoute />
+                <NavContent />
               </div>
             </Nav.NotFoundBoundary>
           }
@@ -158,23 +201,34 @@ class App extends Component {
 }
 ```
 
+
 ## `<NavHistory>`
 
 Allows you to access the [`history`](../../reference/history) property of your app's [`navigation`](../../reference/navigation) object, through a render prop passed to the `children` prop.
 
 This can be used to facilitate programmatic navigation.
 
-## `<NavConsumer>`
 
-Allows you to access the last [`NavigationSnapshot`](../../reference/navigation/#navigationsnapshot-objects) object published by your app's [`navigation`](../../reference/navigation/) object, through a render prop passed to the `children` prop.
+## `<NavRoute>`
 
-<!--
-## `<NavSegment>`
+Allows you to access the latest non-busy [`Route`](../../reference/data-types/#route), which can be useful when you need to know the URL of the current page.
 
-TODO
+Accepts a render prop which will receive the `Route` object.
 
+### Example
 
-## `<NavContentSegment>`
-
-TODO
--->
+```js
+class App extends Component {
+  render() {
+    return (
+      <NavProvider navigation={this.props.navigation}>
+        <NavRoute>
+          {route =>
+            <div>Current URL: <strong>{route.url.href}</strong></div>
+          }
+        </NavRoute>
+      </NavProvider>
+    );
+  }
+}
+```

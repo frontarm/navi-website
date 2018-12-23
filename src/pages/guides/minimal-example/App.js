@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { NavLink, NavProvider, NavRoute, NavNotFoundBoundary } from 'react-navi'
+import { NavLink, NavProvider, NavContent, NavNotFoundBoundary } from 'react-navi'
 
 class App extends React.Component {
   render() {
@@ -16,7 +16,7 @@ class App extends React.Component {
           </header>
           <main>
             <NavNotFoundBoundary render={renderNotFound}>
-              <NavRoute />
+              <NavContent />
             </NavNotFoundBoundary>
           </main>
         </div>

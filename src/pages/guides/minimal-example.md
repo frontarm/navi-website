@@ -72,8 +72,8 @@ The `navigation` object that you just passed to `<App>` contains all of the info
 To start out, you'll only need three components:
 
 - `<NavProvider>`, which wraps around your entire application
-- `<NavRoute>`, which renders the current page's content
-- `<NavNotFoundBoundary>`, which renders a 404 message when it catches a `NotFoundError` (as thrown by `<NavRoute>`)
+- `<NavContent>`, which renders the current page's content
+- `<NavNotFoundBoundary>`, which renders a 404 message when it catches a `NotFoundError` (as thrown by `<NavContent>`)
 
 Here's an example:
 
@@ -153,7 +153,7 @@ export default createSwitch({
 //--- index.js <-- index.js
 //--- App.js
 import * as React from 'react'
-import { NavLink, NavProvider, NavRoute, NavLoading, NavNotFoundBoundary } from 'react-navi'
+import { NavLink, NavProvider, NavContent, NavLoading, NavNotFoundBoundary } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
 
 class App extends React.Component {
@@ -178,7 +178,7 @@ class App extends React.Component {
               </header>
               <main>
                 <NavNotFoundBoundary render={renderNotFound}>
-                  <NavRoute />
+                  <NavContent />
                 </NavNotFoundBoundary>
               </main>
             </div>
@@ -201,7 +201,7 @@ export default App;
 //--- styles.css <-- styles.css
 ```
 
-The `<NavLoading>` component accepts a render function as its children, to which it passes a boolean that indicates whether its nested `<NavRoute>` component is waiting for  content. You're free to render this boolean however you'd like, but you can save yourself the trouble by importing and using `react-busy-indicator` -- the same loading bar used on this site.
+The `<NavLoading>` component accepts a render function as its children, to which it passes any `route` object that is currently being loaded (but that is not yet being rendered by `<NavContent>` elements). You're free to use this however you'd like -- in this example, I've used it with the `react-busy-indicator` package to display a loading overlay while the next page's content is being fetched.
 
 
 What next?

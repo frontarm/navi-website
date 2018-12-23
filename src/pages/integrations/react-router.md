@@ -67,7 +67,7 @@ export default function App(props) {
 //--- Support.js
 import * as Navi from 'navi'
 import React from 'react'
-import { NavLink, NavProvider, NavRoute, NavLoading, NavNotFoundBoundary } from 'react-navi'
+import { NavLink, NavProvider, NavContent, NavLoading, NavNotFoundBoundary } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
 
 // This switch will be mounted under "/support" route
@@ -122,7 +122,7 @@ export class SupportApp extends React.Component {
               </header>
               <main>
                 <NavNotFoundBoundary render={renderNotFound}>
-                  <NavRoute />
+                  <NavContent />
                 </NavNotFoundBoundary>
               </main>
             </div>

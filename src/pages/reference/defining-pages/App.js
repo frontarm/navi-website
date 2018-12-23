@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { NavLink, NavProvider, NavRoute, NavLoading, NavNotFoundBoundary } from 'react-navi'
+import { NavLink, NavProvider, NavContent, NavLoading, NavNotFoundBoundary } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
 
 class App extends React.Component {
@@ -24,7 +24,7 @@ class App extends React.Component {
               </header>
               <main>
                 <NavNotFoundBoundary render={renderNotFound}>
-                  <NavRoute />
+                  <NavContent />
                 </NavNotFoundBoundary>
               </main>
             </div>

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import BusyIndicator from 'react-busy-indicator'
-import { NavLink, NavProvider, NavLoading, NavRoute, NavNotFoundBoundary } from 'react-navi'
+import { NavLink, NavProvider, NavLoading, NavContent, NavNotFoundBoundary } from 'react-navi'
 
 
 // A simple "authentication" service that just saves the 
@@ -140,7 +140,7 @@ export class App extends React.Component {
               </header>
               <main>
                 <NavNotFoundBoundary render={renderNotFound}>
-                  <NavRoute />
+                  <NavContent />
                 </NavNotFoundBoundary>
               </main>
             </div>
