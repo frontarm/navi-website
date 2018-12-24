@@ -78,6 +78,7 @@ export default Navi.createSwitch({
           getContent: env => getPageContent(env, import('./guides/layouts-nested-content.md')),
           meta: {
             navTitle: "Layouts and Nested Content",
+            metaDescription: `Learn to add nested layouts to your routes, allowing you to create entire apps that can be embedded anywhere.`
           }
         }),
 

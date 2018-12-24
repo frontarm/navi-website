@@ -175,7 +175,7 @@ export async function renderPageToString({
   // Render the <App> element to a string, passing in
   // `navigation` and `siteMap` objects as props
   let appHTML = ReactDOMServer.renderToString(
-    React.createElement(exports, {
+    React.createElement(exports.App, {
       navigation,
       siteMap,
     })
