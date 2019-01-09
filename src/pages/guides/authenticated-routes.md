@@ -113,7 +113,7 @@ export function withAuthenticatedEnv(getPage) {
       ? getPage(env)
       : Navi.createRedirect(
           '/login?redirectTo='+
-          encodeURIComponent(env.pathname+env.search)
+          encodeURIComponent(env.mountname+env.url.search)
         )
 }
 

@@ -168,7 +168,7 @@ export default Navi.createSwitch({
     '/members': env =>
       !env.context.currentUser ? (
         Navi.createRedirect(
-          '/login?redirectTo='+encodeURIComponent(env.pathname)
+          '/login?redirectTo='+encodeURIComponent(env.mountname)
         )
       ) : (
         Navi.createPage({
@@ -261,7 +261,7 @@ Redirect to `/login?redirectTo=...`, appending the current URL as parameter, so 
 ```js
 createRedirect(env =>
   '/login?redirectTo='+
-  encodeURIComponent(env.pathname+env.search)
+  encodeURIComponent(env.mountname+env.url.search)
 )
 ```
 
@@ -290,7 +290,7 @@ import course from './courseDetails'
 let context = createContext(
   (env) => ({
     course,
-    coursePathname: env.pathname,
+    courseRoot: env.mountname,
 
     // Merge in the parent context
     ...env.context
@@ -346,8 +346,8 @@ The `env` object passed to your getter functions contains information about the 
   // Contains all URL parameters, along with all query parameters
   params: { [name: string]: string },
 
-  // The pathname at which this declaration is mounted.
-  pathname: string,
+  // The pathname at which this declaration is mounted
+  mountname: string,
 
   // Contains parameters extracted from the URL's `?search`, but excludes
   // any parameters extract from URL the URL via `:param` patterns.

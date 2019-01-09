@@ -7,7 +7,7 @@ export default Navi.createSwitch({
       if (!env.context.currentUser) {
         return Navi.createRedirect(
           "/login/?redirectTo="+
-          encodeURIComponent(env.pathname+env.search)
+          encodeURIComponent(env.mountname+env.url.search)
         )
       }
 

@@ -9,8 +9,8 @@ export default Navi.createSwitch({
       isAuthenticated={env.context.isAuthenticated}
       isPro={env.context.isPro}
       repositoryRoot={env.context.repositoryRoot || ''}
-      rootPathname={env.pathname || '/'}
-      siteMap={await env.router.resolveSiteMap(env.pathname)}
+      rootPathname={env.mountname || '/'}
+      siteMap={await env.router.resolveSiteMap(env.mountname)}
     />,
 
   paths: {
@@ -151,10 +151,10 @@ export default Navi.createSwitch({
           }
         }),
         '/route-and-segment': Navi.createRedirect(env =>
-          path.join(env.pathname, '..', 'data-types/')+env.hash
+          path.join(env.mountname, '..', 'data-types/')+env.url.hash
         ),
         '/url-descriptor': Navi.createRedirect(env =>
-          path.join(env.pathname, '..', 'data-types/#urldescriptor')
+          path.join(env.mountname, '..', 'data-types/#urldescriptor')
         ),
         '/router': Navi.createPage({
           title: 'Router objects – Navi',
@@ -186,7 +186,7 @@ async function getPageContent(env, modulePromise) {
   let { default: Component, demoboardHelpers, tableOfContents, filename } = mod
 
   if (!filename) {
-    console.warn(`The content for URL "${env.pathname}" should export a "filename" string.`)
+    console.warn(`The content for URL "${env.mountname}" should export a "filename" string.`)
   }
 
   return {
