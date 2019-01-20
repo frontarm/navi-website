@@ -20,8 +20,8 @@ export class App extends React.Component {
   render() {
     return (
       <DocumentProvider components={{
-        Demoboard: ({ editorFilename, id, style, sources }) => {
-          let filename = editorFilename || Object.keys(sources)[0]
+        Demoboard: ({ editorPathname, id, style, sources }) => {
+          let filename = editorPathname || Object.keys(sources)[0]
           let extension = filename.split('.').reverse()[0]
           let language = languages[extension]
 

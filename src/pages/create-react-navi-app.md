@@ -98,7 +98,7 @@ Your new `<App>` component will look a little different to the standard create-r
 
 ```js
 //---
-editorFilename: /App.js
+editorPathname: /App.js
 //--- pages.js <-- pages.js
 //--- App.js <-- App.js
 //--- index.mdx <-- index.mdx

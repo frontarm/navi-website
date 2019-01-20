@@ -21,7 +21,7 @@ In a Navi app, it's possible to declare `content` for both Pages *and* Switches.
 ```js
 //---
 restricted: true
-editorFilename: /pages.js
+editorPathname: /pages.js
 //--- index.js <-- index.js
 //--- pages.js <-- pages.js
 //--- Layout.js <-- Layout.js
@@ -37,7 +37,7 @@ Of course, if you do declare some `content` for a Switch, you'll still need a wa
 ```js
 //---
 restricted: true
-editorFilename: /Layout.js
+editorPathname: /Layout.js
 //--- index.js <-- index.js
 //--- pages.js <-- pages.js
 //--- Layout.js <-- Layout.js

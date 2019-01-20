@@ -28,7 +28,7 @@ export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated,
           // be set by a parent application.
           <>
             <Document
-              Component={content.Component}
+              MDXComponent={content.Component}
               components={{
                 ...content.documentComponents,
                 headingLink: (props) =>
