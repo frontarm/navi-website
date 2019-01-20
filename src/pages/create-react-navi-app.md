@@ -1,5 +1,5 @@
 export const filename = __filename
-import { Document } from '@frontarm/document'
+import { Doc } from '@frontarm/doc'
 export const demoboardHelpers = {
   'App.js': require('!raw-loader!./create-react-navi-app/App.js'),
   'index.js': require('!raw-loader!./create-react-navi-app/index.js'),

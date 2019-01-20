@@ -1,5 +1,5 @@
 export const filename = __filename
-import { Document } from '@frontarm/document'
+import { Doc } from '@frontarm/doc'
 export const demoboardHelpers = {
   'helpers.js': require('!raw-loader!./authenticated-routes/helpers.js'),
   'index.js': require('!raw-loader!./authenticated-routes/index.js'),
@@ -160,7 +160,7 @@ The default behavior of `navi-scripts` is to render each of your site's redirect
 -   When an authenticated user views a page, the user will initially be redirected to a login screen, but they'll then be automatically redirected back to the requested page via `history.replaceState()` once the app has loaded.
 
     <br />
-    <Document.Image src={require('./authenticated-routes/auth-redirect-flow.svg')} alt="Redirect flow diagram" />
+    <Doc.Image src={require('./authenticated-routes/auth-redirect-flow.svg')} alt="Redirect flow diagram" />
     <br /><br />
 
 While the default behavior works, there are a couple ways in which it can be improved. In particular, you can prevent the loading screen from being flashed to logged in users before they're redirected to the content.

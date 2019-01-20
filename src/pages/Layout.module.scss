@@ -1,3 +1,5 @@
+@import "@frontarm/doc/layout.scss";
+
 :local {
   $primary: #1ee79e;
   $border: #eee;
@@ -18,15 +20,12 @@
       min-height: calc(100vh - 48px);
       padding: 1px 0;
 
-      // Narrow
-      @media only screen and (max-width: 1100px) {
+      @include when-single-column {
         transform: translate3d(0, 0, 0);
         transition: transform 180ms cubic-bezier(0.895, 0.030, 0.685, 0.220);
         width: 100%;
       }
-
-      // Wide
-      @media only screen and (min-width: 1101px) {
+      @include when-twin-column {
         transition: transform 180ms cubic-bezier(0.165, 0.840, 0.440, 1.000);
       }
 
@@ -36,7 +35,7 @@
         text-align: center;
         padding: 5rem;
 
-        @media only screen and (min-width: 1101px) {
+        @include when-twin-column {
           text-align: left;
         }
 
@@ -67,33 +66,58 @@
     margin-bottom: 8rem;
 
     .Beware {
+      padding-bottom: 1rem;
+
       header {
         font-weight: bold;
         margin: 2rem 0;
       }
-      aside {
-        border-color: #F54391;
+
+      h4 {
+        margin-top: 3rem;
+        margin-bottom: 0;
+        font-size: 1.8rem;
+      }
+
+      border: 2px solid #F54391;
+      border-radius: 3px;
+    }
+
+    .Details {
+      color: #555;
+      font-size: 1.8rem;
+
+      @include when-single-column {
+        border-radius: 3px;
+        border: 2px solid $primary;
+        padding: 2rem 0;
+      }
+      @include when-twin-column {
+        max-width: 400px !important;
+      }
+      
+      h4 {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 1.8rem;
+        color: rgb(81, 81, 81);
+      }
+
+      p {
+        margin-top: 0.9rem;
+        margin-bottom: 0.9rem;
       }
     }
 
-    :global(.document-Image) {
-      max-width: 100%;
-    }
-
-    code[class*="language-"], pre[class*="language-"] {
-      font-size: 1.6rem;
+    .Image {
+      img {
+        max-width: 100%;
+      }
     }
 
     pre, code { font-family: Inconsolata, monospace; line-height: 3rem }
     code { background-color: #f0f4fc; }
     pre > code { background-color: transparent; }
-    pre[class*="language-"] {
-      padding: 2rem;
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-      border-radius: 3px;
-      color: rgb(40, 40, 40);
-    }
     pre code { font-size: 1.6rem; white-space: pre-wrap; }
     code { font-size: 2rem; }
     h1 {
@@ -120,7 +144,8 @@
     }
     h4 {
       font-size: 80%;
-      margin: 3rem 0 0 0;
+      margin-top: 3rem;
+      margin-bottom: 0;
     }
     h1 > code,
     h2 > code,
@@ -132,8 +157,8 @@
     }
 
     hr {
-      margin: 0 auto;
-      width: 25%;
+      margin-top: 0;
+      margin-bottom: 0;
       border: 1px solid $primary;
       border-radius: 2px;
       opacity: 0.5;
@@ -184,28 +209,12 @@
       margin-bottom: 3rem;
     }
 
-    aside {
-      margin: 0;
-      font-size: 1.8rem;
-      border: 2px solid $primary;
-      border-radius: 3px;
-      padding: 1rem 3rem;
-    }
-    aside h4 {
-      margin-top: 2rem;
-      color: rgb(81, 81, 81);
-    }
-
     a {
       color: darken($primary, 10%);
       text-decoration: none;
     }
     a:hover {
       text-decoration: underline;
-    }
-
-    :not(pre) > code[class*="language-"], pre[class*="language-"] {
-      background: #f0f4fc;
     }
 
     h1, h2, h3, h4, h5, h6 {

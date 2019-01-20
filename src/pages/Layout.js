@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavContent, NavLink } from 'react-navi'
 import { StickyContainer, Sticky } from 'react-sticky'
-import { Document } from '@frontarm/document'
+import { Doc } from '@frontarm/doc'
 import classNames from 'classnames/bind'
 import { Nav } from './Nav'
 import styles from './Layout.module.scss'
@@ -27,23 +27,34 @@ export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated,
           // `<DocumentProvider>` context, allowing this app's theme to
           // be set by a parent application.
           <>
-            <Document
+            <Doc
               MDXComponent={content.Component}
               components={{
-                ...content.documentComponents,
                 headingLink: (props) =>
                   <NavLink {...props} className={cx('headingLink')}>
                     #
                   </NavLink>,
-                Beware: ({ className, title, children, ...props }) =>
-                  <Document.Block className={cx('Beware')+' '+className}>
-                    <aside {...props}>
+                Beware: ({ className='', title, children, ...props }) =>
+                  <Doc.Block marginSize='half' className={cx('Beware')+' '+className} {...props}>
+                    <Doc.Gutter half horizontal>
                       <header>
-                        {title}
+                        <h4>{title}</h4>
                       </header>
                       {children}
-                    </aside>
-                  </Document.Block>
+                    </Doc.Gutter>
+                  </Doc.Block>,
+                Details: ({ className='', title, children, ...props }) =>
+                  <Doc.Block marginSize='half' className={cx('Details')+' '+className} {...props}>
+                    <Doc.Gutter half horizontal>
+                      <h4>{title}</h4>
+                      {children}
+                    </Doc.Gutter>
+                  </Doc.Block>,
+                Image: ({ className='', style, ...props }) =>
+                  <Doc.Block className={cx('Image')+' '+className} style={style}>
+                    <img {...props} />
+                  </Doc.Block>,
+                ...content.documentComponents
               }}
               canAccessRestrictedContent={isPro}
               className={cx('document')}
@@ -61,19 +72,21 @@ export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated,
 
         if (!isPro && route.meta.exclusiveTo) {
           mainContent =
-            <div className={cx('document')}>
-              <h1>This guide is exclusive to Pro members.</h1>
-              <p>
-                <NavLink href='/pricing'>Unlock all content &raquo;</NavLink>
-              </p>
-              {
-                !isAuthenticated &&
+            <Doc className={cx('document')}>
+              <Doc.Block>
+                <h1>This guide is exclusive to Pro members.</h1>
                 <p>
-                  <em>Already a member?</em>{' '}
-                  <NavLink href={'/members/login/?redirectTo=' + encodeURIComponent(route.url.pathname)}>Log in</NavLink>
+                  <NavLink href='/pricing'>Unlock all content &raquo;</NavLink>
                 </p>
-              }
-            </div>
+                {
+                  !isAuthenticated &&
+                  <p>
+                    <em>Already a member?</em>{' '}
+                    <NavLink href={'/members/login/?redirectTo=' + encodeURIComponent(route.url.pathname)}>Log in</NavLink>
+                  </p>
+                }
+              </Doc.Block>
+            </Doc>
         }
 
         return (

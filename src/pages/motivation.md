@@ -1,5 +1,5 @@
 export const filename = __filename
-import { Document } from '@frontarm/document'
+import { Doc } from '@frontarm/doc'
 
 
 The Motivation behind Navi
@@ -25,30 +25,29 @@ And there's a surprisingly simple reason that Navi is able to accomplish this.
 Navi ❤️ Async
 -------------
 
-<Document.AsideOrAfter
-  aside={
-    <Document.Details title="What about React Suspense?">
-      <p>
-        The React team is planning to improve React's handling of async data with an elegant new API called <em>Suspense</em>. Navi is designed with React Suspense in mind, so when Suspense arrives, your Navi-based app will instantly grow a bunch of new abilities.
-      </p>
-    </Document.Details>
-  }
->
+<Doc.AsideTop>
 
 If you take a look around the industry, **the vast majority of real-world apps rely on some kind of asynchronous data** -- whether it's fetched from an API, pulled from a database, or dynamically imported from other JavaScript files. And for the most part, React handles this asynchronous data pretty well; component state and lifecycle methods make it easy to show a loading spinner until the data is ready. But here's the thing...
 
-</Document.AsideOrAfter>
+<Doc.Aside>
+<Doc.Details title="What about React Suspense?">
+
+The React team is planning to improve React's handling of async data with an elegant new API called *Suspense*. Navi is designed with React Suspense in mind, so when Suspense arrives, your Navi-based app will instantly grow a bunch of new abilities.
+
+</Doc.Details>
+</Doc.Aside>
+</Doc.AsideTop>
 
 **Outside of the browser, component state and lifecycle methods just plain don't work** -- and neither do the tools that use them. This is because React takes a completely different approach to rendering; on the browser, you call `ReactDOM.render()`, while on the server, you call `ReactDOMServer.renderToString()`. And while `renderToString()` will happily render your page's initial content, this doesn't help when the initial content is a loading spinner.
 
-<img
+<Doc.Image
   src={require('./renderToString-to-loading.png')}
   alt="renderToString() results in a loading spinner"
 />
 
 So what’s the secret sauce? Navi isn't just a router; it's a loader too! It lets you **declare how URLs map to content using `async` functions, and then `await` the result before rendering.**
 
-<img
+<Doc.Image
   src={require('./renderToString-to-content.png')}
   alt="Navi allows you to await the content before calling renderToString()"
 />

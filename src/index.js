@@ -3,7 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import pages from './pages'
 import { App } from './App'
-import './index.css'
+import './index.scss'
 
 Navi.app({
     // Specify the pages that navi-app should statically build, by passing

@@ -1,15 +1,12 @@
 export const filename = __filename
-import { Document } from '@frontarm/document'
+import { Doc } from '@frontarm/doc'
 
 Navi
 ====
 
 *An async-first router for React.*
 
-<br />
-<iframe width="560" height="315" src="https://www.youtube.com/embed/PkIS_Xgf1zc" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-<br />
-<br />
+<Doc.YouTube videoId="PkIS_Xgf1zc" style={{ width: 560, height: 315 }} />
 
 *Just getting started?*
 
@@ -18,14 +15,14 @@ Navi
 - [Play with the demoboard &raquo;](https://frontarm.com/demoboard/?id=1229d493-ffaf-4133-b384-0f7dfec85af5)
 - [Get started with create-react-navi-app &raquo;](./create-react-navi-app)
 
-<Document.Block style={{marginTop: '6rem'}}>
+<Doc.Block style={{marginTop: '6rem'}}>
 <aside>
 <h4>Navi ❤️ Async</h4>
 
 To get the most out of Navi, you'll need a solid understanding of JavaScript Promises and the new `async`/`await` syntax. If you need a hand getting there, just walk through Frontend Armory's [Mastering Async JavaScript](https://frontarm.com/courses/async-javascript/) course.
 
 </aside>
-</Document.Block>
+</Doc.Block>
 
 
 Packages

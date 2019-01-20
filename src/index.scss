@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,900|Inconsolata:400,700');
-@import '~@frontarm/document/dist/es/index.css';
+@import '~@frontarm/doc/dist/es/index.css';
 @import '~prismjs/themes/prism.css';
 
 * {
@@ -23,4 +23,24 @@ body {
   font-size: 16px;
   font-size: 16px;
   line-height: 3rem;
+}
+
+.navi-website-code {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 3px;
+  color: rgb(40, 40, 40);
+  
+  pre {
+    background-color: #f0f4fc !important;
+    border-radius: 6px;
+  }
+
+  &, & code {
+    font-size: 1.6rem;
+  }
+
+  code {
+    background-color: transparent;
+  }
 }

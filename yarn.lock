@@ -876,12 +876,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@frontarm/document@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@frontarm/document/-/document-0.1.5.tgz#a2b0b68e49a4ab501af03b6a4254b4e3a4c63243"
-  integrity sha512-WqSckuMfmj6E1YgPK/XGNJkEv34o20XCY0TizRa0jkeWWKhnq10xUC+8BKkKPwv+awNQpS/c4jrASu49+3kEtg==
-  dependencies:
-    classnames "^2.0.0"
+"@frontarm/doc@^0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@frontarm/doc/-/doc-0.4.6.tgz#6ea8139e41e6f9b199769d4330f58937e36592a2"
+  integrity sha512-OYAEKJKFEM93/+gsMDRz/uzWVOkEtOWx9LLBjgtFyrMPjPEANyqPLYnwatmysiby40UVAmP5xdmMisQA+xGL0Q==
 
 "@mdx-js/mdx@^0.15.5":
   version "0.15.7"
@@ -2364,7 +2362,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.0.0, classnames@^2.2.6:
+classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -3763,6 +3761,11 @@ execa@^0.7.0:
     p-finally "^1.0.0"
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
+
+exenv@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/exenv/-/exenv-1.2.2.tgz#2ae78e85d9894158670b03d47bec1f03bd91bb9d"
+  integrity sha1-KueOhdmJQVhnCwPUe+wfA72Ru50=
 
 exit@^0.1.2:
   version "0.1.2"
@@ -6565,10 +6568,10 @@ mdx-constant@^0.1.0:
   resolved "https://registry.yarnpkg.com/mdx-constant/-/mdx-constant-0.1.0.tgz#5d9b9981274bebb29127cd650fb5e4d9f557185d"
   integrity sha512-no+6C7HQMtDyDjW6wk9hUPND1Fm+7UCpvH+GtGn49qR35FG+HbMBVYgukpfF77Q4W91CID/Uc+kUK9Q7TAQpRw==
 
-mdx-loader@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/mdx-loader/-/mdx-loader-2.0.2.tgz#edd2bcb75e4095ee7ce0a225c3176d80eecebbdf"
-  integrity sha512-YZxlbq16n7zuM8DB2Ig2tm65wvuLW16k7mjJHdYzcaPxD+v1qcbc01tvVyhquR4m/iGnx13WZYWU8R07u8mw2Q==
+mdx-loader@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/mdx-loader/-/mdx-loader-2.1.1.tgz#80eaa7be8cde3603dc9f9a3f8aaa9d2d744fb980"
+  integrity sha512-w5xcQ8c7Yp+dOjpPER3XhCNdVxNcw6v/aQu2pawXyP3RzRnQ/9JC6MFP5qJz0tTuCm8S1U7nGmSXrsUJsSzFBA==
   dependencies:
     "@mdx-js/mdx" "^0.16.0"
     "@mdx-js/tag" "^0.16.0"
@@ -6584,7 +6587,13 @@ mdx-loader@2.0.2:
     remark-images "^0.8.1"
     remark-slug "^5.1.0"
     remark-textr "^3.0.2"
-    typographic-base "^1.0.4"
+    textr "^0.3.0"
+    typographic-apostrophes "^1.1.1"
+    typographic-apostrophes-for-possessive-plurals "^1.0.5"
+    typographic-ellipses "^1.0.11"
+    typographic-em-dashes "^1.0.2"
+    typographic-en-dashes "^1.0.1"
+    typographic-quotes "^1.2.1"
     unist-util-visit "^1.4.0"
 
 mdx-table-of-contents@^0.1.0:
@@ -6926,19 +6935,19 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
-navi-bar@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/navi-bar/-/navi-bar-0.8.2.tgz#87c76f4e0e344f774c98d8299e08a9ca9a5c0863"
-  integrity sha512-m0B+JZ+bbsFd+a5Zona4bWufdiiGyPWqPCyToBD+ihZQaCe2cyIxoX4TX0dzK5cPBglKwteF80PE/6DXIid81w==
+navi-bar@^0.10.11:
+  version "0.10.11"
+  resolved "https://registry.yarnpkg.com/navi-bar/-/navi-bar-0.10.11.tgz#1083e95443aaf6230006c8ae2208975df5916fe2"
+  integrity sha512-6uMcnpk0I8YnkK5Bc48xWsic5hy1fMBPiOs6MczCxE3zypWfcDKE9QMqIDjP4FZYafiEQrrCQSbpjly9jzP8Xw==
   dependencies:
     "@types/history" "^4.6.2"
     "@types/react" "^16.4.6"
     "@types/react-dom" "^16.0.6"
 
-navi-scripts@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/navi-scripts/-/navi-scripts-0.8.2.tgz#0a6e9bddf37a4c98d5de251bdfa3d5f27a6fbbd0"
-  integrity sha512-zcZUQVaZVTfDvZpY7YvhUJTVgO/FCI5d0SRIyECuNv/GyGR2ldVcpxpJcEuMqjhO94zoqnl3LR6paA0LTFL60g==
+navi-scripts@^0.10.6:
+  version "0.10.6"
+  resolved "https://registry.yarnpkg.com/navi-scripts/-/navi-scripts-0.10.6.tgz#df8070d9cc8916a2dee900578da3923e0fdf218d"
+  integrity sha512-zf4GZ2ORJCJJHeocKN19ufjfqCeYkgnW42cloqKrQ9RZrgDM9yvt32Q24IuLyOT6V0V2oBNnhI4vfvCocOFxCg==
   dependencies:
     "@babel/core" "^7.1.2"
     "@babel/preset-env" "^7.1.0"
@@ -6954,12 +6963,11 @@ navi-scripts@^0.8.2:
     raf "^3.4.0"
     serve-static "^1.11.2"
 
-navi@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/navi/-/navi-0.8.2.tgz#656d757adcc84481ba9a9e6a3c9b935d586dc350"
-  integrity sha512-SocnmPLne5WuGAbWb6w0Q7G+l+luqE3ibB7Gh6lHEEWabH46ffS+4UF+Nhvbjhm4SPVL3Ib+gofj+uw9LnHulg==
+navi@^0.10.10:
+  version "0.10.10"
+  resolved "https://registry.yarnpkg.com/navi/-/navi-0.10.10.tgz#757846ad17667ca6a77699a3987276ff73fd3389"
+  integrity sha512-UauF2qlgAV8I1HkheAmaO6x54hMLlsbmsIVEOd29w3/AQyYRmL/mrlk+q+ZSN7OKPDPHKT7qByBkeb2PEuW4XQ==
   dependencies:
-    "@types/history" "^4.6.2"
     history "^4.7.2"
 
 needle@^2.2.1:
@@ -8696,14 +8704,15 @@ react-error-overlay@^5.1.0:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-5.1.0.tgz#c516995a5652e7bfbed8b497910d5280df74a7e8"
   integrity sha512-akMy/BQT5m1J3iJIHkSb4qycq2wzllWsmmolaaFVnb+LPV9cIJ/nTud40ZsiiT0H3P+/wXIdbjx2fzF61OaeOQ==
 
-react-navi@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/react-navi/-/react-navi-0.8.2.tgz#837f12d1431340ae5e604d1beb2a83a4b11c4676"
-  integrity sha512-pqJh+AV7GYZhVSvpawJ77nhURAIIsmSKNN/7NGWanOuGO75zoSt2xi69TQVI63tEJteywtG4NRawmiCQYxbIIQ==
+react-navi@^0.10.9:
+  version "0.10.9"
+  resolved "https://registry.yarnpkg.com/react-navi/-/react-navi-0.10.9.tgz#b0f33c920dade37bf046fe09d10fcda2fe487d66"
+  integrity sha512-n9U8m/Z9a3D2mJR5HQ67+gQhnX8Jry9+9T0uTa263xFqk1499tRJJzTdc5xU9xZwlNthVwerx2iUk/KktH7U9g==
   dependencies:
     "@types/history" "^4.6.2"
     "@types/react" "^16.4.6"
     "@types/react-dom" "^16.0.6"
+    exenv "^1.2.2"
 
 react-sticky@6.0.3:
   version "6.0.3"
@@ -10326,48 +10335,6 @@ typographic-apostrophes@^1.1.1:
   resolved "https://registry.yarnpkg.com/typographic-apostrophes/-/typographic-apostrophes-1.1.1.tgz#bc6905eb949048a736fa8399f8b90aafa8894787"
   integrity sha1-vGkF65SQSKc2+oOZ+LkKr6iJR4c=
 
-typographic-arrows@^1.0.0:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/typographic-arrows/-/typographic-arrows-1.0.3.tgz#fdd4692ce660024b42fd1605100c34337380c925"
-  integrity sha1-/dRpLOZgAktC/RYFEAw0M3OAySU=
-
-typographic-base@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/typographic-base/-/typographic-base-1.0.4.tgz#8bb74e8e3262401915c5bd2d6b5d520bd2d15697"
-  integrity sha1-i7dOjjJiQBkVxb0ta11SC9LRVpc=
-  dependencies:
-    textr "^0.3.0"
-    typographic-apostrophes "^1.1.1"
-    typographic-apostrophes-for-possessive-plurals "^1.0.5"
-    typographic-arrows "^1.0.0"
-    typographic-copyright "^1.0.1"
-    typographic-currency "^1.1.0"
-    typographic-ellipses "^1.0.11"
-    typographic-em-dashes "^1.0.2"
-    typographic-en-dashes "^1.0.1"
-    typographic-math-symbols "^1.1.5"
-    typographic-quotes "^1.2.1"
-    typographic-registered-trademark "^1.0.1"
-    typographic-single-spaces "^1.0.2"
-    typographic-trademark "^1.0.1"
-
-typographic-copyright@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/typographic-copyright/-/typographic-copyright-1.0.1.tgz#4c4a0b6d7dba271c29b741f204002f4c6d4b00c0"
-  integrity sha1-TEoLbX26Jxwpt0HyBAAvTG1LAMA=
-
-typographic-currency-db@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/typographic-currency-db/-/typographic-currency-db-1.0.0.tgz#32f8a6daf0c91209a641360fdaa69ce54fed0c67"
-  integrity sha1-Mvim2vDJEgmmQTYP2qac5U/tDGc=
-
-typographic-currency@^1.1.0:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/typographic-currency/-/typographic-currency-1.1.2.tgz#cec5f4763c13c608b0494d85f70f42d69026da40"
-  integrity sha1-zsX0djwTxgiwSU2F9w9C1pAm2kA=
-  dependencies:
-    typographic-currency-db "1.0.0"
-
 typographic-ellipses@^1.0.11:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/typographic-ellipses/-/typographic-ellipses-1.0.11.tgz#a69143b4b8c5611dd3a669b7c3052603e8a69487"
@@ -10383,11 +10350,6 @@ typographic-en-dashes@^1.0.1:
   resolved "https://registry.yarnpkg.com/typographic-en-dashes/-/typographic-en-dashes-1.0.1.tgz#a37739fdc43ed38c351bbf70a80c2503ccb022e0"
   integrity sha1-o3c5/cQ+04w1G79wqAwlA8ywIuA=
 
-typographic-math-symbols@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/typographic-math-symbols/-/typographic-math-symbols-1.1.5.tgz#56f756c6e5cb3d6d3ab2172e49d91e823028de4e"
-  integrity sha1-VvdWxuXLPW06shcuSdkegjAo3k4=
-
 typographic-quotes-l10n-db@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/typographic-quotes-l10n-db/-/typographic-quotes-l10n-db-1.0.0.tgz#1304d2fa95ac71fec3efd8327834ee49b013b254"
@@ -10399,21 +10361,6 @@ typographic-quotes@^1.2.1:
   integrity sha1-kG4o26KxMGLSm1fxCskxRyCA4GI=
   dependencies:
     typographic-quotes-l10n-db "^1.0.0"
-
-typographic-registered-trademark@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/typographic-registered-trademark/-/typographic-registered-trademark-1.0.1.tgz#1830b693bf782cfc23560ec80d61a2672a98c8dd"
-  integrity sha1-GDC2k794LPwjVg7IDWGiZyqYyN0=
-
-typographic-single-spaces@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/typographic-single-spaces/-/typographic-single-spaces-1.0.2.tgz#82c3115437db6ddb2e17aef55494dd907e941f7f"
-  integrity sha1-gsMRVDfbbdsuF671VJTdkH6UH38=
-
-typographic-trademark@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/typographic-trademark/-/typographic-trademark-1.0.1.tgz#573165bc6f50307e6ec758832677483377844580"
-  integrity sha1-VzFlvG9QMH5ux1iDJndIM3eERYA=
 
 uglify-es@^3.3.4:
   version "3.3.9"

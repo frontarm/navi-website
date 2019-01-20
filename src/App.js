@@ -2,7 +2,7 @@ import React from 'react'
 import { NavProvider, NavLoading, NavNotFoundBoundary, NavContent } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
 import Prism from 'prismjs'
-import { DocumentProvider } from '@frontarm/document'
+import { DocProvider, Doc } from '@frontarm/doc'
 
 const languages = {
   'jsx': 'jsx',
@@ -19,24 +19,39 @@ const grammars = {
 export class App extends React.Component {
   render() {
     return (
-      <DocumentProvider components={{
+      <DocProvider components={{
         Demoboard: ({ editorPathname, id, style, sources }) => {
           let filename = editorPathname || Object.keys(sources)[0]
           let extension = filename.split('.').reverse()[0]
           let language = languages[extension]
 
           return (
-            <pre className={'language-'+language}>
+            <Doc.Block marginSize='half' className='navi-website-code demoboard'>
+              <Doc.Gutter Component='pre' half className={'language-'+language}>
+                <code
+                  id={id}
+                  style={style}
+                  dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(sources[filename], Prism.languages[grammars[language]], language)
+                  }}
+                />
+              </Doc.Gutter>
+            </Doc.Block>
+          )
+        },
+
+        code: ({ highlightedSource, language='text', id, style }) =>
+          <Doc.Block marginSize='half' className='navi-website-code'>
+            <Doc.Gutter Component='pre' half className={'language-'+language}>
               <code
                 id={id}
                 style={style}
                 dangerouslySetInnerHTML={{
-                  __html: Prism.highlight(sources[filename], Prism.languages[grammars[language]], language)
+                  __html: highlightedSource
                 }}
               />
-            </pre>
-          )
-        }
+            </Doc.Gutter>
+          </Doc.Block>
       }}>
         <NavProvider navigation={this.props.navigation}>
           <NavLoading>
@@ -50,7 +65,7 @@ export class App extends React.Component {
             }
           </NavLoading>
         </NavProvider>
-      </DocumentProvider>
+      </DocProvider>
     )
   }
 }
