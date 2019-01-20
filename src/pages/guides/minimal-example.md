@@ -38,7 +38,7 @@ But what about the `/reference` page? It's not returning an element or component
 
 ```js
 //---
-  editorFilename: "/pages/Reference.js"
+  editorPathname: "/pages/Reference.js"
 //--- pages.js <-- pages.js
 //--- pages/Reference.js <-- pages/Reference.js
 //--- index.js <-- index.js
@@ -55,7 +55,7 @@ To create a `Navigation`, just call [`createBrowserNavigation()`](../../referenc
 
 ```js
 //---
-  editorFilename: "/index.js"
+  editorPathname: "/index.js"
 //--- pages.js <-- pages.js
 //--- pages/Reference.js <-- pages/Reference.js
 //--- index.js <-- index.js
@@ -79,7 +79,7 @@ Here's an example:
 
 ```js
 //---
-  editorFilename: "/App.js"
+  editorPathname: "/App.js"
 //--- pages.js <-- pages.js
 //--- pages/Reference.js <-- pages/Reference.js
 //--- index.js <-- index.js
@@ -99,7 +99,7 @@ Navi doesn't render the new pages until they have loaded, so there can sometimes
 
 ```js
 //---
-  editorFilename: "/App.js"
+  editorPathname: "/App.js"
 //--- pages.js
 /**
  * This version of pages.js adds delays to content loading to

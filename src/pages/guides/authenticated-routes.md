@@ -1,4 +1,5 @@
 export const filename = __filename
+import { Document } from '@frontarm/document'
 export const demoboardHelpers = {
   'helpers.js': require('!raw-loader!./authenticated-routes/helpers.js'),
   'index.js': require('!raw-loader!./authenticated-routes/index.js'),
@@ -36,7 +37,7 @@ When you pass a function to a Page's content or Switch's path, that function wil
 
 ```js
 //---
-editorFilename: /resourceSwitch.js
+editorPathname: /resourceSwitch.js
 restricted: true
 //--- index.js <-- index.js
 //--- pages.js <-- pages.js
@@ -77,7 +78,7 @@ Here's what this looks like with a hypothetical `authService` authentication API
 
 ```js
 //---
-editorFilename: /index.js
+editorPathname: /index.js
 restricted: true
 //--- index.js <-- index.js
 //--- pages.js <-- pages.js
@@ -95,7 +96,7 @@ To avoid creating specific content for unauthenticated users, you can redirectin
 
 ```js
 //---
-editorFilename: /resourceSwitch.js
+editorPathname: /resourceSwitch.js
 restricted: true
 //--- index.js <-- index.js
 //--- pages.js <-- pages.js
@@ -113,7 +114,7 @@ export function withAuthenticatedEnv(getPage) {
       ? getPage(env)
       : Navi.createRedirect(
           '/login?redirectTo='+
-          encodeURIComponent(env.pathname+env.search)
+          encodeURIComponent(env.mountname+env.url.search)
         )
 }
 
@@ -136,7 +137,7 @@ It often doesn't make sense for an authenticated user to be viewing a login scre
 
 ```js
 //---
-editorFilename: /pages.js
+editorPathname: /pages.js
 restricted: true
 //--- index.js <-- index.js
 //--- pages.js <-- pages.js
@@ -159,7 +160,7 @@ The default behavior of `navi-scripts` is to render each of your site's redirect
 -   When an authenticated user views a page, the user will initially be redirected to a login screen, but they'll then be automatically redirected back to the requested page via `history.replaceState()` once the app has loaded.
 
     <br />
-    <img src={require('./authenticated-routes/auth-redirect-flow.svg')} alt="Redirect flow diagram" />
+    <Document.Image src={require('./authenticated-routes/auth-redirect-flow.svg')} alt="Redirect flow diagram" />
     <br /><br />
 
 While the default behavior works, there are a couple ways in which it can be improved. In particular, you can prevent the loading screen from being flashed to logged in users before they're redirected to the content.

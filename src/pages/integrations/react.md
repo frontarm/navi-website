@@ -178,6 +178,12 @@ class App extends Component {
 
 Catches `NotFoundError` exceptions thrown by `<NavContent />`.
 
+### Props
+
+#### `render: (error: NotFoundError) => React.Node`
+
+### Example
+
 ```js
 class App extends Component {
   render() {

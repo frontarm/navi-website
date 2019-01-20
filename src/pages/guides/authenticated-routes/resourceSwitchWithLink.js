@@ -10,7 +10,7 @@ export default Navi.createSwitch({
       if (!env.context.currentUser) {
         return Navi.createPage({
           title: 'Please Log In',
-          content: <LoginLink redirectTo={env.pathname} />,
+          content: <LoginLink redirectTo={env.mountname} />,
         })
       }
 

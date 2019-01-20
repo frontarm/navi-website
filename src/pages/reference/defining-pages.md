@@ -138,7 +138,7 @@ Because of this, it often makes sense to map the `/` path of your switch to a re
 
 It's possible to specify wildcard segments by starting the segment with the `:` character. The values of these wildcard segments will be made available via your [`Route`](../route-and-segment/#route) or [`Env`](#env-objects) objects' `params` property.
 
-For example, this `paths` object specifes that any URL of the form `/resource/:id`, where `:id` can be anything, contains a page whose content and title depends on the result of `fetchResource(:id)`.
+For example, this `paths` object specifies that any URL of the form `/resource/:id`, where `:id` can be anything, contains a page whose content and title depends on the result of `fetchResource(:id)`.
 
 ```js
 export default Navi.createSwitch({
@@ -168,7 +168,7 @@ export default Navi.createSwitch({
     '/members': env =>
       !env.context.currentUser ? (
         Navi.createRedirect(
-          '/login?redirectTo='+encodeURIComponent(env.pathname)
+          '/login?redirectTo='+encodeURIComponent(env.mountname)
         )
       ) : (
         Navi.createPage({
@@ -204,7 +204,7 @@ Creates a `Page` declaration, which you can map to a URL with the `createSwitch(
 
 The page's `title`, `meta` and `content` can be specified as a constant value, or as a [getter function](#constants-vs-getters). 
 
-At minimum, each `Page` should specify a title, as Navi will set the document's `<title>` to this title whenever the user navigates to the page. It also make sense to specify the page's content, because well... it's a page.
+At minimum, each `Page` should specify a title, as Navi will set the document's `<title>` to this title whenever the user navigates to the page. It also makes sense to specify the page's content, because well... it's a page.
 
 The contents of the `meta` object are used by Navi's default static renderer in deciding which `<meta>` tags to add to the page `<head>`. However, if you're not using the static renderer, or have defined a [custom HTML renderer](../../guides/static-rendering/#custom-renderers), then `meta` can contain whatever you'd like.
 
@@ -261,7 +261,7 @@ Redirect to `/login?redirectTo=...`, appending the current URL as parameter, so 
 ```js
 createRedirect(env =>
   '/login?redirectTo='+
-  encodeURIComponent(env.pathname+env.search)
+  encodeURIComponent(env.mountname+env.url.search)
 )
 ```
 
@@ -290,7 +290,7 @@ import course from './courseDetails'
 let context = createContext(
   (env) => ({
     course,
-    coursePathname: env.pathname,
+    courseRoot: env.mountname,
 
     // Merge in the parent context
     ...env.context
@@ -326,10 +326,10 @@ And here's how you'd specify a dynamic value using a getter function:
 
 While getter functions are more verbose than constant values, they provide a number of extra capabilities:
 
-- Getters receive an [Env object](#env-objects), which can be used to created values that depend on a page's url, context, or on other routes.
+- Getters receive an [Env object](#env-objects), which can be used to create values that depend on a page's url, context, or on other routes.
 - Getters will be recomputed whenever the user navigates and whenever your `Navigation` object's context changes.
 - If a getter function returns a Promise, then Navi will use that value that the promise resolves to. This means that you can use both standard functions and async functions as getters.
-- If a getter functions returns a promise to an object of the shape `{ default: value }`, then Navi will use the value under the `default` key. This facilitates use of JavaScript's dynamic `import()` expression.
+- If a getter function returns a promise to an object of the shape `{ default: value }`, then Navi will use the value under the `default` key. This facilitates use of JavaScript's dynamic `import()` expression.
 
 
 `Env` objects
@@ -346,8 +346,8 @@ The `env` object passed to your getter functions contains information about the 
   // Contains all URL parameters, along with all query parameters
   params: { [name: string]: string },
 
-  // The pathname at which this declaration is mounted.
-  pathname: string,
+  // The pathname at which this declaration is mounted
+  mountname: string,
 
   // Contains parameters extracted from the URL's `?search`, but excludes
   // any parameters extract from URL the URL via `:param` patterns.
