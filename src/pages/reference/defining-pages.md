@@ -320,7 +320,8 @@ And here's how you'd specify a dynamic value using a getter function:
 
 ```js
 {
-  getContent: async (env) => fetch('/yo-google-how-much-wood')
+  getContent: async (env, metaPromise) =>
+    fetch('/yo-google-how-much-wood')
 }
 ```
 
@@ -330,6 +331,7 @@ While getter functions are more verbose than constant values, they provide a num
 - Getters will be recomputed whenever the user navigates and whenever your `Navigation` object's context changes.
 - If a getter function returns a Promise, then Navi will use that value that the promise resolves to. This means that you can use both standard functions and async functions as getters.
 - If a getter function returns a promise to an object of the shape `{ default: value }`, then Navi will use the value under the `default` key. This facilitates use of JavaScript's dynamic `import()` expression.
+- The `getContent` and `getTitle` getters will receive a promise to the result of the `getMeta` getter as their second argument, helping to reduce duplicate code.
 
 
 `Env` objects
@@ -349,16 +351,11 @@ The `env` object passed to your getter functions contains information about the 
   // The pathname at which this declaration is mounted
   mountname: string,
 
-  // Contains parameters extracted from the URL's `?search`, but excludes
-  // any parameters extract from URL the URL via `:param` patterns.
-  query: { [name: string]: string },
-
   // A router object, which can be used to resolve routes and sitemaps
   // for other URLs.
   router: Router,
 
-  // If the current URL contains a `?search` string, it'll be made
-  // available here.
-  search: string,
+  // The full requested URL, excluding any hash.
+  url: URLDescriptor,
 }
 ```
