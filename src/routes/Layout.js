@@ -8,10 +8,10 @@ import styles from './Layout.module.scss'
 
 const cx = classNames.bind(styles)
 
-export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated, isPro }) {
+export function Layout({ routeMap, repositoryRoot, rootPathname, isAuthenticated, isPro }) {
   return (
     <NavContent>
-      {(content, segment, route) => {
+      {(content, route) => {
         let tableOfContents =
           content &&
           content.tableOfContents &&
@@ -50,9 +50,9 @@ export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated,
                       {children}
                     </Doc.Gutter>
                   </Doc.Block>,
-                Image: ({ className='', style, ...props }) =>
+                Image: ({ className='', alt, style, ...props }) =>
                   <Doc.Block className={cx('Image')+' '+className} style={style}>
-                    <img {...props} />
+                    <img {...props} alt={alt} />
                   </Doc.Block>,
                 ...content.documentComponents
               }}
@@ -70,7 +70,7 @@ export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated,
             </footer>
           </>
 
-        if (!isPro && route.meta.exclusiveTo) {
+        if (!isPro && route.data.exclusiveTo) {
           mainContent =
             <Doc className={cx('document')}>
               <Doc.Block>
@@ -105,7 +105,7 @@ export function Layout({ siteMap, repositoryRoot, rootPathname, isAuthenticated,
                     position: 'absolute',
                     ...style,
                   }}
-                  pageMap={siteMap.pages}
+                  routeMap={routeMap}
                   rootPathname={rootPathname}
                   tableOfContents={tableOfContents}
                   renderToggle={({onToggleOpen, isOpen}) =>

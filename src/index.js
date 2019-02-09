@@ -1,14 +1,16 @@
+import register from 'navi-scripts/register'
 import * as Navi from 'navi'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import pages from './pages'
+import { NavProvider } from 'react-navi'
+import routes from './routes'
 import { App } from './App'
 import './index.scss'
 
-Navi.app({
+register({
     // Specify the pages that navi-app should statically build, by passing
     // in a Switch object
-    pages,
+    routes,
 
     // The `exports` object is made available to the `renderPageToString`
     // function.
@@ -18,7 +20,7 @@ Navi.app({
 
     async main() {
         let navigation = Navi.createBrowserNavigation({
-            pages,
+            routes,
             context: {
                 getDocumentComponents: () => {},
             }
@@ -37,7 +39,9 @@ Navi.app({
 
         // Start react.
         renderer(
-            <App navigation={navigation} />,
+            <NavProvider navigation={navigation}>
+                <App />
+            </NavProvider>,
             document.getElementById('root')
         )
     }

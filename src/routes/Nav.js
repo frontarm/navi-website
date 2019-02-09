@@ -9,9 +9,9 @@ const cx = classNames.bind(styles)
 
 export const Nav = React.forwardRef((props, ref) =>
   <NaviBar
-    pageMap={props.pageMap}
+    routeMap={props.routeMap}
     tableOfContents={props.tableOfContents}
-    renderSwitch={props => <SidebarSection {...props} />}
+    renderSection={props => <SidebarSection {...props} />}
     renderPage={props => <SidebarPage {...props} />}
     renderHeading={props => <SidebarHeading {...props} />}
     render={({ children, open, toggleOpen }) =>
@@ -46,17 +46,17 @@ export const Nav = React.forwardRef((props, ref) =>
   />
 )
 
-export const SidebarSection = ({ active, children, meta, title }) => (
+export const SidebarSection = ({ active, children, data }) => (
   <section className={cx('section', { active })}>
-    {title && <div className={cx('heading')}>{title}</div>}
+    {data.sectionTitle && <div className={cx('heading')}>{data.sectionTitle}</div>}
     <div className={cx('children')}>{children}</div>
   </section>
 )
 
-export const SidebarPage = ({ active, children, meta, title }) => (
+export const SidebarPage = ({ active, children, data, title }) => (
   <section className={cx('page', { active })}>
-    {meta.exclusiveTo ? <span className={cx('pro')}>PRO</span> : null}
-    <NaviBar.Anchor className={cx('link')}>{meta.navTitle || title}</NaviBar.Anchor>
+    {data.exclusiveTo ? <span className={cx('pro')}>PRO</span> : null}
+    <NaviBar.Anchor className={cx('link')}>{data.navTitle || title}</NaviBar.Anchor>
     {children && <div className={cx('children')}>{children}</div>}
   </section>
 )
