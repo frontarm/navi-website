@@ -89,27 +89,24 @@ export function Layout({ routeMap, repositoryRoot, rootPathname, isAuthenticated
         }
 
         return (
-          <>
-            <div style={{height: '50px', backgroundColor: '#f8f8f8'}} />
-            <div className={cx("Layout")}>
-              <Nav
-                className={cx('nav')}
-                routeMap={routeMap}
-                rootPathname={rootPathname}
-                tableOfContents={tableOfContents}
-                renderToggle={({onToggleOpen, isOpen}) =>
-                  <button
-                    className={cx('hamburger')}
-                    onClick={onToggleOpen}>
-                    <div className={cx('icon')} />
-                  </button>
-                }
-              />
-              <main className={cx("content")}>
-                {mainContent}
-              </main>
-            </div>
-          </>
+          <div className={cx("Layout")}>
+            <Nav
+              className={cx('nav')}
+              routeMap={routeMap}
+              rootPathname={rootPathname}
+              tableOfContents={tableOfContents}
+              renderToggle={({onToggleOpen, isOpen}) =>
+                <button
+                  className={cx('hamburger')}
+                  onClick={onToggleOpen}>
+                  <div className={cx('icon')} />
+                </button>
+              }
+            />
+            <main className={cx("content")}>
+              {mainContent}
+            </main>
+          </div>
         )
       }}
     </NavContent>
