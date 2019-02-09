@@ -1,4 +1,5 @@
 import React from 'react'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import { NavLink } from 'react-navi'
 import { NaviBar } from 'navi-bar'
 import classNames from 'classnames/bind'
@@ -18,7 +19,7 @@ export const Nav = React.forwardRef((props, ref) =>
       <React.Fragment>
         <NaviBar.CloseOverlay />
         <div className={cx('Nav', { open }) + " " + props.className} style={props.style} ref={ref}>
-          <nav className={cx('Sidebar')}>
+          <PerfectScrollbar className={cx('Sidebar')}>
             <NavLink href={props.rootPathname} className={cx("brand")}>
               <img src={logo} className={cx("logo")} alt="logo" />
               <span className={cx("name")}>Navi</span>
@@ -34,7 +35,7 @@ export const Nav = React.forwardRef((props, ref) =>
                 </a>
               </section>
             </nav>
-          </nav>
+          </PerfectScrollbar>
           <button
             className={cx('hamburger')}
             onClick={toggleOpen}>

@@ -12,7 +12,6 @@
     // Apply padding on top and bottom to prevent margins from
     // appearing above/below.
     padding: 1px 0;
-    overflow: hidden;
 
     .content {
       transform: translate3d($sidebarWidth, 0, 0);
@@ -50,14 +49,10 @@
     }
 
     .nav {
-      // position: fixed;
-      // top: 0;
-      // bottom: 0;
+      position: fixed;
+      position: sticky;
+      z-index: 9;
       top: 0;
-      left: 0;
-      bottom: 0;
-      width: $sidebarWidth;
-      z-index: 10;
     }
   }
 

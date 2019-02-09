@@ -1,6 +1,5 @@
 import React from 'react'
 import { NavContent, NavLink } from 'react-navi'
-import { StickyContainer, Sticky } from 'react-sticky'
 import { Doc } from '@frontarm/doc'
 import classNames from 'classnames/bind'
 import { Nav } from './Nav'
@@ -90,39 +89,27 @@ export function Layout({ routeMap, repositoryRoot, rootPathname, isAuthenticated
         }
 
         return (
-          <StickyContainer className={cx("Layout")}>
-            <Sticky
-              // Don't need compensation as the sidebar is fixed to the left
-              disableCompensation
-              // This just adds a `translateX(0)`, which gets in the way of 
-              // our own transform.
-              disableHardwareAcceleration
-            >
-              {({ style: { width, ...style } }) =>
-                <Nav
-                  className={cx('nav')}
-                  style={{
-                    position: 'absolute',
-                    ...style,
-                  }}
-                  routeMap={routeMap}
-                  rootPathname={rootPathname}
-                  tableOfContents={tableOfContents}
-                  renderToggle={({onToggleOpen, isOpen}) =>
-                    <button
-                      className={cx('hamburger')}
-                      onClick={onToggleOpen}>
-                      <div className={cx('icon')} />
-                    </button>
-                  }
-                />
-              }
-            </Sticky>
-
-            <main className={cx("content")}>
-              {mainContent}
-            </main>
-          </StickyContainer>
+          <>
+            <div style={{height: '50px', backgroundColor: '#f8f8f8'}} />
+            <div className={cx("Layout")}>
+              <Nav
+                className={cx('nav')}
+                routeMap={routeMap}
+                rootPathname={rootPathname}
+                tableOfContents={tableOfContents}
+                renderToggle={({onToggleOpen, isOpen}) =>
+                  <button
+                    className={cx('hamburger')}
+                    onClick={onToggleOpen}>
+                    <div className={cx('icon')} />
+                  </button>
+                }
+              />
+              <main className={cx("content")}>
+                {mainContent}
+              </main>
+            </div>
+          </>
         )
       }}
     </NavContent>

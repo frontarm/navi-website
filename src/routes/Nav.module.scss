@@ -20,11 +20,15 @@
   }
 
   .Sidebar {
+    position: absolute;
+    top: 0;
+    height: 100vh;
+    left: 0;
+    width: $sidebarWidth;
+
     border-right: 1px solid $border;
     font-weight: 700;
     background-color: white;
-    overflow: auto;
-    height: 100%;
   }
 
   .brand {
