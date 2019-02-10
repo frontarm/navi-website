@@ -43,7 +43,7 @@ createSwitch(options: {
 
 A switch's `paths` object is how you map URLs to pages and redirects. Switch paths can also be specified as [getter functions](#constants-vs-getters), allowing a path's children to vary with the switch's context.
 
-The `content`, `meta` or `title` options are entirely optional; Navi itself doesn't actually make use of them. However, if you *do* provide them, then their values will be available in [`Route`](../route-and-segment/#route) objects for URLs that match this switch.
+The `content`, `meta` or `title` options are entirely optional; Navi itself doesn't actually make use of them. However, if you *do* provide them, then their values will be available in [`Route`](../data-types/#route) objects for URLs that match this switch.
 
 
 ### Examples
@@ -136,7 +136,7 @@ Because of this, it often makes sense to map the `/` path of your switch to a re
 
 #### URL parameters
 
-It's possible to specify wildcard segments by starting the segment with the `:` character. The values of these wildcard segments will be made available via your [`Route`](../route-and-segment/#route) or [`Env`](#env-objects) objects' `params` property.
+It's possible to specify wildcard segments by starting the segment with the `:` character. The values of these wildcard segments will be made available via your [`Route`](../data-types/#route) or [`Env`](#env-objects) objects' `params` property.
 
 For example, this `paths` object specifies that any URL of the form `/resource/:id`, where `:id` can be anything, contains a page whose content and title depends on the result of `fetchResource(:id)`.
 

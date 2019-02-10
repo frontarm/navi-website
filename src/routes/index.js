@@ -177,7 +177,7 @@ export default composeMatchers(
           }
         }),
         '/route-and-segment': redirect(req =>
-          path.join(req.mountpath, '..', 'data-types/')+req.url.hash
+          path.join(req.mountpath, '..', 'data-types/')
         ),
         '/url-descriptor': redirect(req =>
           path.join(req.mountpath, '..', 'data-types/#urldescriptor')

@@ -2,12 +2,17 @@
   "name": "navi-docs",
   "version": "0.8.1",
   "private": true,
-  "peerDependencies": {
+  "devDependencies": {
+    "@types/node": "^10.12.24",
+    "@types/react": "^16.8.2",
+    "@types/react-dom": "^16.8.0",
     "navi": "^0.11.0",
     "navi-bar": "^0.11.0",
+    "navi-scripts": "^0.11.0",
     "react": "^16.8.1",
+    "react-dom": "^16.8.1",
     "react-navi": "^0.11.0",
-    "react-scripts": "^0.11.0"
+    "typescript": "^3.3.3"
   },
   "dependencies": {
     "@babel/core": "7.1.0",

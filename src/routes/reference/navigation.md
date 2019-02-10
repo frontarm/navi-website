@@ -26,7 +26,7 @@ An [`history`](../history/) object, as created by the [history package](https://
 
 ### `navigation.router`
 
-A <!--[`Router`](../router/)-->`Router` object, which you can use to manually resolve URLs to [`Route`](../route-and-segment/#route) or `SiteMap` objects.
+A <!--[`Router`](../router/)-->`Router` object, which you can use to manually resolve URLs to [`Route`](../data-types/#route) or `SiteMap` objects.
 
 
 ### `navigation.getCurrentValue()`
@@ -37,7 +37,7 @@ navigation.getCurrentValue(): NavigationSnapshot
 
 Returns a [`NavigationSnapshot`](#navigationsnapshot-interface), containing the current history location and current matched route.
 
-Note that the [`Route`](../route-and-segment/#route) in the returned object may be newer than the `Route` output by the React integration's `<NavContent>` and `<NavRoute>` components. This is because these components use the latest *steady* route -- i.e. the route where the `status` property is not `"busy"`.
+Note that the [`Route`](../data-types/#route) in the returned object may be newer than the `Route` output by the React integration's `<NavContent>` and `<NavRoute>` components. This is because these components use the latest *steady* route -- i.e. the route where the `status` property is not `"busy"`.
 
 
 ### `navigation.getSteadyValue()`
@@ -48,7 +48,7 @@ navigation.getSteadyValue(): Promise<NavigationSnapshot>
 
 Returns a promise to a *steady* [`NavigationSnapshot`](#navigationsnapshot-interface) object.
 
-A *steady* [`Route`](../route-and-segment/#route) is one which has a `status` property that is not `"busy"` -- i.e. a `Route` with a URL that matches the current URL, and where all required `content`, `meta`, etc. is available.
+A *steady* [`Route`](../data-types/#route) is one which has a `status` property that is not `"busy"` -- i.e. a `Route` with a URL that matches the current URL, and where all required `content`, `meta`, etc. is available.
 
 
 ### `navigation.setContext()`
@@ -66,7 +66,7 @@ Updates the value of [`env.context`](../declarations/#env-objects) within your a
 navigation.steady(): Promise<void>
 ```
 
-Returns a promise that resolves once the current route has a `status` property that is not `"busy"` -- i.e. a [`Route`](../route-and-segment/#route) with a URL that matches the current URL, and where all required `content`, `meta`, etc. is available.
+Returns a promise that resolves once the current route has a `status` property that is not `"busy"` -- i.e. a [`Route`](../data-types/#route) with a URL that matches the current URL, and where all required `content`, `meta`, etc. is available.
 
 
 ### `navigation.subscribe()`
