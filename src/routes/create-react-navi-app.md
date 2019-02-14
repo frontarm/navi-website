@@ -1,18 +1,38 @@
 export const filename = __filename
+import Blurb from '../components/Blurb'
 import { Doc } from '@frontarm/doc'
-export const demoboardHelpers = {
-  'App.js': require('!raw-loader!./create-react-navi-app/App.js'),
-  'index.js': require('!raw-loader!./create-react-navi-app/index.js'),
-  'pages.js': require('!raw-loader!./create-react-navi-app/pages.js'),
-  'getting-started.mdx': require('!raw-loader!./create-react-navi-app/getting-started.mdx'),
-  'index.mdx': require('!raw-loader!./create-react-navi-app/index.mdx'),
-  'styles.css': require('!raw-loader!./create-react-navi-app/styles.css'),
-}
 
-Create React/Navi App
-=====================
+Create A New App ✨
+==================
 
-The easiest way to try Navi is with the `create-react-navi-app` tool -- a small wrapper around Create React App 2 that provides three extra features:
+<Blurb>
+
+Add Navi to your create-react-app project in three steps, or get a head start with one of Navi's starter kits.
+
+</Blurb>
+
+If you've already spun up a create-react-app project, then it only takes three steps to add routing with Navi:
+
+1. `npm install navi react-navi --save`
+2. Add some routes, usually within a `routes` directory
+3. Add a `<Router routes={routes} />` element
+
+If you want to statically render your project, then there are a couple extra steps involved -- they're explained in the [Static Rendering](../guides/static-rendering/) guide. But for new projects, you can get static rendering out of the box with one of Navi's starter kits:
+
+- [create-react-navi-app](#create-react-navi-app), for a bare-bones app with static routing
+- [create-react-blog](#create-react-blog), for a ready-to-go blog
+
+
+## create-react-navi-app
+
+<Doc.AsideTop>
+<Doc.Details aside>
+
+This project wouldn't be possible without Create React App 2. It's a pleasure to work with, and I want to give a huge thanks to its maintainers.
+
+</Doc.Details>
+
+The quickest way to bootstrap a Navi project is with the `create-react-navi-app` tool -- a small wrapper around Create React App 2 that provides three extra features:
 
 - **Pre-configured routing** -- letting you dive in and start building straight away
 - **Static rendering for all pages** -- improving load times and SEO<br />
@@ -20,119 +40,58 @@ The easiest way to try Navi is with the `create-react-navi-app` tool -- a small 
 
 Of course, it also includes all the standard Create React App features that you've come to love, including zero-configuration build and TypeScript support! For full details, see the excellent [Create React App documentation](https://facebook.github.io/create-react-app/).
 
+</Doc.AsideTop>
 
-Quick Overview
---------------
+---
 
 Usage is identical to the `create-react-app` command -- you'll just need to call `create-react-navi-app` instead.
 
 ```bash
-npx create-react-navi-app my-app
+npm init react-navi-app my-app
 cd my-app
 npm start
+```
+
+Of if you want a TypeScript project, append a `--typescript` flag:
+
+```bash
+npm init react-navi-app my-app --typescript
 ```
 
 Then open [http://localhost:3000/](http://localhost:3000/) to see your app, if it isn't automatically opened for you.
 
 Once you’re ready to deploy to production, create a minified bundle with `npm run build`. Then, you can test your minified bundle by calling `npm run serve`.
 
-
-
 For more details on the available commands, see the [Scripts guide](https://facebook.github.io/create-react-app/docs/available-scripts) on the Create React App website.
 
 
-Pages
------
+## create-react-blog
 
-After running `create-react-navi-app`, your generated app will look much the same as a standard create-react-app project -- but with a `src/pages` directory. This directory initially contains content for two pages:
+If you need to create a content focused, statically rendered website, then create-react-blog will give you a good head start. It comes with everything in `create-react-app` and `create-react-navi-app`, along with:
 
-- `/`
-- `/getting-started/`
+- Automatic importing of all routes in a `posts` directory
+- Sorting and pagination based on date
+- Tag pages
+- RSS feed generation
+- A theme based on the Gatsby blog starter and Dan Abramov's [overreacted.io](http://overreacted.io)
 
-Both pages are declared in `src/pages/index.js`:
-
-```js
-//--- pages.js <-- pages.js
-//--- App.js <-- App.js
-//--- index.mdx <-- index.mdx
-//--- getting-started.mdx <-- getting-started.mdx
-//--- index.js <-- index.js
-//--- styles.css <-- styles.css
-```
-
-You have four functions available for declaring your app's pages:
-
-- [`Navi.createSwitch()`](../reference/declarations/#createswitch)
-- [`Navi.createPage()`](../reference/declarations/#createpage)
-- [`Navi.createRedirect()`](../reference/declarations/#createredirect)
-- [`Navi.createContext()`](../reference/declarations/#createcontext)
-
-These functions all allow for their content to be fetched asynchronously from an API, database, dynamic `import()`, etc. For example, you might fetch a list of posts with a serverless `getPosts()` function:
-
-```js
-import * as Navi from 'navi'
-import React from 'react'
-import PostList from './PostList'
-
-export default Navi.createSwitch({
-  paths: {
-    '/': async env => {
-      let posts = await getPosts()
-
-      return Navi.createPage({
-        title: "React Site",
-        content: <PostList posts={posts} />,
-      }),
-    }
-  }
-})
-```
-
-For more details, see the [Declaring Pages guide](../reference/declarations/).
-
-
-The `<App>` component
----------------------
-
-Your new `<App>` component will look a little different to the standard create-react-app one, as it's responsible for rendering the navigation state passed via its [`navigation` prop](../reference/navigation/).
-
-```js
-//---
-editorPathname: /App.js
-//--- pages.js <-- pages.js
-//--- App.js <-- App.js
-//--- index.mdx <-- index.mdx
-//--- getting-started.mdx <-- getting-started.mdx
-//--- index.js <-- index.js
-//--- styles.css <-- styles.css
-```
-
-Here's a quick breakdown of what the various Nav components do:
-
-- [`<NavProvider>`](../integrations/react/#navprovider) subscribes to the app's navigation state, and provides the latest state to its descendents via [React Context](https://reactjs.org/docs/context.html).
-- [`<NavContent>`](../integrations/react/#navcontent) renders the first `content` object in a Switch or Page that matches the current URL.
-- [`<NavNotFoundBoundary>`](../integrations/react/#navnotfoundboundary) catches `NotFoundError` exceptions thrown by `<NavContent>`, and renders your provided 404 message until the user navigates to another page.
-- [`<NavLoading>`](../integrations/react/#navloading) provides acccess to the route that is currently loading (if it exists) via a [render prop](https://reactjs.org/docs/render-props.html). If there the current route has fully loaded, the render prop's argument will be `undefined`, allowing a loading overlay to be shown while the next page's content is loading.
-
-For more details on these components, see the [React Integration](../integrations/react/) guide.
-
-
-TypeScript support
-------------------
-
-Navi is built with TypeScript, and that means you'll always have access to solid, up-to-date types. And given that Create React App now supports TypeScript, it's super easy to get started!
-
-To create an app using Navi's TypeScript template, just pass a `--typescript` option at *the end* of the command:
+Usage is identical to the `create-react-app` command -- you'll just need to call `create-react-blog` instead.
 
 ```bash
-npx create-react-navi-app my-typescript-app --typescript
+npm init react-blog my-blog
+cd my-blog
+npm start
 ```
 
-This will generate a project with TypeScript files instead of JavaScript files, along with a declaration file to ensure that you can import `.mdx` files.
+Of if you want a TypeScript project, append a `--typescript` flag:
+
+```bash
+npm init react-blog my-blog --typescript
+```
+
+Then open [http://localhost:3000/](http://localhost:3000/) to see your app, if it isn't automatically opened for you.
 
 
-Acknowledgements
-----------------
+### What's next?
 
-A huge thanks is in order for the authors of create-react-app. It's a pleasure to work with, and this project wouldn't be possible without it.
-
+Once you've run `create-react-navi-app`, `create-react-blog`, or installed `navi` and `react-navi` in your create-react-app project, there are a few routing concepts that it will be helpful to understand. Once you're ready to dive in, just click through to the next page -- I'll see you there!

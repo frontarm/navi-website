@@ -1,0 +1,65 @@
+export const filename = __filename
+import { Doc } from '@frontarm/doc'
+export const demoboardHelpers = {
+  'index.js': require('!raw-loader!./demo/index.js'),
+  'pages.js': require('!raw-loader!./demo/pages.js'),
+  'Layout.js': require('!raw-loader!./demo/Layout.js'),
+  'home.md': require('!raw-loader!./demo/home.md'),
+  'about.md': require('!raw-loader!./demo/about.md'),
+  'styles.css': require('!raw-loader!./demo/styles.css'),
+}
+
+# Layouts and Nested Content
+
+Occasionally, you'll find that you have some content that is shared between a *section* of your app, without being shared across the whole thing. You can't render it at the topl level because it's not needed for every page, but you don't want to repeat it across every single page that uses it. For example, the navigation bar on the left of this documentation site is shared by all pages within Navi's documentation, while not being displayed on Frontend Armory's [courses](https://frontarm.com/learn/) and [blog](https://frontarm.com/articles/).
+
+In situations like this, you'll need a way to render *layout* components -- i.e. components that are shared between pages. And Navi lets you solve this by specifying *multiple* views.
+
+## `withView()`
+
+<Doc.AsideTop>
+
+While you'll often map a URL to a view with the `route()` function, Navi gives you another way to declare views: `withView()`.
+
+```js
+withView(
+  req => <SomeElementOrComponent />,
+  childMatcher
+)
+```
+
+<Doc.Details aside title={<>You've used <code>withView()</code> before...</>}>
+
+Navi's `route()` function actually uses `withView()` internally -- so every time you declare a view with `route()`, you're also making a call to `withView()`.
+
+</Doc.Details>
+</Doc.AsideTop>
+
+The `withView()` function can be wrapped around `route()`, `map()` or any other matcher. It tells Navi -- hey, I want this element to be rendered in place of my top-level `<View />` component. There's just one problem: if you wrap your `withView()` around a `route()` that declares its *own* view, then you'll be matching *two* views -- and the `<View />` component only renders the first. 
+
+```js
+// demo
+```
+
+## Nested `<View />` elements
+
+If you take a look at the console output of the above example, you'll notice that `route.views` is an *array*, and it contains *two* elements.
+
+It looks like Navi knows that you've matched two views. So how do you render the second one? Easy -- you just render another `<View />` within the first! And because the nested `<View />` can be rendered *anywhere* within the first one, you can use views to make nested layouts, like this one:
+
+```js
+//---
+editorPathname: /pages.js
+//--- index.js <-- index.js
+//--- pages.js <-- pages.js
+//--- Layout.js <-- Layout.js
+//--- home.md <-- home.md
+//--- about.md <-- about.md
+//--- styles.css <-- styles.css
+```
+
+Here's the golden rule:
+
+**The `<View />` component will always render the first view that hasn't been rendered yet.**
+
+One result of this rule is that it becomes possible to create entire applications with multiple routes, that can be reused by mapping them to a URL and rendering a single `<View />`. In fact, the Navi website itself is built this way -- you can load it independently during development, or you can embed it within another website like Frontend Armory. For more details, take a look at the website's [source](https://github.com/frontarm/navi-website).

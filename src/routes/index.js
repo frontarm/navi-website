@@ -1,7 +1,7 @@
 import React from 'react'
-import { composeMatchers, map, redirect, route, withData, withView } from 'navi'
+import { composeMatchers, map, redirect, route, withData, withView, withContext } from 'navi'
 import { Layout } from './Layout'
-import path from 'path'
+import { join } from 'path'
 
 export default composeMatchers(
   withView(async (req, context) =>
@@ -17,11 +17,16 @@ export default composeMatchers(
       })}
     />
   ),
+  withContext((req, context) => ({
+    naviRoot: req.mountpath,
+    ...context,
+  })),
   map({
     '/': route({
       title: "Navi – A JavaScript router and static renderer",
-      getView: (req, context) => getPageContent(req, context, import('./start-here.md')),
+      getView: (req, context) => getPageContent(req, context, import('./start-here/start-here.md')),
       data: {
+        navTableOfContents: null,
         navTitle: 'Start Here',
         socialTitle: 'Navi',
         socialImageURL: require('./social-media-card.png'),
@@ -30,117 +35,110 @@ export default composeMatchers(
     }),
 
     '/motivation': route({
-      title: 'Why Navi?',
-      getView: (req, context) => getPageContent(req, context, import('./motivation.md')),
+      title: 'Motivation',
+      getView: (req, context) => getPageContent(req, context, import('./motivation/motivation.md')),
+    }),
+
+    '/comparisons': route({
+      title: "Comparison With Similar Tools",
+      getView: (req, context) => getPageContent(req, context, import('./comparison/comparison.md')),
+      data: {
+        navTitle: 'Comparison With Similar Tools',
+        socialTitle: 'Navi vs. Gatsby vs. Next.js',
+        metaDescription: 'TODO',
+      },
     }),
 
     '/create-react-navi-app': route({
-      title: 'Create React/Navi App',
+      title: 'Creating A New App',
       getView: (req, context) => getPageContent(req, context, import('./create-react-navi-app.md')),
       data: {
         metaDescription: 'Zero-configuration React apps with ready-to-go routing, mdx support, and static HTML generation.',
         socialImageURL: require('./create-react-navi-app-social.png'),
+        socialTitle: 'Getting started with Navi',
       },
     }),
-
-    // '/core-concepts': route({
-    //   title: 'Core concepts',
-    //   getView: req => getDocumentExports(import('./core-concepts.md')),
-    // }),
 
     '/guides': composeMatchers(
       withData({
         sectionTitle: 'Guides'
       }),
       map({
-        '/minimal-example': route({
-          title: 'A Minimal Example of Navi',
-          getView: (req, context) => getPageContent(req, context, import('./guides/minimal-example.md')),
+        '/minimal-example': redirect('./basic-components-hooks'),
+        '/getting-started': route({
+          title: 'Getting Started',
+          getView: (req, context) => getPageContent(req, context, import('./guides/getting-started/document.mdx')),
           data: {
-            navTitle: 'A Minimal Example'
-          },
+            metaDescription: 'TODO',
+          }
         }),
 
-        // '/minimal-example': createPagesForLanguages({
-        //   en: {
-        //     importMDX: () => import('./guides/minimal-example.md'),
-        //     title: 'A Minimal Example of Navi',
-        //     data: {
-        //       navTitle: 'A Minimal Example'
-        //     },
-        //   },
-        //   ja: {
-        //     importMDX: () => import('./guides/minimal-example.ja.md'),
-        //     title: '簡単な例',
-        //     data: {
-        //       navTitle: '簡単な例'
-        //     },
-        //   }
-        // }),
-
-        '/static-rendering': route({
-          title: 'Static Rendering with Navi',
-          getView: (req, context) => getPageContent(req, context, import('./guides/static-rendering.md')),
+        '/url-parameters': route({
+          title: 'URL Parameters',
+          getView: (req, context) => getPageContent(req, context, import('./guides/url-parameters/document.mdx')),
           data: {
-            navTitle: 'Static Rendering'
-          },
+            metaDescription: 'TODO',
+          }
+        }),
+
+        '/requests-routes-matchers': route({
+          title: 'Requests, Routes and Matchers',
+          getView: (req, context) => getPageContent(req, context, import('./guides/requests-routes-matchers/document.mdx')),
+          data: {
+            metaDescription: 'TODO',
+          }
+        }),
+
+        '/layouts-nested-content': redirect('/nested-views'),
+        '/nested-views': route({
+          title: 'Nested Routes and Views',
+          getView: (req, context) => getPageContent(req, context, import('./guides/nested-views/document.mdx')),
+          data: {
+            metaDescription: `Learn to add nested views and layouts to your routes, allowing you to create entire apps that can be embedded anywhere.`
+          }
+        }),
+
+        '/programmatic-navigation': route({
+          title: 'Programmatic Navigation',
+          getView: (req, context) => getPageContent(req, context, import('./guides/programmatic-navigation/document.mdx')),
+          data: {
+            metaDescription: 'TODO',
+          }
+        }),
+
+        '/routing-context': route({
+          title: 'Routing Context',
+          getView: (req, context) => getPageContent(req, context, import('./guides/context/document.mdx')),
+          data: {
+            metaDescription: `TODO`,
+          }
         }),
 
         '/authenticated-routes': route({
-          title: 'Authenticated Routes with Navi',
-          getView: (req, context) => getPageContent(req, context, import('./guides/authenticated-routes.md')),
+          title: 'Authenticated Routes',
+          getView: (req, context) => getPageContent(req, context, import('./guides/authenticated-routes/document.mdx')),
           data: {
-            navTitle: 'Authenticated Routes',
             metaDescription: `Add authenticated routes to your statically rendered site, complete with redirects to and from the login screen.`,
           }
         }),
 
-        '/layouts-nested-content': route({
-          title: 'Layouts and Nested Content with Navi',
-          getView: (req, context) => getPageContent(req, context, import('./guides/layouts-nested-content.md')),
+        '/static-rendering': route({
+          title: 'Static Rendering with Navi',
+          getView: (req, context) => getPageContent(req, context, import('./guides/static-rendering/document.mdx')),
           data: {
-            navTitle: "Layouts and Nested Content",
-            metaDescription: `Learn to add nested layouts to your routes, allowing you to create entire apps that can be embedded anywhere.`
-          }
+            metaDescription: `TODO`,
+          },
         }),
 
-    //     '/integrating-express': route({
-    //       title: 'Server Rendering with Express',
-    //       getView: req => getDocumentExports(import('./guides/integrating-express.md')),
-    //     }),
+        '/setting-head-meta-title': route({
+          title: 'Setting head, title and meta tags',
+          getView: (req, context) => getPageContent(req, context, import('./guides/setting-head-meta-title/document.mdx')),
+          data: {
+            navTitle: <>Setting <code>meta</code> and <code>title</code></>,
+            metaDescription: `TODO`,
+          },
+        }),
       })
-    ),
-
-    '/integrations': composeMatchers(
-      withData({
-        sectionTitle: 'Integrations'
-      }),
-      map({
-        '/react': route({
-          title: 'Using Navi with React',
-          getView: (req, context) => getPageContent(req, context, import('./integrations/react.md')),
-          data: {
-            navTitle: 'Usage with React',
-          }
-        }),
-
-        '/react-router': route({
-          title: 'Using Navi with react-router',
-          getView: (req, context) => getPageContent(req, context, import('./integrations/react-router.md')),
-          data: {
-            navTitle: 'Usage with react-router',
-          }
-        }),
-
-        '/react-helmet': route({
-          title: 'Using Navi with react-helmet',
-          getView: (req, context) => getPageContent(req, context, import('./integrations/react-helmet.md')),
-          data: {
-            exclusiveTo: 'Pro',
-            navTitle: 'Usage with react-helmet',
-          }
-        }),
-      }),
     ),
 
     '/reference': composeMatchers(
@@ -148,20 +146,11 @@ export default composeMatchers(
         sectionTitle: 'API Reference'
       }),
       map({
-        '/data-types': route({
-          title: "Data Types – Navi",
-          getView: (req, context) => getPageContent(req, context, import('./reference/data-types.md')),
-          data: {
-            navTitle: "Data Types",
-          }
+        '/components-and-hooks': route({
+          title: 'Components and Hooks',
+          getView: (req, context) => getPageContent(req, context, import('./reference/components-and-hooks.mdx')),
         }),
-        '/declarations': route({
-          title: 'Declaring pages with Navi',
-          getView: (req, context) => getPageContent(req, context, import('./reference/defining-pages.md')),
-          data: {
-            navTitle: 'Declaring pages',
-          }
-        }),
+        '/declarations': redirect('/macthers'),
         '/history': route({
           title: "Navi's history object",
           getView: (req, context) => getPageContent(req, context, import('./reference/history.md')),
@@ -169,27 +158,62 @@ export default composeMatchers(
             navTitle: <code>history</code>,
           }
         }),
+        '/matchers': route({
+          title: 'Matchers',
+          getView: (req, context) => getPageContent(req, context, import('./reference/matchers.md')),
+        }),
         '/navigation': route({
-          title: "The Navigation object – Navi",
+          title: "The Navigation object",
           getView: (req, context) => getPageContent(req, context, import('./reference/navigation.md')),
           data: {
             navTitle: <code>navigation</code>,
           }
         }),
         '/route-and-segment': redirect(req =>
-          path.join(req.mountpath, '..', 'data-types/')
+          join(req.mountpath, '..', 'data-types/')
         ),
         '/url-descriptor': redirect(req =>
-          path.join(req.mountpath, '..', 'data-types/#urldescriptor')
+          join(req.mountpath, '..', 'data-types/#urldescriptor')
         ),
         '/router': route({
-          title: 'Router objects – Navi',
+          title: 'Router objects',
           getView: (req, context) => getPageContent(req, context, import('./reference/router.md')),
           data: {
             navTitle: <code>router</code>,
           }
         }),
+        '/data-types': route({
+          title: "Types",
+          getView: (req, context) => getPageContent(req, context, import('./reference/data-types.md')),
+        }),
       })
+    ),
+
+    '/integrations': composeMatchers(
+      withData({
+        sectionTitle: 'Usage with...'
+      }),
+      map({
+        '/react': redirect((req, context) => join(context.naviRoot, 'reference/components-and-hooks')),
+
+        // - TODO: express
+
+        '/react-router': route({
+          title: 'Using Navi with react-router',
+          getView: (req, context) => getPageContent(req, context, import('./integrations/react-router.md')),
+          data: {
+            navTitle: 'react-router',
+          }
+        }),
+
+        '/react-helmet': route({
+          title: 'Using Navi with react-helmet',
+          getView: (req, context) => getPageContent(req, context, import('./integrations/react-helmet.md')),
+          data: {
+            navTitle: 'react-helmet',
+          }
+        }),
+      }),
     ),
 
     '/deploy': composeMatchers(

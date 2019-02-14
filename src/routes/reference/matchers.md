@@ -1,8 +1,8 @@
 export const filename = __filename
 export const demoboardHelpers = {
-  'App.js': require('!raw-loader!./defining-pages/App.js'),
-  'index.js': require('!raw-loader!./defining-pages/index.js'),
-  'styles.css': require('!raw-loader!./defining-pages/styles.css'),
+  'App.js': require('!raw-loader!./matchers/App.js'),
+  'index.js': require('!raw-loader!./matchers/index.js'),
+  'styles.css': require('!raw-loader!./matchers/styles.css'),
 }
 
 Declaring Pages

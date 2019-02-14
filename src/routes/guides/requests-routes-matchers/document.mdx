@@ -1,0 +1,253 @@
+export const filename = __filename
+import Blurb from '../../../components/Blurb'
+import { Doc } from '@frontarm/doc'
+export const demoboardHelpers = {
+  'App.js': require('!raw-loader!./demo/App.js'),
+  'index.js': require('!raw-loader!./demo/index.js'),
+  'pages.js': require('!raw-loader!./demo/pages.js'),
+  'getting-started.mdx': require('!raw-loader!./demo/getting-started.mdx'),
+  'index.mdx': require('!raw-loader!./demo/index.mdx'),
+  'styles.css': require('!raw-loader!./demo/styles.css'),
+}
+
+# Requests, Routes and Matchers
+
+<Blurb>
+
+At its core, Navi is just a tool for mapping Requests to Routes; to accomplish this, it uses a pattern called *Matchers*.
+
+</Blurb>
+
+
+Requests and History
+--------------------
+
+Imagine that you've just clicked a link -- maybe the one that got you to this page. Your browser needs to ask a server somewhere for the content for that page, so it sends the server a **Request**. Requests can contain all sorts of information, but at the core of a Request is always a URL, like this one.
+
+```text
+https://frontarm.com/navi/core-concepts/
+```
+
+<Doc.AsideTop>
+
+In modern browsers, the History API lets applications change the current URL *without* reloading the page or sending a new Request. Navi wraps the History API with an observable [history object](), and then uses it to keep track of the latest URL. For simple apps, this is all you'd really need from a router -- it lets you render changes in response to navigation, and it lets you programatically navigate by calling methods of the `history` object:
+
+```js
+// Update the URL, adding a new entry to the browser history
+history.push('/what-are-we-going-to-do-today-brain')
+
+// Update the URL by overwriting the last history entry
+history.replace('/the-same-thing-we-do-everyday-pinky')
+```
+
+<Doc.Details aside title="A little history">
+
+Navi's `history` object is managed by the same [history](https://www.npmjs.com/package/history) package as react-router, smoothing integration between the two libraries.
+
+</Doc.Details>
+</Doc.AsideTop>
+
+But for larger apps, just knowing the URL isn't enough. You also need to know what data and code are associated with each URL. And in a Navi app, you can find this information in **Route** objects.
+
+
+Routes
+------
+
+Imagine that you've just clicked a link. Before the browser can display the new page, it'll need to fetch the information that is required to render that page.
+
+What kind of information is necessary to render the link that you clicked?
+
+- The document `<title>`
+- Any metadata in the document `<head>`
+- A number of React components and elements, including possibly a site-wide layout
+- Any data that will be passed to those React components
+
+In a Navi app, each Request maps to a `Route` object that contains everything needed to render that Request. The shape of your `Route` objects is configurable, but usually it'll look something like this:
+
+```jsx
+let route = {
+  url: {
+    pathname: '/navi/core-concepts/',
+    // ...
+  }  
+  segments: [/* ... */],
+  title: "Core Concepts",
+  heads: [
+    <meta name="description" content="amazeballs" />,
+  ],
+  views: [
+    <NaviLayout />,
+    <NaviMDXLayout MDXComponent={/* ... */} />,
+  ],
+  data: {
+    language: 'en',
+  },
+}
+```
+
+Once you have the `Route` object that corresponds to a given Request, rendering it is simple -- and the React components in the `react-navi` package make it even simpler.
+
+But let's say that you have a Request, and you want a `Route`. Getting that `Route` can be trickier than you may first  think:
+
+- The views and data in the `Route` object may come from multiple disparate sources.
+- You'll want to fetch any dependencies in parallel if at all possible.
+- The `<AppLayout />` might be shared over the entire sites routes, while the `<PageLayout />` probably isn't.
+- The data might depend on URL parameters or the URL query.
+
+Navi's key innovation is that it lets you avoid all this and effortlessly declare mappings between URLs and `Route` objects, using a mechanism called **Matchers.**
+
+
+Matchers
+--------
+
+Imagine that you've just clicked a link (you should be pretty good at this by now), and your browser has navigated to a new URL:
+
+```text
+https://frontarm.com/navi/core-concepts/
+```
+
+Looking at this URL, you can infer a few things about the result:
+
+- Because the URL is under `/navi`, it'll use a `<NaviLayout>` element to render a sidebar on the left.
+- The content for `/navi/core-concepts` is written with Markdown, so there'll be a `<NaviMDXLayout>` element.
+- There's no language specified in the query string, so it's going to default to English.
+
+Navi lets you specify each of these rules as individual **Matchers** -- objects that map Requests to individual **Segments** of data within your Route. For example, here are some segments that represent the above URL:
+
+```jsx
+{
+  type: 'view',
+  url: '/navi',
+  view: <NaviLayout />,
+}
+
+{
+  type: 'view',
+  url: '/navi/core-concepts',
+  view: <NaviMDXLayout MDXComponent={/* ... */} />,
+}
+
+{
+  type: 'data',
+  url: '/navi/core-concepts',
+  data: { language: 'en' },
+}
+```
+
+Your Route is then created by reducing all of the matched segments into a single `Route` object.
+
+```jsx
+let route = {
+  url: {
+    pathname: '/navi/core-concepts/',
+    // ...
+  }  
+  segments: [
+    {
+      type: 'view',
+      url: '/navi',
+      view: <NaviLayout />
+    },
+    {
+      type: 'view',
+      url: '/navi/core-concepts',
+      view: <NaviMDXLayout MDXComponent={/* ... */} />
+    },
+    {
+      type: 'data',
+      url: '/navi/core-concepts',
+      data: { language: 'en' }
+    },
+  ],
+  views: [
+    <NaviLayout />,
+    <NaviMDXLayout MDXComponent={/* ... */} />,
+  ],
+  data: {
+    language: 'en',
+  },
+}
+```
+
+Ok, so **matchers** map **requests** to individual chunks of data called **segments** -- which are then reduced into **routes**. But how do you write matchers? Actually, *you probably won't*. Because while it's entirely *possible* to write custom matchers (<small>they're just [generator functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*)</small>), Navi already includes all of the matcher-creating functions that you'll ever realistically need.
+
+For example, you could use [`map()`](../reference/matchers/#map) and [`withView()`](../reference/matchers/#withview) to map URL paths to views:
+
+```jsx 
+map({
+  '/navi': withView(<NaviLayout />)
+})
+```
+
+Or you could nest [`withData()`](../reference/matchers/#withdata) within [`withView()`](../reference/matchers/#withview) to match a URL to both its view *and* its data:
+
+```jsx
+map({
+  '/navi':
+    withView(
+      <NaviLayout />,
+      map({
+        '/core-concepts':
+          withView(
+            async request => {
+              let language = request.params.language || 'en'
+              let { default: MDXComponent } =
+                await import(`./core-concepts.${language}.mdx`)
+
+              return <NaviMDXLayout MDXComponent={MDXComponent} />
+            },
+            withData(request => ({
+              language: request.params.language || 'en',
+            }))
+          )
+      })
+    )
+})
+```
+
+You could also use [`composeMatchers()`](../reference/matchers/#composematchers) to improve readability by *composing* matchers instead of *nesting* them, and you could use dynamic `import()` to split matchers over multiple chunks -- improving scalability:
+
+```jsx
+map({
+  '/navi': composeMatchers(
+    withView(<NaviLayout />),
+    map({
+      '/core-concepts': () => import('./coreConcepts.js')
+    })
+  )
+})
+```
+
+And given that your routes have both a `view` and `data`, you could simplify things even further by specifying them both with [`route()`](../reference/matchers/#route) -- along with the page's `title` and any `head` tags.
+
+```jsx
+map({
+  '/core-concepts': route(async request => {
+    let language = request.params.language || 'en'
+    let { default: MDXComponent } =
+      await import(`./core-concepts.${language}.mdx`)
+    
+    return {
+      title: 'Core Concepts – Navi',
+      head: <meta name="description" content="amazeballs" />,
+      data: { language },
+      view: <NaviMDXLayout MDXComponent={MDXComponent} />
+    }
+  })
+})
+```
+
+Navi puts a bunch of other matchers at your disposal -- for details, see the [Matchers Reference](../reference/matchers). But with this said, in most situations you'll need no more than `map()`, `route()` and `withView()` -- just like in the following example.
+
+```jsx
+//---
+editorPathname: /App.js
+//--- pages.js <-- pages.js
+//--- App.js <-- App.js
+//--- index.mdx <-- index.mdx
+//--- getting-started.mdx <-- getting-started.mdx
+//--- index.js <-- index.js
+//--- styles.css <-- styles.css
+```
+
+One curious thing about the `Route` objects in these examples that you might have noticed, is that `Route` can have multiple view elements. This is how Navi handles nested layouts -- which we'll discuss on the next guide. See you there!

@@ -1,0 +1,303 @@
+export const filename = __filename
+import { Doc } from '@frontarm/doc'
+export const demoboardHelpers = {
+  'index.js': require('!raw-loader!./demo/index.js'),
+  'routes.js': require('!raw-loader!./demo/routes.js'),
+  'routes/About.js': require('!raw-loader!./demo/About.js'),
+  'App.js': require('!raw-loader!./demo/App.js'),
+  'styles.css': require('!raw-loader!./demo/styles.css'),
+}
+
+Static Rendering
+================
+
+<Doc.AsideTop>
+
+It only takes a few small changes to set up static HTML generation for your app built with Navi and create-react-app:
+
+1. `npm install navi-scripts --save-dev`
+2. Import and call `register()` from `navi-scripts/register`
+3. Implement your `main()` function
+4. Update your `package.json`
+
+I think you can handle the first step, but let me walk you through rest of it.
+
+<Doc.Details aside title="Save effort with a starter">
+
+You can skip the hard work of setting up static rendering by using a [starter project](../../create-react-navi-app).
+
+</Doc.Details>
+</Doc.AsideTop>
+
+`navi-scripts/register`
+-----------------------
+
+The `navi-scripts` tool is responsible for statically rendering your HTML. To cut a long story short, it works by:
+
+1. Loading your already-built app bundle with [jsdom](https://github.com/jsdom/jsdom)
+2. Inspecting your routes to build a list of your sites URLs, and then
+3. Rendering each one using [ReactDOMServer.renderToString()](https://reactjs.org/docs/.react-dom-server.html#rendertostring)
+
+There's one problem with this flow -- how does `navi-scripts` find your routes? create-react-app doesn't provide a way to export anything. So in order to tell Navi what to render, you'll need to import the `register()` function from `navi-scripts/register`, and then call it with your routes.
+
+Usually, you'll want to call register in your app's entry point, i.e. `src/index.js`. Here's what it'll look like for a typical create-react-app setup.
+
+Assuming that you're using the default `src/index.js` from create-react-app, here's what it'll look after importing and calling to `register()`:
+
+```js
+import register from 'navi-scripts/register'
+import routes from './routes'
+
+register({
+  // Specify the routes that navi-app should statically build
+  routes,
+
+  // If you pass an `App` component, `navi-scripts` will use it as the top
+  // level component to be rendered for each page. If you don't pass an `App`
+  // component, then a react-navi `<View>` will be rendered instead.
+  exports: {
+    App,
+  },
+
+  async main() {
+    // ... we'll get to this in a moment ...
+  }
+})
+```
+
+
+Implementing `main()`
+---------------------
+
+In order to access your routes, `navi-scripts` loads your app bundle with jsdom. But given that jsdom isn't a real browser, actually *running* the app would result in weeping and gnashing of teeth. To get around this, `register()` accepts a `main()` function that is only called in real browsers -- it is *not* called during static build.
+
+So what can you put in `main()`? Anything you want, really! But there are a few differences from what you'd put in a browser-only app.
+
+### `render()` vs. `hydrate()`
+
+When running in the `production` environment, you'll want to call `ReactDOM.hydrate()` instead of `ReactDOM.server()`. This lets React re-use the initial DOM, instead of rendering everything from scratch upon load.
+
+```js
+// React requires that you call `ReactDOM.hydrate` if there is statically
+// rendered content in the root element, but prefers us to call
+// `ReactDOM.render` when it is empty.
+let hasStaticContent = process.env.NODE_ENV === "production";
+let renderer = hasStaticContent ? ReactDOM.hydrate : ReactDOM.render;
+```
+
+Since you can't use `<Suspense>` with `ReactDOMServer.renderToString()`, you'll need to manually wait for your intial route to load. This means that instead of using a `<Router>` component, you'll need to manually create a `navigation` object and pass it to a `<NaviProvider>` component.
+
+```js
+let navigation = Navi.createBrowserNavigation({
+  routes,
+  context: {
+    // ...
+  }
+});
+
+// Wait until the navigation has loaded the page's content, or failed to do
+// so. If you want to load other data in parallel while the initial page is
+// loading, make sure to start loading before this line.
+await navigation.steady();
+```
+
+Finally, since `navi-scripts` doesn't call your `main()` function during static rendering, you'll need to make sure that your `main()` function is rendering the same thing as `navi-scripts`. Here's the rule:
+
+- By default, `navi-scripts` renders a react-navi `<View />` for each route.
+- But if you pass an `App` to the `exports` option of `register()`, that will be rendered instead.
+
+Assuming you're happy with the default of just rendering a `<View />`, here's what your `register()` call will look like:
+
+```js
+import register from "navi-scripts/register";
+import * as Navi from "navi";
+import React from "react";
+import ReactDOM from "react-dom";
+import { NaviProvider, View } from "react-navi";
+import routes from "./routes";
+
+// `register()` is responsible for exporting your app's pages and App
+// component to the static renderer, and for starting the app with the
+// `main()` function when running within a browser.
+register({
+  // Specify the pages that navi-app should statically build, by passing in a
+  // Switch object.
+  routes,
+
+  // This will only be called when loading your app in the browser. It won't
+  // be called when performing static generation.
+  async main() {
+    let navigation = Navi.createBrowserNavigation({ routes });
+
+    // Wait until the navigation has loaded the page's content, or failed to do
+    // so. If you want to load other data in parallel while the initial page is
+    // loading, make sure to start loading before this line.
+    await navigation.steady();
+
+    // React requires that you call `ReactDOM.hydrate` if there is statically
+    // rendered content in the root element, but prefers us to call
+    // `ReactDOM.render` when it is empty.
+    let hasStaticContent = process.env.NODE_ENV === "production";
+    let renderer = hasStaticContent ? ReactDOM.hydrate : ReactDOM.render;
+
+    // Start react, passing in the current navigation state via the
+    // NaviProvider.
+    renderer(
+      <NaviProvider navigation={navigation}>
+        <View />
+      </NaviProvider>,
+      document.getElementById("root")
+    )
+  }
+});
+```
+
+*The above code snippet is taken from the template for [create-react-blog](../../create-react-navi-app/#create-react-blog).*
+
+## Update your `package.json`
+
+Navi's static renderer is part of the `navi-scripts` package, so start by installing it:
+
+```bash
+npm install --save navi-scripts
+```
+
+To render your app, navi-scripts loads the result of the create-react-app's build script in a [jsdom](https://github.com/jsdom/jsdom). Because of this, you'll always need to run create-react-app's build script before running Navi's build script:
+
+```bash
+npx react-scripts build
+```
+
+Finally, once you've added `Navi.app()` to your entry point, and build it with create-react-app's build script, all that's left is to execute Navi's build script:
+
+```bash
+npx navi-scripts build
+```
+
+You can simplify the build process further by modifying the `build` script with in your `package.json` file to call both React and Navi's build scripts:
+
+```js
+"build": "react-scripts build && navi-scripts build"
+```
+
+After making this change, you can build your app by simply running your package's build script:
+
+```bash
+npm run build
+```
+
+And that's all there is to it! After running this command, you'll have HTML files in your `build` folder for every page and redirect. And to try them out, you can use Navi's included server:
+
+```bash
+npx navi-scripts serve
+```
+
+
+Custom renderers
+----------------
+
+By default, `navi-scripts` produces HTML by passing an `<App>` or `<View>` component to `ReactDOMServer.renderToString()`. However, if you need more control over this process, it's possible to configure a custom renderer.
+
+To start, you'll need to create a `navi.config.js` file in your project's root directory. Then, to configure the custom renderer, you'll need to export a string that contains the location of a `renderPageToString.js` file. Here's how create-react-blog does this:
+
+```js
+// navi.config.js
+export const renderPageToString = require.resolve('./src/renderPageToString')
+```
+
+Here's an example of a `renderPageToString.js` file that roughly matches the [default behavior](https://github.com/frontarm/navi/blob/8d11274c92d6492ccbe529ad17da980ffa61715d/packages/react-navi/create-react-app.js):
+
+```js
+// src/renderPageToString.js
+const { renderCreateReactAppTemplate } = require('react-navi/create-react-app')
+
+async function renderPageToString({ config, exports={}, routes, siteMap, dependencies, url }) {
+  let canonicalURLBase = process.env.CANONICAL_URL || process.env.PUBLIC_URL || ''
+
+  // Create an in-memory Navigation object with the given URL
+  let navigation = Navi.createMemoryNavigation({
+    routes,
+    url,
+  })
+
+  // Wait for any asynchronous content to finish fetching
+  let route = await navigation.getSteadyValue()
+
+  // react-helmet thinks it's in a browser because of jsdom, so we need to
+  // manually let it know that we're doing static rendering.
+  Helmet.canUseDOM = false
+
+  // Render the content
+  let bodyHTML =
+    ReactDOMServer.renderToString(
+      React.createElement(
+        NaviProvider,
+        { navigation }, 
+        React.createElement(exports.App || View)
+      )
+    )
+
+  // This must be called after rendering the app, as stylesheet tags are
+  // captured as they're imported
+  let stylesheetTags = Array.from(dependencies.stylesheets)
+    .map(pathname => `<link rel="stylesheet" href="${pathname}" />`)
+    .join('')
+  
+  // Generate page head
+  let helmet = Helmet.renderStatic();
+  let metaHTML = `
+    ${helmet.title && helmet.title.toString() || "<title>"+route.title+"</title>"}
+    ${helmet.meta && helmet.meta.toString()}
+    ${helmet.link && helmet.link.toString()}
+  `
+  
+  // This loads the react-scripts generated index.html file, and injects
+  // our content into it
+  return renderCreateReactAppTemplate({
+    config,
+    insertIntoRootDiv: bodyHTML,
+    replaceTitleWith:
+      `<link rel="canonical" href="${canonicalURLBase+url.href}" />\n`+
+      metaHTML+
+      stylesheetTags,
+  })
+}
+
+module.exports = renderPageToString
+```
+
+
+## HTTP redirects
+
+By default, `navi-scripts` renders redirects as a HTML file with `<meta>`-based redirect. While this default will usually get the job done, it does have the issue of not being able to forward the URL `?search` through to the target URL. As a result, to use `?search` parameters with redirects, you'll need to set up HTTP redirects.
+
+Unfortunately, there's no common standard between hosting platforms by which you can configure HTTP redirects. However, you can easily configure your own method for rendering redirects by exporting a `createRedirectFiles()` function from `navi.config.js`. Here's the default implementation that renders each redirect as a HTML file with a single `<meta>` tag.
+
+```js
+// The 'fs-extra' package mirrors Node's 'fs' packages, but its
+// functions return promises, facilitating use within `async` functions.
+import fs from 'fs-extra'
+import path from 'path'
+
+export async function createRedirectFiles({ config, siteMap }) {
+  // The `siteMap.redirects` object contains all of the site's
+  // redirects, mapping the "from" URL to the "to" URL.
+  for (let [ url, to ] of Object.entries(siteMap.redirects)) {
+    // Compute an `index.html` pathname instead of using the raw path.
+    let pathname =
+      url === '/'
+        ? 'index.html'
+        : path.join(url.split('?')[0].slice(1), 'index.html')
+
+    console.log("[redirect] "+pathname+" -> "+to)
+
+    let filesystemPath = path.resolve(config.root, pathname)
+    let text = `<meta http-equiv="refresh" content="0; URL='${to}'" />`
+
+    // Make sure the directory exists before writing the redirect to
+    // a file in the directory.
+    await fs.ensureDir(path.dirname(filesystemPath))
+    await fs.writeFile(filesystemPath, text)
+  }
+}
+```

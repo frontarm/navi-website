@@ -26,8 +26,10 @@
     left: 0;
     width: $sidebarWidth;
 
+    background-color: #f8f8f8;
+
     border-right: 1px solid $border;
-    font-weight: 700;
+    font-weight: 400;
     background-color: white;
   }
 
@@ -36,6 +38,8 @@
     text-align: left;
     padding: 1rem 2rem;
     margin-left: -2px;
+    border-bottom: 1px solid $border;
+    margin-bottom: 2rem;
 
     .logo {
       height: 32px;
@@ -75,12 +79,12 @@
     }
 
     &:hover {
-      color: $primary;
+      color: $primary !important;
 
       &.github {
-        color: rgba(0, 0, 0, 0.83);
+        color: rgba(0, 0, 0, 1) !important;
         img {
-          opacity: 0.83;
+          opacity: 1;
         }
       }
     }
@@ -88,29 +92,52 @@
 
   .section {
     > .heading {
-      border-bottom: 1px solid $border;
-      font-size: 1.2rem;
+      border: none;
+      cursor: pointer;
+      font-size: 1.3rem;
       font-weight: bold;
-      color: black;
-      padding-left: 2rem;
-      margin-top: 2rem;
+      color: lighten(desaturate($primary, 75%), 8%);
+      display: block;
+      width: 100%;
+      text-align: left;
+      background-color: transparent;
+      padding: 1rem 2rem;
+      margin: 0;
+      margin-top: 1rem;
       text-transform: uppercase;
+      transition: color 250ms ease-out;
     }
+
+    .toggle {
+      float: right;
+      transition: transform 250ms ease-out;
+    }
+
+    margin-bottom: 2rem;
+
+    &.closed .children {
+      display: none;
+    }
+    &.closed .toggle {
+      transform: rotate(-90deg);
+    }
+  }
+  .page + .section {
+    margin-top: 2rem;
+  }
+  .section.closed .children {
+    display: none;
+  }
+  .section.open .heading {
+    color: black;
+  }
+  .section.open > .children {
+    // margin-top: 2rem;
     margin-bottom: 2rem;
   }
-  .section + .page {
-    border-top: 1px solid $border;
-  }
 
-  .section.active > .heading {
-    color: $primary;
-  }
-
-  .brand + nav > .page:first-child:not(.active) {
-    border-top: 1px solid $border;
-  }
   .page {
-    border-bottom: 1px solid $border;
+    position: relative;
 
     .pro {
       float: right;
@@ -124,23 +151,34 @@
       color: $primary;
     }
   }
+  .page .highlight {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    border-right: 0.5rem transparent solid;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    transition: border-color 300ms ease-out;
+  }
+  .page.active .highlight {
+    border-right-color: $primary;
+  }
   .page.active > .link {
-    background-color: $primary;
-    color: white;
+    color: black;
     font-weight: bold;
   }
   .page .children {
-    border-left: 2rem solid lighten(desaturate($primary, 60%), 44%);
-    padding: 0.5rem 0;
+    padding: 0 0 0.5rem;
+    margin-top: 0;
   }
   .heading > .link {
     color: lighten(desaturate($primary, 75%), 8%);
-    padding: 0.666rem 0 0.666rem 2rem;
+    padding: 0.666rem 0 0.666rem 3rem;
     font-size: 1.4rem;
     line-height: 2rem;
 
     &:hover {
-      color: lighten(desaturate($primary, 25%), 8%);
+      color: desaturate($primary, 25%) !important;
     }
   }
   .heading.active > .link {

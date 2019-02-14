@@ -27,7 +27,7 @@ export function App() {
         let language = languages[extension]
 
         return (
-          <Doc.Block marginSize='half' className='navi-website-code demoboard'>
+          <Doc.Block className='navi-website-code demoboard'>
             <Doc.Gutter Component='pre' half className={'language-'+language}>
               <code
                 id={id}
@@ -42,7 +42,7 @@ export function App() {
       },
 
       code: ({ highlightedSource, language='text', id, style }) =>
-        <Doc.Block marginSize='half' className='navi-website-code'>
+        <Doc.Block className='navi-website-code'>
           <Doc.Gutter Component='pre' half className={'language-'+language}>
             <code
               id={id}

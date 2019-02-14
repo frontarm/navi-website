@@ -106,7 +106,7 @@
 
     .Image {
       img {
-        max-width: 100%;
+        max-width: 100% !important;
       }
     }
 
@@ -152,11 +152,10 @@
     }
 
     hr {
-      margin-top: 0;
-      margin-bottom: 0;
-      border: 1px solid $primary;
-      border-radius: 2px;
-      opacity: 0.5;
+      margin: 4rem auto !important;
+      width: 33% !important;
+      border-top: 1px solid $border;
+      border-bottom: 0;
     }
 
     blockquote {
@@ -215,9 +214,9 @@
     h1, h2, h3, h4, h5, h6 {
       .headingLink {
         position: absolute;
-        padding: 0 1rem;
-        font-size: 18px;
-        left: -24px;
+        vertical-align: middle;
+        left: -20px;
+        width: 20px;
         text-decoration: none;
         font-weight: normal;
         color: #aaa;

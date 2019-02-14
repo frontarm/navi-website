@@ -1,0 +1,93 @@
+$primary: #1ee79e;
+$border: #eee;
+
+.StartHere {
+  h1 {
+    font-size: 6rem;
+  }
+
+  .pitch {
+    font-size: 2.2rem;
+    max-width: 500px;
+  }
+
+  .top-logo img {
+    width: 100%;
+    max-width: 300px !important;
+    margin-top: -2rem;
+  }
+
+  .maj aside {
+    color: darken(desaturate($primary, 75%), 25%);
+    padding: 1rem 0 2rem;
+    margin: 0;
+    border: 1px solid $primary;
+    border-radius: 1.5rem;
+    max-width: 320px;
+    font-size: 1.8rem;
+    h4 {
+      color: black;
+      font-size: 2rem;
+    }
+  }
+
+  .buttons a {
+    border: 1px solid transparent;
+    color: rgba(0, 0, 0, 0.63);
+    border-radius: 0.5rem;
+    display: inline-block;
+    margin: 1rem 1rem 1rem 0;
+    padding: 1.5rem 4rem;
+    text-align: center;
+
+    transition: background-color 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out;
+
+    &.license {
+      padding-left: 2rem;
+      font-size: 1.9rem;
+    }
+
+    &.github {
+      border-color: rgba(0, 0, 0, 0.43);
+      color: rgba(0, 0, 0, 0.63);
+      font-weight: bold;
+
+      img {
+        height: 20px;
+        width: 20px;
+        vertical-align: middle;
+        margin-right: 6px;
+        opacity: 0.63;
+      }
+  
+      &:hover {
+        border-color: black;
+        color: black;
+        text-decoration: none;
+  
+        img {
+          opacity: 1.0;
+        }
+      }
+    }
+
+    &.primary {
+      border-color: $primary;
+      font-weight: bold;
+      color: darken($primary, 5%);
+      &:hover {
+        background-color: $primary;
+        color: white;
+        text-decoration: none;
+      }
+    }
+  }
+
+  hr {
+    width: calc(100% - 64px);
+    max-width: none !important;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+    border-color: $border;
+  }
+}
