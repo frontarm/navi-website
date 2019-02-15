@@ -27,7 +27,7 @@ export default map({
       description: `Navi lets you create big, fast, CDN-delivered apps with great SEO & SMO — and all with vanilla create-react-app.`,
     },
     ja: {
-      navTitle: '元',
+      navTitle: 'Motivation',
     },
   }),
 

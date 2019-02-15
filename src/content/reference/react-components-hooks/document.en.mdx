@@ -6,29 +6,29 @@ This component can be used as a drop-in replacement for `<a>` tags. Internally, 
 
 ### Props
 
-#### `active: boolean` <small>(optional)</small>
+#### `active`: `boolean` <small>(optional)</small>
 
 Allows you to explicit enable or disable the `activeClassName` and `activeStyle` props.
 
-#### `activeClassName: string` <small>(optional)</small>
+#### `activeClassName`: `string` <small>(optional)</small>
 
 Will be added to your link's `className` if the app's current URL matches the `href` prop, or if the `active` prop is set to `true`.
 
-#### `activeStyle: object` <small>(optional)</small>
+#### `activeStyle`: `object` <small>(optional)</small>
 
 Will be merged into your link's `style` if the app's current URL matches the `href` prop, or if the `active` prop is set to `true`.
 
-#### `exact: bool` <small>(optional)</small>
+#### `exact`: `bool` <small>(optional)</small>
 
 If true, the link will only be considered to "match" the current URL if it is an *exact* match.
 
 By default, a partial match at the beginning of the current URL will also be considered a match. This facilitates nav links, which often need to be highlighted when child pages are active.
 
-#### `href: string` <small>(required)</small>
+#### `href`: `string` <small>(required)</small>
 
 The url to navigate to; identical to the `href` attribute of a HTML `<a>` tag.
 
-#### `precache: boolean` <small>(required)</small>
+#### `precache`: `boolean` <small>(required)</small>
 
 If specified, the linked page's content will be loaded as soon as the link is rendered.
 
@@ -48,7 +48,7 @@ Your app's `Navigation` object, as returned from [`createBrowserNavigation()`](.
 
 ## `<NotFoundBoundary>`
 
-Catches `NotFoundError` exceptions thrown by `<View />`.
+You can wrap a `<NotFoundBoundary>` around a view to show a "not found" message when no route can be found to be rendered by the view.
 
 ### Props
 
@@ -57,32 +57,37 @@ Catches `NotFoundError` exceptions thrown by `<View />`.
 ### Example
 
 ```js
-class App extends Component {
-  render() {
-    return (
-      <NaviProvider navigation={this.props.navigation}>
-        <NavLoading>
-          {loading =>
-            <Nav.NotFoundBoundary render={() =>
-              <h1>Not Found</h1>
-            }>
-              <div className="App">
-                <BusyIndicator show={loading} />
-                <View />
-              </div>
-            </Nav.NotFoundBoundary>
-          }
-        </NavLoading>
-      </NaviProvider>
-    );
-  }
+function Layout() {
+  return (
+    <NotFoundBoundary render={() =>
+      <h1>Not Found</h1>
+    }>
+      <View />
+    </NotFoundBoundary>
+  )
 }
 ```
 
 
 ## `<Router>`
 
-TODO
+When you don't need static rendering, you can wrap your app in a `<Router>` component to set up routing.
+
+Creates a [`navigation`](../navigation) object with the specified props, and passes it to an internal [`<NaviProvider>`](#naviprovider).
+
+If you don't pass in any children, then a [`<View>`](#view) will be rendered by default.
+
+### Props
+
+#### `routes`: [`Matcher`](../matchers/)
+
+#### `basename`: `string` <small>(optional)</small>
+
+#### `children`: `React.ReactNode` <small>(optional)</small>
+
+#### `context`: `Context` <small>(optional)</small>
+
+#### `history`: [`History`](../history) <small>(optional)</small>
 
 
 ## `<View>`
@@ -109,71 +114,56 @@ If a `children` prop is not provided, the default behavior is to render the next
 
 #### Basic Usage
 
-```js
-class App extends Component {
-  render() {
-    return (
-      <NaviProvider navigation={this.props.navigation}>
-        <div className="App">
-          <View />
-        </div>
-      </NaviProvider>
-    );
-  }
-}
+A `<View>` can be placed anywhere inside a `<Router>` or `<NaviProvider>` component -- it doesn't have to be a direct descendent. In fact, because `<View>` components can pause rendering with React Suspense, you'll often want to wrap them in a `<Suspense>` component.
+
+```jsx
+import { NaviProvider, View } from 'react-navi'
+
+ReactDOM.render(
+  <NaviProvider navigation={navigation}>
+    <Layout>
+      <View />
+    </Layout>
+  </NaviProvider>,
+  document.getElementById('root')
+);
 ```
 
 #### Usage with render prop
 
-By suppling a render prop, you can manually decide how to render your next route segment's content.
+By suppling a render prop, you can manually decide how to render the next unrendered view. This makes it possible to specify view objects other than React elements and components
 
-```js
-class App extends Component {
-  render() {
-    return (
-      <NaviProvider navigation={this.props.navigation}>
-        <div className="App">
-          <View>
-            {content => 
-              React.isValidElement(content)
-                ? content
-                : React.createElement(content)
-            }
-          </View>
-        </div>
-      </NaviProvider>
-    );
+```jsx
+<View>
+  {(view, route) => 
+    React.isValidElement(content)
+      ? content
+      : React.createElement(content)
   }
-}
+</View>
 ```
 
 #### Usage with React Suspense
-
-*Available from react-navi* ***0.10+***
 
 By wrapping your content in a React [`<Suspense>`](https://reactjs.org/docs/react-api.html#reactsuspense) element, you can specify a fallback element to display while your app's initial content is loading.
 
 Note that this only makes sense for apps that are *not* pre-rendered with `ReactDOMServer.render()`. For static or server rendered apps, use [`navigation.steady()`](../navigation/#navigationsteady) to wait for the initial content to load before hydrating the pre-rendered HTML with `ReactDOM.hydrate()`.
 
 ```js
-import { Suspense } from 'react'
+import React, { Suspense } from 'react'
+import { Router, View } from 'react-navi'
+import Layout from './Layout'
 
-class App extends Component {
-  render() {
-    return (
-      <NaviProvider navigation={this.props.navigation}>
-        <div className="App">
-          <AppNavbar />
-          <main>
-            <Suspense fallback={<LoadingSpinner />}>
-              <View />
-            </Suspense>
-          </main>
-        </div>
-      </NaviProvider>
-    );
-  }
-}
+ReactDOM.render(
+  <Router routes={routes}>
+    <Layout>
+      <Suspense fallback={null}>
+        <View />
+      </Suspense>
+    </Layout>
+  </Router>,
+  document.getElementById('root')
+);
 ```
 
 
@@ -191,19 +181,20 @@ A [React Hook](https://reactjs.org/docs/hooks-intro.html) that allows you to acc
 
 ### Example
 
+You can use `useCurrentRoute()` to retrieve the current page's `title`, and display it as part of a `<Layout>` component.
+
 ```js
-class App extends Component {
-  render() {
-    return (
-      <NaviProvider navigation={this.props.navigation}>
-        <NavRoute>
-          {route =>
-            <div>Current URL: <strong>{route.url.href}</strong></div>
-          }
-        </NavRoute>
-      </NaviProvider>
-    );
-  }
+import { useCurrentRoute } from 'react-navi'
+
+function Layout({ children }) {
+  let route = useCurrentRoute()
+
+  return (
+    <div className="Layout">
+      <h1>{route.title}</h1>
+      {children}
+    </div>
+  )
 }
 ```
 
@@ -212,8 +203,32 @@ class App extends Component {
 
 A [React Hook](https://reactjs.org/docs/hooks-intro.html) that returns your app's [`history`](../history) object, which can be used to facilitate [programmatic navigation](../../guides/programmatic-navigation).
 
-*You can also access the result of `useLoadingRoute()` by passing a child function to the `<History>` component, similar to the API for React context consumers.*
+*You can also access the result of `useHistory()` by passing a child function to the `<History>` component, similar to the API for React context consumers.*
  
+### Example
+
+You can use `useHistory()` to programmatically navigate after a form is successfully submitted.
+
+```js
+import React, { useState } from 'react'
+import { useHistory } from 'react-navi'
+
+function EmailForm() {
+  let history = useHistory()
+  let [email, setEmail] = useState()
+
+  function handleSubmit() {
+    history.push('/thanks')
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="EmailForm">
+      <input value={email} onChange={e => setEmail(e.target.value)} />
+      <button>Join 13,000 other subscribers</button>
+    </div>
+  )
+}
+```
 
 
 ## `useLoadingRoute()`
@@ -227,21 +242,17 @@ Use `useLoadingRoute()` to display a loading overlay when the user has requested
 ### Example
 
 ```js
-class App extends Component {
-  render() {
-    return (
-      <NaviProvider navigation={this.props.navigation}>
-        <NavLoading>
-          {loadingRoute =>
-            <div className="App">
-              <BusyIndicator show={!!loadingRoute} />
-              <View />
-            </div>
-          }
-        </NavLoading>
-      </NaviProvider>
-    );
-  }
+import { useLoadingRoute } from 'react-navi'
+
+function Layout({ children }) {
+  let loadingRoute = useLoadingRoute()
+
+  return (
+    <div className="Layout">
+      <BusyIndicator show={!!loadingRoute} />
+      { children }
+    </div>
+  )
 }
 ```
 
