@@ -1,0 +1,7 @@
+export const filename = __filename
+
+# Using react-helmet with Navi
+
+Many React apps use the [react-helmet](https://www.npmjs.com/package/react-helmet) package to manage their `<head>` tags. If you're statically rendering your app with `navi-scripts`, then react-helmet is supported out of the box! You can import and use the `<Helmet>` component like in any other app, and the helmet's `<title>` and `<meta>` tags will be statically rendered along with the rest of your content.
+
+For details on how your `<head>` is statically rendered, see the source for `renderPageToString()` in [react-navi/create-react-app.js](https://github.com/frontarm/navi/blob/8d11274c92d6492ccbe529ad17da980ffa61715d/packages/react-navi/create-react-app.js).

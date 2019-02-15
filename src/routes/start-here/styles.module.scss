@@ -1,5 +1,8 @@
+@import '~@frontarm/doc/layout.scss';
+
 $primary: #1ee79e;
 $border: #eee;
+
 
 .StartHere {
   h1 {
@@ -8,13 +11,23 @@ $border: #eee;
 
   .pitch {
     font-size: 2.2rem;
-    max-width: 500px;
+
+    @mixin when-twin-column {
+      max-width: 500px;
+    }
   }
 
   .top-logo img {
     width: 100%;
     max-width: 300px !important;
     margin-top: -2rem;
+  }
+  
+  .float-mobile img {
+    @include when-single-column {
+      float: right;
+      max-width: 20% !important;
+    }
   }
 
   .maj aside {
@@ -23,11 +36,15 @@ $border: #eee;
     margin: 0;
     border: 1px solid $primary;
     border-radius: 1.5rem;
-    max-width: 320px;
     font-size: 1.8rem;
+    
     h4 {
       color: black;
       font-size: 2rem;
+    }
+
+    @mixin when-twin-column {
+      max-width: 320px;
     }
   }
 

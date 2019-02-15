@@ -12,7 +12,9 @@ export function Layout({
   repositoryRoot,
   rootPathname,
   isAuthenticated,
-  isPro
+  isPro,
+  previousRoute,
+  nextRoute,
 }) {
   return (
     <NavContent>
@@ -83,15 +85,41 @@ export function Layout({
               demoboardHelpers={content.demoboardHelpers}
             />
             <footer>
-              <a
-                className={cx("edit-link")}
-                href={
-                  "https://github.com/frontarm/navi-website/edit/master/" +
-                  content.filename.replace(repositoryRoot, "")
-                }
-              >
-                Edit this page on GitHub
-              </a>
+              <Doc.Gutter>
+                <div className={cx('directional-links')}>
+                  {previousRoute &&
+                    <NavLink href={previousRoute.url} className={cx('previous')}>
+                    <span className={cx('title')}>{previousRoute.title}</span>
+                      <span className={cx('direction')}>&laquo; Previous</span>
+                    </NavLink>
+                  }
+                  {nextRoute &&
+                    <NavLink href={nextRoute.url} className={cx('next')}>
+                      <span className={cx('title')}>{nextRoute.title}</span>
+                      <span className={cx('direction')}>Next &raquo;</span>
+                    </NavLink>
+                  }
+                </div>
+
+                <div className={cx('social-links')}>
+                  <a
+                    className={cx("edit-link")}
+                    href={
+                      "https://github.com/frontarm/navi-website/edit/master/" +
+                      content.filename.replace(repositoryRoot, "")
+                    }
+                  >
+                    Edit this page on GitHub
+                  </a>
+                  <a
+                    className={cx('twitter-link')}
+                    href={`https://twitter.com/home?status=${encodeURIComponent(`From the Navi docs: "${route.title}"\n\n${process.env.PUBLIC_URL}${route.url.href}`)}`}
+                    target="_blank"
+                  >
+                    Share this page on Twitter
+                  </a>
+                </div>
+              </Doc.Gutter>
             </footer>
           </>
         );

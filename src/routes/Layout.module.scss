@@ -4,6 +4,7 @@
   $primary: #1ee79e;
   $border: #eee;
   $sidebarWidth: 250px;
+  $textColor: lighten(desaturate($primary, 75%), 8%);
 
   .Layout {
     position: relative;
@@ -32,14 +33,57 @@
         border-top: 1px solid $border;
         font-size: 90%;
         text-align: center;
-        padding: 5rem;
 
         @include when-twin-column {
           text-align: left;
         }
 
-        .edit-link {
-          color: #888;
+        .directional-links {
+          display: flex;
+          justify-content: stretch;
+          padding: 2rem 0 0;
+          width: 100%;
+          
+          a {
+            flex-grow: 1;
+            text-decoration: none;
+          }
+
+          .direction {
+            color: $textColor;
+            display: block;
+          }
+
+          .title {
+            color: $textColor;
+            font-size: 3rem;
+          }
+
+          a:hover .title {
+            color: darken($primary, 10%);
+          }
+
+          .previous {
+            text-align: left;
+          }
+          .next {
+            text-align: right;
+          }
+        }
+
+        .social-links {
+          display: block;
+          padding: 5rem 0;
+
+          a {
+            color: $textColor;
+          }
+
+          a:not(:last-child)::after {
+            content: "・";
+            display: inline-block;
+            margin: 0 2rem;
+          }
         }
       }
     }

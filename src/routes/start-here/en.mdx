@@ -1,11 +1,13 @@
 export const filename = __filename
 import { Doc } from '@frontarm/doc'
 import { NavLink } from 'react-navi'
-import styles from './start-here.module.scss'
+import styles from './styles.module.scss'
 
 <div className={styles.StartHere}>
 
-<Doc.Image aside className={styles['top-logo']} src={require('../logo.svg')} />
+<div className={styles['float-mobile']}>
+  <Doc.Image aside className={styles['top-logo']} src={require('../logo.svg')} />
+</div>
 
 Navi
 ====
@@ -102,5 +104,13 @@ export default map({
 ```
 
 [See this site's source on GitHub &raquo;](https://github.com/frontarm/navi-website)
+
+## Jump to...
+
+- [Getting Started](../guides/getting-started)
+- [Declaring Routes With Matchers](../reference/matchers)
+- [URL Parameters](../guides/url-parameters)
+- [Static Rendering](../guides/static-rendering)
+- [Usage with react-router](../integrations/react-router)
 
 </div>
