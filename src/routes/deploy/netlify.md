@@ -1,4 +1,4 @@
-export const filename = \_\_filename
+export const filename = __filename
 
 # Deploying with Netlify
 
