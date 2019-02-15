@@ -1,0 +1,40 @@
+.Translations {
+  color: #acac9a;
+  margin-bottom: 4rem;
+
+  ul {
+    display: block;
+    padding: 0;
+    margin-top: -2rem;
+    margin-bottom: 0;
+    font-size: 1.8rem;
+  }
+  li {
+    display: inline;
+    list-style: none;
+    padding: 0;
+  }
+  li a {
+    display: inline-block;
+    color: #b1b1a2 !important;
+    margin-right: 2rem;
+  }
+  li a.active {
+    font-weight: bold;
+  }
+
+  .new a {
+    font-style: italic;
+  }
+
+  .missing {
+    background-color: #fafaf4;
+    border: 1px solid #acac9a;
+    border-radius: 1rem;
+    padding: 2rem;
+  }
+  .missing a {
+    color: #818162;
+    text-decoration: underline;
+  }
+}

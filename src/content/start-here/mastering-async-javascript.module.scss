@@ -1,0 +1,21 @@
+@import '~@frontarm/doc/layout.scss';
+
+$primary: #1ee79e;
+
+.maj aside {
+  color: darken(desaturate($primary, 75%), 25%);
+  padding: 1rem 0 2rem;
+  margin: 0;
+  border: 1px solid $primary;
+  border-radius: 1.5rem;
+  font-size: 1.8rem;
+  
+  h4 {
+    color: black;
+    font-size: 2rem;
+  }
+
+  @mixin when-twin-column {
+    max-width: 320px;
+  }
+}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavNotFoundBoundary, NavView, useLoadingRoute } from 'react-navi'
+import { NotFoundBoundary, View, useLoadingRoute } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
 import Prism from 'prismjs'
 import { DocProvider, Doc } from '@frontarm/doc'
@@ -27,17 +27,19 @@ export function App() {
         let language = languages[extension]
 
         return (
-          <Doc.Block className='navi-website-code demoboard'>
-            <Doc.Gutter Component='pre' half className={'language-'+language}>
-              <code
-                id={id}
-                style={style}
-                dangerouslySetInnerHTML={{
-                  __html: Prism.highlight(sources[filename], Prism.languages[grammars[language]], language)
-                }}
-              />
-            </Doc.Gutter>
-          </Doc.Block>
+          <Doc.Gutter horizontal>
+            <div className='navi-website-code demoboard'>
+              <Doc.Gutter Component='pre' half className={'language-'+language}>
+                <code
+                  id={id}
+                  style={style}
+                  dangerouslySetInnerHTML={{
+                    __html: Prism.highlight(sources[filename], Prism.languages[grammars[language]], language)
+                  }}
+                />
+              </Doc.Gutter>
+            </div>
+          </Doc.Gutter>
         )
       },
 
@@ -55,9 +57,9 @@ export function App() {
         </Doc.Block>
     }}>
       <BusyIndicator isBusy={!!loadingRoute} />
-      <NavNotFoundBoundary render={() => <h1>Not Found</h1>}>
-        <NavView />
-      </NavNotFoundBoundary>
+      <NotFoundBoundary render={() => <h1>Not Found</h1>}>
+        <View />
+      </NotFoundBoundary>
     </DocProvider>
   )
 }

@@ -1,0 +1,278 @@
+@import "@frontarm/doc/layout.scss";
+
+:local {
+  $primary: #1ee79e;
+  $border: #eee;
+  $sidebarWidth: 250px;
+  $textColor: lighten(desaturate($primary, 75%), 8%);
+
+  .Layout {
+    position: relative;
+    min-height: 100%;
+
+    // Apply padding on top and bottom to prevent margins from
+    // appearing above/below.
+    padding: 1px 0;
+
+    .content {
+      transform: translate3d($sidebarWidth, 0, 0);
+      width: calc(100% - #{$sidebarWidth});
+      min-height: calc(100vh - 48px);
+      padding: 1px 0;
+
+      @include when-single-column {
+        transform: translate3d(0, 0, 0);
+        transition: transform 180ms cubic-bezier(0.895, 0.030, 0.685, 0.220);
+        width: 100%;
+      }
+      @include when-twin-column {
+        transition: transform 180ms cubic-bezier(0.165, 0.840, 0.440, 1.000);
+      }
+
+      > footer {
+        border-top: 1px solid $border;
+        font-size: 90%;
+        text-align: center;
+
+        @include when-twin-column {
+          text-align: left;
+        }
+
+        .directional-links {
+          display: flex;
+          justify-content: stretch;
+          padding: 2rem 0 0;
+          width: 100%;
+          
+          a {
+            text-decoration: none;
+          }
+
+          .direction {
+            color: $textColor;
+            display: block;
+          }
+
+          .title {
+            color: $textColor;
+            font-size: 3rem;
+          }
+
+          a:hover .title {
+            color: darken($primary, 10%);
+          }
+
+          .previous {
+            flex-grow: 1;
+            text-align: left;
+          }
+          .next {
+            text-align: right;
+          }
+        }
+
+        .social-links {
+          display: block;
+          padding: 5rem 0;
+
+          a {
+            color: $textColor;
+          }
+
+          a:not(:last-child)::after {
+            content: "・";
+            display: inline-block;
+            margin: 0 2rem;
+          }
+        }
+      }
+    }
+
+    .error {
+      margin: 4rem 4rem 8rem;
+    }
+
+    .nav {
+      position: fixed;
+      position: sticky;
+      z-index: 9;
+      top: 0;
+    }
+  }
+
+  .header {
+    margin-top: 4rem;
+  }
+  .document {
+    margin-bottom: 8rem;
+  }
+  .header, .document {
+    .Beware {
+      padding-bottom: 1rem;
+
+      header {
+        font-weight: bold;
+        margin: 2rem 0;
+      }
+
+      h4 {
+        margin-top: 3rem;
+        margin-bottom: 0;
+        font-size: 1.8rem;
+      }
+
+      border: 2px solid #F54391;
+      border-radius: 3px;
+    }
+
+    .Details {
+      color: #555;
+      font-size: 1.8rem;
+
+      @include when-single-column {
+        border-radius: 3px;
+        border: 2px solid $primary;
+        padding: 2rem 0;
+      }
+      @include when-twin-column {
+        max-width: 400px !important;
+      }
+      
+      h4 {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 1.8rem;
+        color: rgb(81, 81, 81);
+      }
+
+      p {
+        margin-top: 0.9rem;
+        margin-bottom: 0.9rem;
+      }
+    }
+
+    .Image {
+      img {
+        max-width: 100% !important;
+      }
+    }
+
+    pre, code { font-family: Inconsolata, monospace; line-height: 3rem }
+    code { background-color: #f0f4fc; }
+    pre > code { background-color: transparent; }
+    pre code { font-size: 1.6rem; white-space: pre-wrap; }
+    code { font-size: 2rem; }
+    h1 {
+      font-family: Lato, monospace;
+      line-height: 4rem;
+      margin-top: 6rem;
+      margin-bottom: 4rem;
+      font-size: 200%;
+    }
+    h2 {
+      font-family: Lato, sans-serif;
+      margin-top: 6rem;
+      margin-bottom: 2rem;
+      font-size: 125%;
+      color: rgb(81, 81, 81);
+    }
+    h3 {
+      padding: 0.5rem 0;
+      // font-family: Inconsolata, monospace;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      font-size: 100%;
+      color: rgb(40, 40, 40);
+    }
+    h4 {
+      font-size: 80%;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+    }
+    h1 > code,
+    h2 > code,
+    h3 > code {
+      display: inline-block;
+      font-size: 100%;
+      font-weight: 700;
+      background-color: transparent;
+    }
+
+    hr {
+      margin: 4rem auto !important;
+      width: 33% !important;
+      border-top: 1px solid $border;
+      border-bottom: 0;
+    }
+
+    blockquote {
+      color: #555;
+      font-style: italic;
+    }
+
+    img {
+      position: relative;
+    }
+    img + em {
+      display: block;
+      text-align: center;
+      font-size: 80%;
+      margin-top: 10px;
+    }
+
+    li { margin: 4px 0; }
+
+    h1, h2, h3 { position: relative; }
+
+    p {
+      margin-top: 1em;
+      margin-bottom: 1em;
+      line-height: 3.2rem;
+    }
+
+    th {
+      border-bottom: 1px solid #f0f0f0;
+      text-align: center;
+      font-size: 80%;
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    tr:nth-child(even) {
+      background: #f0f0f0;
+    }
+
+    table td,
+    table th {
+      padding: 2px 4px;
+    }
+    table {
+      margin-bottom: 3rem;
+    }
+
+    a {
+      color: darken($primary, 10%);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      .headingLink {
+        position: absolute;
+        vertical-align: middle;
+        left: -20px;
+        width: 20px;
+        text-decoration: none;
+        font-weight: normal;
+        color: #aaa;
+        visibility: hidden;
+      }
+
+      &:hover .headingLink {
+        visibility: visible;
+      }
+    }
+  }
+}

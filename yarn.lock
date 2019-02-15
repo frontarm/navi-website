@@ -7117,16 +7117,16 @@ natural-compare@^1.4.0:
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
 navi-bar@^0.11.0:
-  version "0.11.0-beta.0"
-  resolved "https://registry.yarnpkg.com/navi-bar/-/navi-bar-0.11.0-beta.0.tgz#462fdaa7df959542478a4ad0ee57f641d9186ec4"
-  integrity sha512-kGXzOgFzSPxT0qBwxGq/q+ZvT03J3URKnXK3S9papeQE59bWi8cbeCX04uFarKTkW95loSDWLn6T5Ze7Mww0ZA==
+  version "0.11.0-beta.1"
+  resolved "https://registry.yarnpkg.com/navi-bar/-/navi-bar-0.11.0-beta.1.tgz#60bc7661cdea6038dcd4558fbad8b9d5dc19052e"
+  integrity sha512-gUKuwCCmpd8vbn8PFyvgTBRLtsxGl5qThsMTZLSYuvihumENyRz4b1IgAiDVN0X4LkQu3fY+RMkVcSvq1S43uQ==
   dependencies:
     "@types/history" "^4.6.2"
 
 navi-scripts@^0.11.0:
-  version "0.11.0-beta.0"
-  resolved "https://registry.yarnpkg.com/navi-scripts/-/navi-scripts-0.11.0-beta.0.tgz#da04562fdb0f6b0b2f99ef0293e5bf33c2c9c745"
-  integrity sha512-hTtoz5M3/xzydrDu6b1sw3OM0RnbNL6kpwuKH5K7cFWqRyrXUk777EQCS0CXUQKehcHG64ecovfqIfqj9z8nCA==
+  version "0.11.0-beta.1"
+  resolved "https://registry.yarnpkg.com/navi-scripts/-/navi-scripts-0.11.0-beta.1.tgz#2bc6fe989ce8f64ea6508e392fd7fad01bedba36"
+  integrity sha512-jLe5YYOrOSfvQXKQb+VWcAfz7jCsrUFA3NNizURbt5KdxEndPsgD0GV5d7T9O+l2SUjM7V+ZWLFk4/JiaCZDxg==
   dependencies:
     "@babel/core" "^7.1.2"
     "@babel/preset-env" "^7.1.0"
@@ -7143,9 +7143,9 @@ navi-scripts@^0.11.0:
     serve-static "^1.11.2"
 
 navi@^0.11.0:
-  version "0.11.0-beta.0"
-  resolved "https://registry.yarnpkg.com/navi/-/navi-0.11.0-beta.0.tgz#2269975db071cea52823dc9de7f1dbb048d40000"
-  integrity sha512-MCMqjmYv+C8eXW8bQiYHOL6WaDEso8owuADhgICYvDOc+q5/nE9UvSuc9M8QfLohG62PKHwKuL2Vld83qiEisQ==
+  version "0.11.0-beta.1"
+  resolved "https://registry.yarnpkg.com/navi/-/navi-0.11.0-beta.1.tgz#3b9b5c06580b070bcafe6fc3ea52a94e121e610a"
+  integrity sha512-C2vt0N3LpcCamIuIj+aJvmYC67JpdpITszlrok9D4DRGi/LSHHwWFKpsJFKD8oPFS8AJBAJXoLg3I0PdhKeprw==
   dependencies:
     history "^4.7.2"
 
@@ -8899,9 +8899,9 @@ react-helmet@^5.2.0:
     react-side-effect "^1.1.0"
 
 react-navi@^0.11.0:
-  version "0.11.0-beta.0"
-  resolved "https://registry.yarnpkg.com/react-navi/-/react-navi-0.11.0-beta.0.tgz#9cefe481337c24732021a845900f35a8058f0383"
-  integrity sha512-7gYnMMCIs3Ehu60hA1Q9THtQgZqKCLuNfKxP8Bl9xkkfdr+/Zn0JRe6ODhN6z+K8zppQ8y3pluS/NrQUbjPj9g==
+  version "0.11.0-beta.1"
+  resolved "https://registry.yarnpkg.com/react-navi/-/react-navi-0.11.0-beta.1.tgz#49b57f177edc0c50a1754e8677b2c8590056bd62"
+  integrity sha512-SCsumlvssN+2LkPOYgtozCmWgJw/QZjBh99hcUofru5Teu75xWytSZx8XmofYc+jgdUxOtwTBvlkOelGUBKtdA==
   dependencies:
     "@types/history" "^4.6.2"
     react-helmet "^5.2.0"

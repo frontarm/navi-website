@@ -1,0 +1,53 @@
+export const filename = __filename
+import { Doc } from '@frontarm/doc'
+
+There are often times when you'll need to map many similar URLs to the same route. For example, imagine that you're building a list of quotes, where each quote's URL follows a similar pattern:
+
+```text
+/quotes/1
+/quotes/2
+/quotes/3
+```
+
+Here's how you'd map all of these URLs (and any other URLs following the same pattern) to a single route:
+
+```js
+map({
+  '/quotes/:id': route({
+    view: <QuoteView />
+  })
+})
+```
+
+See how the varying part of the URL has been replaced by a segment starting with a colon `:`? This tells Navi that the segment is a **URL parameter**, and can be matched to *any* value.
+
+Navi passes the current value of any to your route through the `req.params` property -- allowing you to fetch data that depends on URL parameters.
+
+```js
+//--- routes.js
+import { map, route } from 'navi'
+import { QutoeView, fetchQuote } from './helpers'
+
+const routes = map({
+  '/quotes/:id': route(async req => {
+    let id = req.params.id
+    let quote = await fetchQuote(id)
+
+    return {
+      view: <QuoteView id={id} quote={quote} />,
+    }
+  })
+})
+
+export default routes
+```
+
+In fact, the `req.params` also contains any information extracted from the URL's query string. For an example, notice how this demo extracts both an `id` and a `referrer` parameter from the URL `/quotes/3?referrer=james`:
+
+```js
+// todo
+```
+
+While URL parameters are a pretty standard featured for a JavaScript routing library, the combination of URL parameters and asynchronous content gives you a huge amount of declarative power. Just like controllers in an MVC framework, Navi's routes let you implement business logic, throw errors, and choose which views based on the request.
+
+We'll cover more of the controller-like abilities of Navi routes in the [Context](../context) and [Authentication](../authenticated-routes) guides. But in the meantime, let's take a look at something a little simpler. I'll see you in the next guide!

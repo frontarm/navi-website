@@ -1,0 +1,95 @@
+export const filename = __filename
+import { Doc } from '@frontarm/doc'
+
+Thanks for considering Navi for your project! 🙌
+
+Navi is a routing library for modern React. It's simple, it works great with React Hooks and Suspense, and it drastically simplifies the task of loading data for your routes. But Navi also works great on the server. You can call it from Express to handle routing in a server-rendered app, or you can [build static HTML](../guides/static-rendering/) for each of your site's pages with `navi-scripts` - a tool for statically rendering create-react-app projects.
+
+Navi gives you many of the benefits of Next.js and Gatsby, with nearly none of the weight. Of course, there are some caveats.
+
+Navi is designed to be one tool for your toolbox -- to go along with whatever build system, data store, authentication system and other API's you choose. Navi is not an entire framework for building applications. If you've been using react-router for your app and want to try something more powerful, then Navi is definitely worth a try. But what if you're starting a new project today?
+
+
+## Navi vs. Next.js
+
+Navi is often compared to Next.js, and there are indeed some similarities. 
+For example, in a Next.js app you're able to specify the initial content for pages using a [`getInitialProps()`](https://nextjs.org/docs/#fetching-data-and-component-lifecycle) function.
+
+```js
+// With Next.js, components in a certain filesystem location can define
+// a `getInitialProps()` function.
+function MyPage(props) {
+  return props.data
+}
+MyPage.getInitialProps = async function getInitialProps({ query }) {
+  try {
+    return { data: await api.fetchResource(query.id) }
+  }
+  catch (error) {
+    return { error }
+  }
+}
+```
+
+This is conceptually similar to Navi's `route()` function -- it lets you specify the content for a page, either synchronously or as a Promise.
+
+```js
+// With Navi, you map URLs to routes using async functions. Routes can
+// contain any type of content, including React elements and components.
+map({
+  '/my-page': route({
+    async getView({ params }) {
+      try {
+        return <MyPage data={await api.fetchResource(params.id)} />
+      }
+      catch (error) {
+        return <MyPage error={error} />
+      }
+    }
+  })
+})
+```
+
+Compared to the Next.js router, Navi gives you a lot of flexibility:
+
+- It doesn't tie your data fetching code to React components or specific locations on the filesystem.
+- It allows for composition of routing and data fetching code.
+- It's API is designed with TypeScript in mind.
+
+In my (admittedly biased) opinion, Navi is a far more powerful router than the Next.js router. I think Next.js would do well to adopt Navi (😉). But with that said...
+
+Navi and Next.js are two very different tools with two very different philosophies. Navi is much smaller in scope than [Next.js](https://nextjs.org/). Navi is a router; Next.js *includes* a router. And Next.js is a *lot* more than its router. It also builds and serves your JavaScript assets with webpack, it includes a Node.js server, it integrates well with Zeit's serverless platform [Now](https://zeit.co/now), and it has the backing of Zeit.
+
+<Doc.AsideTop>
+
+If you need server rendering, and you're happy to hitch your wagon to the Zeit train, then Next.js is a great framework to build your app around. It gives you the full stack, where Navi just gives you the router.
+
+But if you don't need server rendering, or want to manage your own server and bundler code? Then Navi gives you a powerful router that works great with the rest of the React ecosystem, and provides tooling to statically build your site should the need arise.
+
+<Doc.Details aside>
+
+Learn about the difference between [Static vs. Server Rendering](https://frontarm.com/james-k-nelson/static-vs-server-rendering/).
+
+</Doc.Details>
+</Doc.AsideTop>
+
+
+## Navi vs. Gatsby
+
+Gatsby is great. It lets you create statically rendered websites with React and Webpack. Its [monorepository](https://github.com/gatsbyjs/gatsby/tree/d2691a8b6b5c35ea29ca2a946885fd51ad3dd6b5/packages) has over ~~9000~~ 80 packages. It has a whole [library](https://www.gatsbyjs.org/starters/?v=2) of starter projects to choose from. It has a plugin-based system for configuring the build system. It lets you use GraphQL for all of your data -- even for reading content from the [filesystem](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-source-filesystem). It makes creating things easy, so long as you follow The Gatsby Way.
+
+In contrast, Navi is much smaller in scope. It lets you get started by installing *two* packages -- `navi` and `react-navi`. It includes just *two* [starters](../create-react-navi-app). It doesn't provide a build system, but works great with create-react-app -- and you don't even need to eject! It lets you `import()` and `fetch()` your data. It does one thing, and it does it well.
+
+Both Navi and Gatsby let you create static apps. But if they both let you accomplish the same thing, then *why would you choose the weight of Gatsby?*
+
+So let's jump back to a Gatsby feature that I mentioned above: *Gatsby abstracts filesystem access through GraphQL*. If you thought that sounded a little odd at first, then I'm glad I'm not the only one. But it turns out that there's actually a good reason: it allows Gatsby to build a lazy-loadable file for each page with *just* the data required for that page. In contrast, Navi apps *may* need to `import()` or `fetch()` multiple files, which *may* include more data than the page actually uses.
+
+Is Gatsby's extra complexity worth it? I'm sure there are cases where it is, but there are also definitely cases where it's not. For example, this documentation site would not gain *anything* by switching to Gatsby, because each page has at max one `import()` statement, which just includes a single component to render the page. Speaking of which, this is another advantage of Navi: *route data can be JavaScript code*.
+
+### JSON vs. JavaScript
+
+One disadvantage of Gatsby's GraphQL-based architecture is that *all content is JSON*. You can't query a JavaScript function from a GraphQL store -- or at least, not without `eval()` or `new Function()`. While this isn't a problem for primarily text-based content, it can really get in the way when your content contains React components. And content-as-components is more common than you'd think -- for example, every page on this documentation site is written in Markdown, but is then compiled into a React component using [MDX](https://mdxjs.com).
+
+Even [superstar developers](https://twitter.com/dan_abramov/status/1073388715177897989) can find components-as-content tricky with Gatsby.
+
+Components-as-content is an area where Navi can provide a big win over Gatsby, but of course, not every app or website needs them. Given that WordPress is text only and drives a significant portion of the web, it's obviously possible to do a lot with text content. And that's really where Gatsby shines: if you want a React-based replacement for Wordpress with its marketplace and plugin system, then Gatsby is perfect. However, if you want to do something a little more business-specific, then Navi gives you the power to do so.
