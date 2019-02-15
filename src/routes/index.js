@@ -224,14 +224,22 @@ export default composeMatchers(
 
     '/deploy': composeMatchers(
       withData({
-        sectionTitle: 'Deploying'
+        sectionTitle: 'Deploy with...'
       }),
       map({
+        '/netlify': route({
+          title: 'Deploying Navi with Netlify',
+          getView: (req, context) => getPageContent(req, context, import('./deploy/netlify/en.mdx')),
+          data: {
+            navTitle: 'Deploy with Netlify',
+          }
+        }),
+
         '/now': route({
           title: 'Deploying Navi with ZEIT Now',
           getView: (req, context) => getPageContent(req, context, import('./deploy/now/en.mdx')),
           data: {
-            navTitle: 'Deploying with ZEIT Now',
+            navTitle: 'Deploy with ZEIT Now',
           }
         }),
       })
