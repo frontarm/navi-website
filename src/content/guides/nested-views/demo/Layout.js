@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavContent, Link, NavNotFoundBoundary } from 'react-navi'
+import { View, Link, NotFoundBoundary } from 'react-navi'
 
 export default function Layout(props) {
   return (
@@ -13,12 +13,12 @@ export default function Layout(props) {
         <Link href="/not-found-404">404</Link>
       </nav>
       <main>
-        {/* <NavContent> will render content for whatever switches are found,
+        {/* <View> will render content for whatever switches are found,
             even if child switches are *not* found. This allows you to handle
             404s within a layout component. */}
-        <NavNotFoundBoundary render={() => <NotFound />}>
-          <NavContent />
-        </NavNotFoundBoundary>
+        <NotFoundBoundary render={() => <NotFound />}>
+          <View />
+        </NotFoundBoundary>
       </main>
     </div>
   )

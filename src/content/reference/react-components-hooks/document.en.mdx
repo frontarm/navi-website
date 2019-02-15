@@ -1,18 +1,5 @@
 export const filename = __filename
 
-## `<NavProvider>`
-
-Your app's `<NavProvider>` component is responsible for subscribing to the latest navigation state, and passing that state to Navi's *other* components.
-
-As a result, all other components must be rendered inside a `<NavProvider>`.
-
-### Props
-
-#### `navigation`: [`Navigation`](../../reference/navigation/#navigation-interface)
-
-Your app's `Navigation` object, as returned from [`createBrowserNavigation()`](../../reference/navigation/#createbrowsernavigation) or [`createMemoryNavigation()`](../../reference/navigation/#creatememorynavigation)
-
-
 ## `<Link>`
 
 This component can be used as a drop-in replacement for `<a>` tags. Internally, it renders an `<a>` tag so that statically rendered links will work even if JavaScript is disabled.
@@ -46,32 +33,77 @@ The url to navigate to; identical to the `href` attribute of a HTML `<a>` tag.
 If specified, the linked page's content will be loaded as soon as the link is rendered.
 
 
-## `<NavContent>`
+## `<NaviProvider>`
 
-Renders the content for the outermost `Switch` or `Page` which has content that hasn't been rendered yet.
+Your app's `<NaviProvider>` component is responsible for subscribing to the latest navigation state, and passing that state to Navi's *other* components.
 
-If the content is a React element or component, then the `render` prop is optional, and that content will be rendered by default. Otherwise, you'll need to provide a render prop to specify how to render the route content. 
-
-### Suspense
-
-*Available from react-navi* ***0.10+***
-
-When the page initially loads, it can be the case that *no* content is available -- even for previous routes. In this case, `<NavContent>` will use React Suspense to pause execution until content is available. By default, this will cause your `<NavProvider>` and everything inside it to be left blank until content is available, however, you can show a fallback element while loading anywhere outside the `<NavContent>` by wrapping it with React's `<Suspense fallback>` element -- just as you'd wrap a component that is returned by [`React.lazy()`](https://reactjs.org/docs/code-splitting.html#suspense).
-
-As React doesn't yet support Suspense for server-side rendering, you'll want to avoid using `<Suspense>` for statically rendered apps. Instead, wait for Navi's initial content to render before calling `ReactDOMServer.render()` by using [`navigation.steady()`](../../reference/navigation/#navigationsteady).
+`<NaviProvider>` is used internally by `<Router>`. If you are not using a `<Router>` component, then all other components must be rendered inside a `<NaviProvider>` instead.
 
 ### Props
 
-#### <code>children: (content, segment, route) => React.ReactNode</code> <small>(optional)</small>
+#### `navigation`: [`Navigation`](../navigation/)
 
-If provided, the component's `children` must be a [render prop](https://reactjs.org/docs/render-props.html) that takes three the content, [Segment](../../reference/data-types/#segment) and [Route](../../reference/data-types/#route) objects, and returns React element to render.
+Your app's `Navigation` object, as returned from [`createBrowserNavigation()`](../navigation/#createbrowsernavigation) or [`createMemoryNavigation()`](../navigation/#creatememorynavigation)
 
-If a `render` prop is not provided, the default behavior is:
 
-1. If `route.content` contains a React element, render it.
-2. If `route.content` contains a function, then call it to get the rendered content.
-3. Otherwise, if `route.status` is `busy`, don't render anything. 
-4. Finally, if `route.content` isn't a React element, and `route.status` isn't `busy`, then throw an error.
+## `<NotFoundBoundary>`
+
+Catches `NotFoundError` exceptions thrown by `<View />`.
+
+### Props
+
+#### `render: (error: NotFoundError) => React.Node`
+
+### Example
+
+```js
+class App extends Component {
+  render() {
+    return (
+      <NaviProvider navigation={this.props.navigation}>
+        <NavLoading>
+          {loading =>
+            <Nav.NotFoundBoundary render={() =>
+              <h1>Not Found</h1>
+            }>
+              <div className="App">
+                <BusyIndicator show={loading} />
+                <View />
+              </div>
+            </Nav.NotFoundBoundary>
+          }
+        </NavLoading>
+      </NaviProvider>
+    );
+  }
+}
+```
+
+
+## `<Router>`
+
+TODO
+
+
+## `<View>`
+
+Renders the content for the next matched view that hasn't already been rendered.
+
+If the content is a React element or component, then the `children` render function is optional, and that content will be rendered by default. Otherwise, you'll need to provide a child function to specify how to render the route content. 
+
+### Suspense
+
+When the page initially loads, it can be the case that *no* content is available -- even for previous routes. In this case, `<View>` will use React Suspense to pause execution until content is available. However, React requires you to wrap the suspended `<View>` with a [`<Suspense fallback>`](https://reactjs.org/docs/react-api.html#reactsuspense), so that you can decide what will be shown in place of the not-yet-ready content. If you've used [`React.lazy()`](https://reactjs.org/docs/code-splitting.html#suspense), then this should be familiar -- otherwise, check out the example below.
+
+As React doesn't yet support Suspense for server-side rendering, you'll want to avoid using `<Suspense>` for statically rendered apps. Instead, wait for Navi's initial content to render before calling `ReactDOMServer.render()` by creating a custom `navigation` object and using its [`navigation.steady()`](../navigation/#navigationsteady) function. Note that you'll also need to pass the navigation to a [`<NaviProvider>`](#naviprovider) component instead of using `<Router>`.
+
+### Props
+
+#### <code>children: (view, route) => React.ReactNode</code> <small>(optional)</small>
+
+If provided, the component's `children` must be a [render prop](https://reactjs.org/docs/render-props.html) that receives the view's value as its first argument, and the current [Route](../data-types/#route) as its second.
+
+If a `children` prop is not provided, the default behavior is to render the next unrendered view from `route.views`.
 
 ### Examples
 
@@ -81,11 +113,11 @@ If a `render` prop is not provided, the default behavior is:
 class App extends Component {
   render() {
     return (
-      <NavProvider navigation={this.props.navigation}>
+      <NaviProvider navigation={this.props.navigation}>
         <div className="App">
-          <NavContent />
+          <View />
         </div>
-      </NavProvider>
+      </NaviProvider>
     );
   }
 }
@@ -99,17 +131,17 @@ By suppling a render prop, you can manually decide how to render your next route
 class App extends Component {
   render() {
     return (
-      <NavProvider navigation={this.props.navigation}>
+      <NaviProvider navigation={this.props.navigation}>
         <div className="App">
-          <NavContent>
+          <View>
             {content => 
               React.isValidElement(content)
                 ? content
                 : React.createElement(content)
             }
-          </NavContent>
+          </View>
         </div>
-      </NavProvider>
+      </NaviProvider>
     );
   }
 }
@@ -119,9 +151,9 @@ class App extends Component {
 
 *Available from react-navi* ***0.10+***
 
-By wrapping your content in a React [`<Suspense>`](https://reactjs.org/docs/code-splitting.html#suspense) element, you can specify a fallback element to display while your app's initial content is loading.
+By wrapping your content in a React [`<Suspense>`](https://reactjs.org/docs/react-api.html#reactsuspense) element, you can specify a fallback element to display while your app's initial content is loading.
 
-Note that this only makes sense for apps that are *not* pre-rendered with `ReactDOMServer.render()`. For static or server rendered apps, use [`navigation.steady()`](../../reference/navigation/#navigationsteady) to wait for the initial content to load before hydrating the pre-rendered HTML with `ReactDOM.hydrate()`.
+Note that this only makes sense for apps that are *not* pre-rendered with `ReactDOMServer.render()`. For static or server rendered apps, use [`navigation.steady()`](../navigation/#navigationsteady) to wait for the initial content to load before hydrating the pre-rendered HTML with `ReactDOM.hydrate()`.
 
 ```js
 import { Suspense } from 'react'
@@ -129,26 +161,33 @@ import { Suspense } from 'react'
 class App extends Component {
   render() {
     return (
-      <NavProvider navigation={this.props.navigation}>
+      <NaviProvider navigation={this.props.navigation}>
         <div className="App">
           <AppNavbar />
           <main>
             <Suspense fallback={<LoadingSpinner />}>
-              <NavContent />
+              <View />
             </Suspense>
           </main>
         </div>
-      </NavProvider>
+      </NaviProvider>
     );
   }
 }
 ```
 
-## `<NavLoading>`
 
-A headless component that outputs the [`Route`](../../reference/data-types/#route) object for any page whose content is currently being fetche. If no page is currently being fetched, then it outputs `undefined`.
+## `useCurrentRoute()`
 
-Use `<NavLoading>` to display a loading overlay when the user has requested a navigation that hasn't completed yet. 
+A [React Hook](https://reactjs.org/docs/hooks-intro.html) that allows you to access the latest non-busy [`Route`](../data-types/#route), which contains all information that Navi knows about the current page, including:
+
+- `data`
+- `title`
+- `url`
+- `views`
+- etc.
+
+*You can also access the result of `useCurrentRoute()` by passing a child function to the `<CurrentRoute>` component, similar to the API for React context consumers.*
 
 ### Example
 
@@ -156,82 +195,61 @@ Use `<NavLoading>` to display a loading overlay when the user has requested a na
 class App extends Component {
   render() {
     return (
-      <NavProvider navigation={this.props.navigation}>
-        <NavLoading>
-          {loadingRoute =>
-            <div className="App">
-              <BusyIndicator show={!!loadingRoute} />
-              <NavContent />
-            </div>
-          }
-        </NavLoading>
-      </NavProvider>
-    );
-  }
-}
-```
-
-## `<NavNotFoundBoundary>`
-
-Catches `NotFoundError` exceptions thrown by `<NavContent />`.
-
-### Props
-
-#### `render: (error: NotFoundError) => React.Node`
-
-### Example
-
-```js
-class App extends Component {
-  render() {
-    return (
-      <NavProvider navigation={this.props.navigation}>
-        <NavLoading>
-          {loading =>
-            <Nav.NotFoundBoundary render={() =>
-              <h1>Not Found</h1>
-            }>
-              <div className="App">
-                <BusyIndicator show={loading} />
-                <NavContent />
-              </div>
-            </Nav.NotFoundBoundary>
-          }
-        </NavLoading>
-      </NavProvider>
-    );
-  }
-}
-```
-
-
-## `<NavHistory>`
-
-Allows you to access the [`history`](../../reference/history) property of your app's [`navigation`](../../reference/navigation) object, through a render prop passed to the `children` prop.
-
-This can be used to facilitate programmatic navigation.
-
-
-## `<NavRoute>`
-
-Allows you to access the latest non-busy [`Route`](../../reference/data-types/#route), which can be useful when you need to know the URL of the current page.
-
-Accepts a render prop which will receive the `Route` object.
-
-### Example
-
-```js
-class App extends Component {
-  render() {
-    return (
-      <NavProvider navigation={this.props.navigation}>
+      <NaviProvider navigation={this.props.navigation}>
         <NavRoute>
           {route =>
             <div>Current URL: <strong>{route.url.href}</strong></div>
           }
         </NavRoute>
-      </NavProvider>
+      </NaviProvider>
     );
   }
 }
 ```
+
+
+## `useHistory()`
+
+A [React Hook](https://reactjs.org/docs/hooks-intro.html) that returns your app's [`history`](../history) object, which can be used to facilitate [programmatic navigation](../../guides/programmatic-navigation).
+
+*You can also access the result of `useLoadingRoute()` by passing a child function to the `<History>` component, similar to the API for React context consumers.*
+ 
+
+
+## `useLoadingRoute()`
+
+A [React Hook](https://reactjs.org/docs/hooks-intro.html) that outputs the [`Route`](../data-types/#route) object for any page whose content is currently being fetched. If no page is currently being fetched, then it outputs `undefined`.
+
+Use `useLoadingRoute()` to display a loading overlay when the user has requested a navigation that hasn't completed yet.
+
+*You can also access the result of `useLoadingRoute()` by passing a child function to the `<LoadingRoute>` component, similar to the API for React context consumers.*
+
+### Example
+
+```js
+class App extends Component {
+  render() {
+    return (
+      <NaviProvider navigation={this.props.navigation}>
+        <NavLoading>
+          {loadingRoute =>
+            <div className="App">
+              <BusyIndicator show={!!loadingRoute} />
+              <View />
+            </div>
+          }
+        </NavLoading>
+      </NaviProvider>
+    );
+  }
+}
+```
+
+
+## `useNavigation()`
+
+A [React Hook](https://reactjs.org/docs/hooks-intro.html) that returns your app's [`navigation`](../navigation/) store.
+
+This hooks should not be necessary in most circumstances, but is available for completeness. If you need to access the `history` object, use the [`useHistory()`](#usehistory) hook instead.
+
+*You can also access the result of `useNavigation()` by passing a child function to the `<NaviConsumer>` component, similar to the API for React context consumers.*

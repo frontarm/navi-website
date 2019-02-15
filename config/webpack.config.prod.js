@@ -266,6 +266,7 @@ module.exports = {
           },
         ],
         include: paths.appSrc,
+        exclude: /\/demo\//,
       },
       {
         // "oneOf" will traverse all following loaders until one will

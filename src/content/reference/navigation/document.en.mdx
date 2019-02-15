@@ -1,17 +1,20 @@
 export const filename = __filename
 
-Each Navi app has a `navigation` store that holds the app's [`history`](../history), [`router`](../router), and current navigation state.
+Each Navi app has a `navigation` store that holds the app's [`history`](../history), [`router`](../router), and current route.
 
-There are two ways to create a `Navigation` object:
+There are three ways to create a `Navigation` object:
 
-1. [`createBrowserNavigation()`](#createbrowsernavigation) (for use within the browser)
-2. [`createMemoryNavigation()`](#creatememorynavigation) (for use on server and within tests)
+1. The [`<Router>`](../react-components-hooks/#router) internally creates a `navigation` store.
+2. [`createBrowserNavigation()`](#createbrowsernavigation) -- for use within the browser.
+3. [`createMemoryNavigation()`](#creatememorynavigation) -- for use on server and within tests.
 
-Both of these methods return a `navigation` object with the same methods and properties, but with different implementations for their respective environments. 
+When you're not statically rendering your site, you'll typically just use the `<Router>` component. If you need to access the `navigation` store created by `<Router>`, then you can access it through the `useNavigation()` hook or `<NaviConsumer>` component.
+
+When you *are* statically rendering, testing, or just want a little more control, you can manually create your `navigation` store and make it available to Navi's components and hooks using the `<NaviProvider>` component.
 
 
-The `navigation` object
------------------------
+Your `navigation` object
+------------------------
 
 An Observable that manages your app's navigation state.
 
@@ -23,18 +26,16 @@ An [`history`](../history/) object, as created by the [history package](https://
 
 ### `navigation.router`
 
-A <!--[`Router`](../router/)-->`Router` object, which you can use to manually resolve URLs to [`Route`](../data-types/#route) or `SiteMap` objects.
+A [`Router`](../router/) object, which you can use to manually resolve URLs to [`Route`](../data-types/#route)  objects.
 
 
 ### `navigation.getCurrentValue()`
 
 ```typescript
-navigation.getCurrentValue(): NavigationSnapshot
+navigation.getCurrentValue(): Route
 ```
 
-Returns a [`NavigationSnapshot`](#navigationsnapshot-interface), containing the current history location and current matched route.
-
-Note that the [`Route`](../data-types/#route) in the returned object may be newer than the `Route` output by the React integration's `<NavContent>` and `<NavRoute>` components. This is because these components use the latest *steady* route -- i.e. the route where the `status` property is not `"busy"`.
+Returns the current [`Route`](../data-types/#route) -- even if it is not yet fully ready.
 
 
 ### `navigation.getSteadyValue()`
@@ -43,9 +44,9 @@ Note that the [`Route`](../data-types/#route) in the returned object may be newe
 navigation.getSteadyValue(): Promise<NavigationSnapshot>
 ```
 
-Returns a promise to a *steady* [`NavigationSnapshot`](#navigationsnapshot-interface) object.
+Returns a promise to a *steady* [`Route`](../data-types/#route) -- i.e. one that will not have any further changes until the next navigation action.
 
-A *steady* [`Route`](../data-types/#route) is one which has a `status` property that is not `"busy"` -- i.e. a `Route` with a URL that matches the current URL, and where all required `content`, `meta`, etc. is available.
+Note that a steady Route can still contain errors or redirects -- the only guarantee is that it does not have status of `"busy"`.
 
 
 ### `navigation.setContext()`
@@ -54,7 +55,7 @@ A *steady* [`Route`](../data-types/#route) is one which has a `status` property 
 navigation.setContext(context)
 ```
 
-Updates the value of [`env.context`](../declarations/#env-objects) within your app's root `Switch`, and then recomputes the navigation state.
+Updates the [Routing Context](../../guides/routing-context) that is passed to the navigation's matchers.
 
 
 ### `navigation.steady()`
@@ -63,45 +64,34 @@ Updates the value of [`env.context`](../declarations/#env-objects) within your a
 navigation.steady(): Promise<void>
 ```
 
-Returns a promise that resolves once the current route has a `status` property that is not `"busy"` -- i.e. a [`Route`](../data-types/#route) with a URL that matches the current URL, and where all required `content`, `meta`, etc. is available.
+Returns a promise that resolves once the current route has a `status` property that is not `"busy"`. This will resolve at the same time as `navigation.getSteadyValue()`.
 
 
 ### `navigation.subscribe()`
 
 ```typescript
-navigation.subscribe(listener: navigationSnapshot => void)
+navigation.subscribe(listener: route => void)
 ```
 
-Registers a callback that will be called each time that the navigation state changes, i.e. whenever the value that would be returned by `navigation.getCurrentValue()` changes.
+Registers a callback that will be called each time that the current route changes, i.e. whenever the value that would be returned by `navigation.getCurrentValue()` changes.
 
-The callback will be called with the latest [`NavigationSnapshot`](#navigationsnapshot-interface) object.
+The callback will be called with the latest [`Route`](../data-types/#route) object.
 
-While this function gives you low level access to Navi's state, it's rare that you'll need to call it directly (unless you're writing an integration). It's far easier to subscribe through a component like [`<NavProvider>`](../../integrations/react/#navprovider).
+While this function gives you low level access to Navi's state, it's rare that you'll need to call it directly (unless you're writing an integration). It's far easier to subscribe through a component like [`<Router>`](../react-components-hooks/#router) or [`<NaviProvider>`](../react-components-hooks/#naviprovider).
 
-
-## `NavigationSnapshot` objects
-
-These are immutable objects that contain a snapshot of your app's entire routing state at a single point in time.
-
-```typescript
-{
-  route: Route
-  url: URLDescriptor
-}
-```
 
 ## `createBrowserNavigation()`
 
 Use `createBrowserNavigation()` to create a `navigation` object that is linked to the browser's history.
 
-At minimum, you'll need to pass in a `pages` switch. You'll also often want to pass in a `context` object, which will be provided to any getter functions in your `pages` switch through their `env.context` argument.
+At minimum, you'll need to pass in a matcher to `routes`. You'll also often want to pass in a `context` object, which will be used as the initial value for your matcher's [Routing Context](../../guides/routing-context).
 
 ```typescript
 createBrowserNavigation(options: {
   /**
-   * The Switch that declares your app's pages.
+   * The Matcher that declares your app's routes.
    */
-  pages: Switch,
+  routes: Matcher,
 
   /**
    * If provided, this part of any URLs will be ignored. This is useful
@@ -110,22 +100,9 @@ createBrowserNavigation(options: {
   basename?: string,
 
   /**
-   * This will be made available within your `pages` Switch through
-   * the `env` object passed to any getter functions.
+   * The initial Context for your matchers.
    */
   context?: any,
-
-  /**
-   * If `true`, Navi won't perform any scrolling when navigating between
-   * pages.
-   */
-  disableScrollHandling?: boolean,
-
-  /**
-   * The scroll behavior to use when scrolling between hashes on a
-   * page. Defaults to smooth.
-   */
-  hashScrollBehavior?: 'smooth' | 'instant'
 
   /**
    * You can manually supply a history object. This is useful for
@@ -134,28 +111,17 @@ createBrowserNavigation(options: {
    * By default, a browser history object will be created.
    */
   history?: History,
-
-  /**
-   * Sets `document.title` to the value of the
-   * `pageTitle` property in the current switchs' meta, if it exists.
-   * 
-   * You can also supply a function that reseives `pageTitle`, and
-   * returns a processed string that will be set.
-   * 
-   * Defaults to `true`.
-   */
-  setDocumentTitle?: boolean | ((pageTitle?: string) => string),
 })
 ```
 
 ### Example
 
 ```js
-import pages from './pages'
-
 let navigation = Navi.createBrowserNavigation({
-  // Your app's root switch
-  pages,
+  routes,
+  context: {
+    isAuthenticated,
+  }
 })
 ```
 
@@ -165,19 +131,25 @@ let navigation = Navi.createBrowserNavigation({
 
 Use `createMemoryNavigation()` to create a `navigation` object that is independent from any browser history. This is useful for server-side rendering and testing.
 
-At minimum, you'll need to pass in a `pages` switch and initial `url`.
+At minimum, you'll need to pass in a `routes` Matcher and a `url` or `request`.
 
 ```typescript
 createMemoryNavigation(options: {
   /**
-   * The Switch that declares your app's pages.
+   * The Matcher that declares your app's routes.
    */
-  pages: Switch,
+  routes: Matcher,
 
   /**
-   * The initial URL to match.
+   * The initial URL or Request to match.
    */
-  url: string | Partial<URLDescriptor>
+  url?: string | Partial<URLDescriptor>,
+  request?: {
+    body?: any,
+    headers?: { [name: string]: string },
+    method?: HTTPMethod,
+    url?: string | URLDescriptor,
+  },
 
   /**
    * If provided, this part of any URLs will be ignored. This is useful
@@ -186,23 +158,22 @@ createMemoryNavigation(options: {
   basename?: string,
 
   /**
-   * This will be made available within your `pages` Switch through
-   * the `env` object passed to any getter functions.
+   * The initial Context for your matchers.
    */
   context?: any,
+
+  /**
+   * The function that reduces segments into a Route object.
+   */
+  reducer?: Reducer<Segment, R>,
 })
 ```
 
 ### Example
 
 ```js
-import pages from './pages'
-
 let navigation = Navi.createMemoryNavigation({
-  // Your app's root switch
-  pages,
-
-  // The URL to resolve
+  routes,
   url: '/test',
 })
 ```

@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { Link, NavProvider, NavContent, NavLoading, NavNotFoundBoundary } from 'react-navi'
+import { Link, NaviProvider, View, NavLoading, NotFoundBoundary } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
 
 class App extends React.Component {
   render() {
     return (
-      <NavProvider navigation={this.props.navigation}>
+      <NaviProvider navigation={this.props.navigation}>
         <NavLoading>
           {isLoading =>
             <div className="App">
@@ -23,14 +23,14 @@ class App extends React.Component {
                 </h1>
               </header>
               <main>
-                <NavNotFoundBoundary render={renderNotFound}>
-                  <NavContent />
-                </NavNotFoundBoundary>
+                <NotFoundBoundary render={renderNotFound}>
+                  <View />
+                </NotFoundBoundary>
               </main>
             </div>
           }
         </NavLoading>
-      </NavProvider>
+      </NaviProvider>
     );
   }
 }

@@ -120,6 +120,7 @@ export function Layout({
                     className={cx('twitter-link')}
                     href={`https://twitter.com/home?status=${encodeURIComponent(`From the Navi docs: "${route.title}"\n\n${process.env.PUBLIC_URL}${route.url.href}`)}`}
                     target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Share this page on Twitter
                   </a>

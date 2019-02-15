@@ -7,7 +7,14 @@ const languageNames = {
   'ja': '日本語'
 }
 
-const translationsLink = "https://github.com/frontarm/navi-website/issues?utf8=%E2%9C%93&q=is%3Aissue+Translation"
+const TranslationsLink = ({ children }) => 
+  <a
+    children={children}
+    rel="noopener noreferrer"
+    target="_blank"
+    href="https://github.com/frontarm/navi-website/issues?utf8=%E2%9C%93&q=is%3Aissue+Translation"
+  />
+
 
 // Use a context to pass data in, so that this can be placed manually within
 // pages.
@@ -32,9 +39,9 @@ export default function Translations({ className='' }) {
           </li>  
         )}
         <li className={styles['new']}>
-          <a target="_blank" href={translationsLink}>
+          <TranslationsLink>
             Translate this page
-          </a>
+          </TranslationsLink>
         </li>
       </ul>
     )
@@ -47,7 +54,7 @@ export default function Translations({ className='' }) {
         content.isTranslationMissing &&
         <p className={styles['missing']}>
           This page hasn't been translated into <strong>{languageNames[route.data.language]}</strong> yet.{' '}
-          Can you help by <a href={translationsLink} target="_blank">translating it</a>?
+          Can you help by <TranslationsLink>translating it</TranslationsLink>?
         </p>
       }
     </nav>

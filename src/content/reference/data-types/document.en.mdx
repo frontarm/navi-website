@@ -2,196 +2,258 @@ export const filename = __filename
 
 These types are all exported for use within TypeScript codebases.
 
+## `NaviRequest`
+
+The `request` object passed to your matcher functions if of type `NaviRequest`, and contains information about the last requested URL.
+
+```typescript
+interface NaviRequest {
+  /**
+   * The path at which the matcher is mounted.
+   */
+  mountpath: string
+
+  /**
+   * The values of any URL parameters matched from parameter segments in the
+   * URLs, pathname, along with information from the URL's query string.
+   */
+  params: { [name: string]: string }
+
+  /**
+   * A Router object, which can be used to make further requests.
+   */
+  router: Router<any, any>
+
+  /**
+   * An object containing the information from the URL's query string.
+   */
+  query: { [name: string]: string }
+
+  /**
+   * The raw URL query string, including the "?" character. E.g. "?q=test".
+   */
+  search: string
+
+  /**
+   * A HTTP method as an uppercase string. This defaults to "GET".
+   */
+  method: HTTPMethod
+
+  /**
+   * Contains the unmatched part of the request URL.
+   */
+  path: string
+
+  /**
+   * Contains the unmatched part of the request URL, as a string.
+   * 
+   * This is a string instead of a URLDescriptor, to be consistent
+   * with the Request type for Express.
+   */
+  url: string
+
+  /**
+   * The originally requested URL
+   */
+  originalUrl: string
+
+  body: any
+  hostname: string
+  headers: { [name: string]: string }
+}
+```
+
+
 ## `Route`
 
 Your app's navigation state at any single time is represented by a `Route` object.
 
 ```typescript
-enum RouteType {
-  Switch = 'switch',
-  Page = 'page',
-  Redirect = 'redirect',
-  Plaecholder = 'placeholder'
-}
+type RouteType =
+  | 'busy'
+  | 'ready'
+  | 'error'
+  | 'redirect'
 
-interface Route {
-  url: URLDescriptor
-
+interface Route<Data = any> {
   type: RouteType
-
+  url: URLDescriptor
   segments: Segment[]
-  firstSegment: SwitchSegment
   lastSegment: Segment
+  
+  /**
+   * When "type" is "redirect", contains the redirected to URL.
+   */
+  to?: string
 
   /**
-   * Indicates that the router context must be changed to cause any more
-   * changes.
+   * When "type" is "error", contains the error object.
    */
-  isSteady: boolean
-
-  /**
-   * Indicates whether the location has fully loaded (including content if
-   * content was requested), is still busy, or encountered an error.
-   */
-  status: Status
-
   error?: any
 
-  title: any
-  meta: any
-  content: any
+  /**
+   * An object containing merged values from all data segments.
+   */
+  data?: Data
+
+  /**
+   * An object contains HTTP headers added by header segments. 
+   */
+  headers: { [name: string]: string }
+
+  /**
+   * An array containing information meant to be added to the page <head>.
+   */
+  heads: any[]
+
+  /**
+   * A HTTP status code.
+   */
+  status?: number
+
+  /**
+   * The title that should be set on `document.title`.
+   */
+  title?: string
+
+  /**
+   * An array of components or elements for rendering the route's view.
+   */
+  views: any[]
 }
 ```
 
 ## `Segment`
 
-Within your `Route` object, state for the individual `Switch`, `Page` and `Redirect` objects is available through its `route.segments` array. Each `Segment` follows the following shape. 
+Within your `Route` object, state for each individual matcher is available through the `route.segments` array. There are a number of possible segment types.
 
 ```typescript
-/**
- * A type that covers all Segment objects.
- */
-type Segment =
-  | PlaceholderSegment
-  | SwitchSegment
-  | PageSegment
-  | RedirectSegment
 
-enum SegmentType {
-  Placeholder = 'placeholder',
-  Switch = 'switch',
-  Page = 'page',
-  Redirect = 'redirect',
+/**
+ * This is used in place of a segment of another type whose final result is
+ * not yet known.
+ */
+interface BusySegment extends GenericSegment {
+  type: 'busy'
+  url: URLDescriptor
+  promise: PromiseLike<any>
 }
 
 /**
- * All segments extend this interface. It includes all information that can be
- * inferred from just a pattern string and a location.
+ * Data segments contain information that will be available on the produced
+ * route object, but isn't meant to be rendered with the page itself.
  */
-interface GenericSegment {
-  type: SegmentType
+interface DataSegment<Data=any> extends GenericSegment {
+  type: 'data'
+  url: URLDescriptor
+  data: Data
+}
 
-  /**
-   * Any params that have been matched.
-   */
-  params: Params
+/**
+ * When encountered in a route by a `<NavView>`, this will be thrown, and
+ * can then be handled by an Error Boundary. Behavior for handling error
+ * segments on the server side is undefined.
+ */
+interface ErrorSegment extends GenericSegment {
+  type: 'error'
+  url: URLDescriptor
+  error: any
+}
 
-  /**
-   * The part of the URL pathname that has been matched.
-   */
+/**
+ * Can be used to specify data for your page's <head> separately from
+ * the view content.
+ */
+interface HeadSegment extends GenericSegment {
+  type: 'head'
+  url: URLDescriptor
+  head: any
+}
+
+/**
+ * Used to specify any headers for your HTTP response.
+ */
+interface HeadersSegment extends GenericSegment {
+  type: 'headers'
+  url: URLDescriptor
+  headers: { [name: string]: string }
+}
+
+/**
+ * Map segments are added for each map that is routed through. They're
+ * useful for building maps, as they hold metadata on other possible paths.
+ */
+interface MapSegment extends GenericSegment {
+  type: 'map'
+  url: URLDescriptor
+  patterns: string[]
+}
+
+/**
+ * Added in place of child segments when a child returns an empty list of
+ * segments, to prevent the length of the segments list from decreasing.
+ */
+interface NullSegment extends GenericSegment {
+  type: 'null'
   url: URLDescriptor
 }
 
 /**
- * Placeholder segments appear at the end of a route that is still being
- * resolved.
+ * When added to a route, indicates that the client should follow the redirect
+ * to the given address.
  */
-export interface PlaceholderSegment extends GenericSegment {
-  type: SegmentType.Placeholder
-
-  nextSegment?: never
-  nextPattern?: never
-  status: Status
-  error?: any
-  content?: never
-  meta?: never
-  title?: never
-
-  lastRemainingSegment?: never
-  remainingSegments: any[]
+interface RedirectSegment extends GenericSegment {
+  type: 'redirect'
+  url: URLDescriptor
+  to: string
 }
 
 /**
- * Page segments corresponds to a URL segment followed by a final '/'.
+ * Used to specify the status of your HTTP response.
  */
-export interface PageSegment<Meta extends object = any, Content = any>
-  extends GenericSegment {
-  type: SegmentType.Page
-  content?: Content
-  meta?: Meta
-  title?: string
-
-  status: Status
-  error?: never
-
-  nextSegment?: never
-  nextPattern?: never
-  lastRemainingSegment?: never
-  remainingSegments: any[]
+interface StatusSegment extends GenericSegment {
+  type: 'status'
+  url: URLDescriptor
+  status: number
 }
 
 /**
- * Redirect segments indicate that anything underneath this segment
- * should be redirected to the location specified at `to`.
+ * Allows matchers to specify a <title> tag, or document title.
  */
-export interface RedirectSegment<Meta extends object = any>
-  extends GenericSegment {
-  to?: string
-  meta: Meta
-  title?: never
-  type: SegmentType.Redirect
-
-  content?: never
-  status: Status
-  error?: any
-
-  nextSegment?: never
-  nextPattern?: never
-  lastRemainingSegment?: never
-  remainingSegments: any[]
+interface TitleSegment extends GenericSegment {
+  type: 'title'
+  url: URLDescriptor
+  title: string
 }
 
 /**
- * Switch segments correspond to non-final segment of the URL.
+ * Contains the full URL that should be used for the route, including any hash.
  */
-export interface SwitchSegment<Meta extends object = any, Content = any>
-  extends GenericSegment {
-  type: SegmentType.Switch
-  meta: Meta
-  title?: string
-  switch: Switch<any, Meta, Content>
+interface URLSegment extends GenericSegment {
+  type: 'url'
+  url: URLDescriptor
+}
 
-  status: Status
-  error?: any
-  content?: Content
-
-  /**
-   * The pattern that was matched (with param placeholders if applicable).
-   */
-  nextPattern?: string
-
-  /**
-   * A segment object that contains details on the next part of the URL.
-   *
-   * It may be undefined if the user has provided an incorrect URL, or
-   * if the child's template still needs to be loaded.
-   */
-  nextSegment?: Segment
-
-  /**
-   * An array of all Segment objects corresponding to the remaining parts
-   * of the URL.
-   *
-   * It may be undefined if the user has provided an incorrect URL, or
-   * if the child's template still needs to be loaded.
-   */
-  remainingSegments: Segment[]
-
-  /**
-   * Contains the final segment object, whatever it happens to be.
-   */
-  lastRemainingSegment?: Segment
+/**
+ * View segments contain data that will be used in a response on the
+ * server, or that will be rendered in the browser. They can contain error
+ * or redirect information, but they'll still be rendered as-is in the client.
+ */
+interface ViewSegment<View=any> extends GenericSegment {
+  type: 'view'
+  url: URLDescriptor
+  view: View
 }
 ```
 
 ## `SiteMap`
 
-Contains two objects mapping URLs to `Route` objects. To generate a `SiteMap`, use the [`router.resolveSiteMap()`](../router/#routerresolvesitemap) method. 
+Contains an object mapping non-redirect URLs to `Route` objects, and an additional object containing any redirects. To generate a `SiteMap`, use the [`router.resolveSiteMap()`](../router/#routerresolvesitemap) method. 
 
 ```typescript
-export interface SiteMap {
+interface SiteMap {
   redirects: {
-    [url: string]: Route,
+    [url: string]: string,
   }
   pages: {
     [url: string]: Route,
@@ -199,26 +261,12 @@ export interface SiteMap {
 }
 ```
 
-## `Status`
-
-`Route` and `Segment` objects have a status that indicates whether they are **ready** to be used, **busy** being fetched, or whether an **error** prevented them from being completely loaded.
-
-In the case of an `error` status, the `Route` or `Segment` object's `error` prop will contain the error's details.
-
-```typescript
-enum Status {
-  Ready = 'ready',
-  Busy = 'busy',
-  Error = 'error',
-}
-```
-
 ## `URLDescriptor`
 
-Whenever you see a property named `url` within Navi, it'll contain a **URL Descriptor** object, which has the following shape:
+Most `url` objects within Navi are **URL Descriptor** objects, which have the following shape:
 
 ```typescript
-export type URLDescriptor = {
+type URLDescriptor = {
   /**
    * The URL's pathname part, starting from the first `/`, and ending
    * before any search string.

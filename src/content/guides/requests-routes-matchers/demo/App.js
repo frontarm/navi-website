@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Link, NavLoading, NavProvider, NavContent, NavNotFoundBoundary } from 'react-navi';
+import { Link, NavLoading, NaviProvider, View, NotFoundBoundary } from 'react-navi';
 import { MDXProvider } from '@mdx-js/tag';
 
 class App extends Component {
   render() {
     return (
-      <NavProvider navigation={this.props.navigation}>
+      <NaviProvider navigation={this.props.navigation}>
         <NavLoading>
           {loadingRoute =>
             <div className="App">
@@ -21,7 +21,7 @@ class App extends Component {
               </header>
 
               <main>
-                <NavNotFoundBoundary render={renderNotFound}>
+                <NotFoundBoundary render={renderNotFound}>
                   <div
                     // Only add the `active` class to this element while the
                     // next page is loading, triggering a CSS animation to
@@ -36,14 +36,14 @@ class App extends Component {
                     // Markdown files, ensuring navigation is handled by Navi.
                     a: Link,
                   }}>
-                    <NavContent />
+                    <View />
                   </MDXProvider>
-                </NavNotFoundBoundary>
+                </NotFoundBoundary>
               </main>
             </div>
           }
         </NavLoading>
-      </NavProvider>
+      </NaviProvider>
     );
   }
 }
