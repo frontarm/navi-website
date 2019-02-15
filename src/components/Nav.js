@@ -88,6 +88,13 @@ export const SidebarSection = props => {
     }
     return active;
   });
+  let wasActiveRef = React.useRef(active)
+  React.useEffect(() => {
+    if (active && !open && !wasActiveRef.current) {
+      toggleOpen()
+    }
+    wasActiveRef.current = active
+  }, [active])
   if (!data.sectionTitle) {
     open = true;
   }
