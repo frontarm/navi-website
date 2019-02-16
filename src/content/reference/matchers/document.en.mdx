@@ -5,63 +5,121 @@ export const demoboardHelpers = {
   'styles.css': require('!raw-loader!./demo/styles.css'),
 }
 
-Navi provides four **declaration functions**, which you'll use to map URL paths to pages and their content:
+Matchers are objects that map a [Request](../types/#request) and [Context](../../guides/routing-context) to their associated content, including views, data, and other information.
 
-- [createSwitch()](#createswitch)
-- [createPage()](#createpage)
-- [createRedirect()](#createredirect)
-- [createContext()](#createcontext)
+### Functions for creating matchers
 
-Each of these functions returns a **`Declaration` object**, i.e. one of `Switch`, `Page`, `Redirect` or `Context`. You can pass these declaration objects to a Switch's `paths` option to build your routing tree.
+While it's possible to create your own custom matchers, usually you'll use Navi's helper functions to create them. There are five basic functions that return matchers:
+
+- [lazy()](#lazy)
+- [map()](#map)
+- [mount()](#mount)
+- [redirect()](#redirect)
+- [route()](#route)
+
+Navi also provides a number of child-accepting functions that can be composed together to match multiple pieces of information with a single matcher. They can also be composed together with the [compose()](#compose). It may help to think of them as middleware.
+
+- [withContext()](#withcontext)
+- [withData()](#withdata)
+- [withHead()](#withhead)
+- [withHeaders()](#withheaders)
+- [withStatus()](#withstatus)
+- [withTitle()](#withtitle)
+- [withView()](#withview)
+
+Finally, if the above functions don't cover your needs, it is possible to write your own custom matchers. Matchers are functions that take a child and return a generator function, so you can write them with pure JavaScript.
+
+- [Custom Matchers](#custom-matchers)
 
 
-`createSwitch()`
----------------
+`lazy()`
+--------
 
 ```typescript
-createSwitch(options: {
-  paths: {
-    [name: string]: Declaration | (env => Declaration)
-  },
+lazy(() => Promise<{ default: Matcher }>)
+```
 
-  // Optionally one of:
-  title?: string,
-  getTitle?: (env) => string | Promise<string>,
+The `lazy()` function allows you to split out part of your matcher tree to a separate file, making it possible to declare routing trees for large projects which can't all be loaded at once.
 
-  // Optionally one of:
-  content?: any,
-  getContent?: (env) => any | Promise<any>,
+Navi's `lazy()` function acts like React's `lazy()` function, accepting a function that returns a promise. Once the promise resolves, Navi will defer to the matcher on the resolved value's `default` property.
 
-  // Optionally one of:
-  meta?: object,
-  getMeta?: (env) => object | Promise<object>,
+
+### Examples
+
+```js
+import { lazy, mount } from 'navi'
+
+export default mount({
+  '/': lazy(() => import('./landingRoute')),
+  '/about': lazy(() => import('./aboutRoute')),
 })
 ```
 
-A switch's `paths` object is how you map URLs to pages and redirects. Switch paths can also be specified as [getter functions](#constants-vs-getters), allowing a path's children to vary with the switch's context.
 
-The `content`, `meta` or `title` options are entirely optional; Navi itself doesn't actually make use of them. However, if you *do* provide them, then their values will be available in [`Route`](../data-types/#route) objects for URLs that match this switch.
+`map()`
+-------
 
+```typescript
+map((request, context) =>
+  Matcher |
+  Promise<Matcher | { default: Matcher }>
+)
+```
+
+The `map()` function allows you to decide on a matcher at runtime, based on the value of `request` and `context`. This is useful when you want to use a different child matcher depending on the circumstances.
+
+### Examples
+
+You can use `map()` when implementing [authentication](../../guides/authenticated-routes) to match a `route()` when the user is logged in, and a `redirect()` when the user is logged out.
+
+```js
+import { lazy, map, mount, redirect } from 'navi'
+
+export default mount({
+  '/members': map((request, context) =>
+    context.isAuthenticated
+      ? lazy(() => import('./membersRoute'))
+      : redirect(request =>
+          '/login?redirectTo='+encodeURIComponent(request.originalUrl)
+        )
+  ),
+})
+```
+
+
+`mount()`
+-------
+
+```typescript
+mount(paths: {
+  [path: string]: Matcher
+})
+```
+
+The `mount()` function returns a matcher that allows you to "mount" multiple child matchers at specified paths. The active matcher will then depend on the current URL.
+
+This matcher transforms the `Request` object passed to child matchers by:
+
+- Removing the matched part of the URL from the `path` and `url` properties
+- Appending the matched path to the `mountpath` property
 
 ### Examples
 
 #### Basic usage
 
-The `paths` object is used to map your app's URLs to Pages, Redirects, and more Switches. For example, this `paths` object specifies two URLs -- one that maps to a page with content read from another file, and a second route that redirects back to the first one.
+This example specifies two URLs -- on '/about', a `route()` matcher is used that dynamically loads its view form another file, and on `/`, a matcher is mounted that redirects users to `/about`.
 
 ```js
 //--- pages.js
-import * as Navi from 'navi'
+import { mount, redirect, route } from 'navi'
 
-export default Navi.createSwitch({
-  paths: {
-    '/about': Navi.createPage({
-      title: 'The createSwitch() function',
-      getContent: () => import('./about.mdx'),
-    }),
+export default mount({
+  '/about': route({
+    title: 'The createSwitch() function',
+    getView: () => import('./about.mdx'),
+  }),
 
-    '/': Navi.createRedirect('./about'),
-  }
+  '/': redirect('./about'),
 })
 //--- index.js <-- index.js
 //--- App.js <-- App.js
@@ -75,159 +133,83 @@ There ain't anything but this here about page. The `/` URL just redirects to `/a
 ```
 
 
-#### Nested switches
+#### Nested mounts
 
-You can compose multiple switches together to create a bigger switch -- just as you'd compose React components or Redux reducers. 
+You can compose multiple `mount()` matchers together -- just as you'd compose React components or Redux reducers. 
 
 ```js
-export default createSwitch({
-  paths: {
-    '/plans': Navi.createSwitch({
-      paths: {
-        '/pro': Navi.createPage({
-          title: 'Pro',
-          getContent: () => import('./pro-plan.mdx'),
-        }),
-        '/team': Navi.createPage({
-          title: 'Team',
-          getContent: () => import('./team-plan.mdx'),
-        }),
-      }
+export default mount({
+  '/plans': mount({
+    '/pro': route({
+      title: 'Pro',
+      getView: () => import('./pro-plan.mdx'),
     }),
+    '/team': route({
+      title: 'Team',
+      getView: () => import('./team-plan.mdx'),
+    }),
+  }),
 
-    '/': Navi.createRedirect('./plans/pro'),
-  }
+  '/': redirect('./plans/pro'),
 })
 ```
 
 
 #### The `/` path
 
-Within the paths object, the `/` path is special; it is used to represent the content of the URL at which the Switch itself is mounted at. Because of this, it only makes sense to map `/` to `Page` or `Redirect` objects. Mapping `/` to a `Switch` would be odd, so it isn't supported.
+Within the paths object, the `/` path is special; it is used to represent the content of the URL at which the `mount()` matcher itself is mounted at.
 
-If you don't provide a `/` path for a switch, then accessing the switch directly will result in a 404. For example, accessing `/plans` in this example will result in a 404.
+If you don't provide a `/` path for a `mount()`, then accessing it directly will result in a 404. For example, accessing `/plans` in this example will result in a 404.
  
 ```js
-export default createSwitch({
-  paths: {
-    '/plans': Navi.createSwitch({
-      paths: {
-        '/pro': Navi.createPage({
-          title: 'Pro',
-          getContent: () => import('./pro-plan.mdx'),
-        }),
-        '/team': Navi.createPage({
-          title: 'Team',
-          getContent: () => import('./team-plan.mdx'),
-        }),
-      }
+export default mount({
+  '/plans': mount({
+    '/pro': route({
+      title: 'Pro',
+      getView: () => import('./pro-plan.mdx'),
     }),
+    '/team': route({
+      title: 'Team',
+      getView: () => import('./team-plan.mdx'),
+    }),
+  }),
 
-    '/': Navi.createRedirect('./plans/pro'),
-  }
+  '/': redirect('./plans/pro'),
 })
 ```
 
-Because of this, it often makes sense to map the `/` path of your switch to a redirect. When doing so, remember to pass a relative URL to `createRedirect()`, as absolute URLs can break composition!
+Because of this, it often makes sense to mount a redirect at the `/` path.
 
 
 #### URL parameters
 
-It's possible to specify wildcard segments by starting the segment with the `:` character. The values of these wildcard segments will be made available via your [`Route`](../data-types/#route) or [`Env`](#env-objects) objects' `params` property.
+It's possible to specify wildcard segments in a `mount()` matcher's paths by starting segments with the `:` character. The values of these wildcard segments will be made available via your [`NaviRequest`](../data-types/#navirequest) objects' `params` property.
 
-For example, this `paths` object specifies that any URL of the form `/resource/:id`, where `:id` can be anything, contains a page whose content and title depends on the result of `fetchResource(:id)`.
+For example, the following `paths` object specifies that any URL of the form `/resource/:id`, where `:id` can be anything, maps to a route whose view and title depends on the result of `fetchResource(:id)`.
 
 ```js
-export default Navi.createSwitch({
-  paths: {
-    '/resource/:id': async env => {
-      let resource = await fetchResource(env.params.id)
+export default mount({
+  '/resource/:id': route(request => {
+    let resource = await fetchResource(request.params.id)
 
-      return createPage({
-        title: resource.title,
-        content: resource.content,
-      })
+    return {
+      title: resource.title,
+      content: resource.content,
     }
-  }
-}
-```
-
-
-#### Conditional paths
-
-It's possible to compute a path's mapped `Page`, `Redirect` or `Switch` at runtime by passing in a [getter function](#constants-vs-getters). In fact, it's possible to choose to map a `Page` in some cases, and a `Redirect` in others, depending on the value of `env.context`:
-
-For example, here's how you'd declare a switch that redirects it's `/members` path to a `/login` page unless the user has already authenticated:
-
-```js
-export default Navi.createSwitch({
-  paths: {
-    '/members': env =>
-      !env.context.currentUser ? (
-        Navi.createRedirect(
-          '/login?redirectTo='+encodeURIComponent(env.mountname)
-        )
-      ) : (
-        Navi.createPage({
-          title: 'My Page',
-          content: <div>My Page Content</div>,
-        })
-      )
-  }
+  })
 })
 ```
 
 
-`createPage()`
---------------
+`redirect()`
+------------
 
 ```typescript
-createPage(options: {
-  // One of:
-  title?: string,
-  getTitle?: (env) => string | Promise<string>,
-
-  // One of:
-  content?: any,
-  getContent?: (env) => any | Promise<any>,
-
-  // Optionally one of:
-  meta?: object,
-  getMeta?: (env) => object | Promise<object>,
-})
-```
-
-Creates a `Page` declaration, which you can map to a URL with the `createSwitch()` function's `paths` object.
-
-The page's `title`, `meta` and `content` can be specified as a constant value, or as a [getter function](#constants-vs-getters). 
-
-At minimum, each `Page` should specify a title, as Navi will set the document's `<title>` to this title whenever the user navigates to the page. It also makes sense to specify the page's content, because well... it's a page.
-
-The contents of the `meta` object are used by Navi's default static renderer in deciding which `<meta>` tags to add to the page `<head>`. However, if you're not using the static renderer, or have defined a [custom HTML renderer](../../guides/static-rendering/#custom-renderers), then `meta` can contain whatever you'd like.
-
-
-### Example
-
-```js
-createPage({
-  title: 'Frontend Armory',
-  meta: {
-    description: "Advanced React for Experienced Developers.",
-  },
-  getContent: () => import('./landing.mdx'),
-})
-```
-
-
-`createRedirect()`
-------------------
-
-```typescript
-createRedirect(
+redirect(
   to:
     | string
     | Partial<URLDescriptor>
-    | (env =>
+    | ((request, context) =>
         | string
         | Partial<URLDescriptor>
         | Promise<string | Partial<URLDescriptor>
@@ -235,7 +217,7 @@ createRedirect(
 )
 ```
 
-Redirects can be mapped to one of switch's paths to declare that any visits to that path will automatically navigate to the specified path.
+Redirects can be mapped to one of a map's paths to declare that any visits to that path will automatically navigate to the specified path.
 
 The value of `to` can be an absolute path, a [partial URL descriptor](../data-types/#urldescriptor), or a getter function that returns either of these.
 
@@ -244,88 +226,342 @@ The value of `to` can be an absolute path, a [partial URL descriptor](../data-ty
 Redirect to `/browse`, relative to the application root:
 
 ```js
-createRedirect('/browse')
+redirect('/browse')
 ```
 
 Redirect to `./browse`, relative to the path at which the redirect is mounted:
 
 ```js
-createRedirect('./browse')
+redirect('./browse')
 ```
 
 Redirect to `/login?redirectTo=...`, appending the current URL as parameter, so that the login screen can redirect back to it when complete:
 
 ```js
-createRedirect(env =>
+redirect(request =>
   '/login?redirectTo='+
-  encodeURIComponent(env.mountname+env.url.search)
+  encodeURIComponent(request.mountpath+request.search)
 )
 ```
 
 
-`createContext()`
------------------
+`route()`
+---------
 
 ```typescript
-createContext(
-  getChildContext: (env) => any | Promise<any>,
-  childDeclaration: Declaration | ((env) => Declaration)
+route(options: 
+  {
+    // Arbitrary information about this route, that will be merged with
+    // `data` objects from any parent matchers.
+    data?: object,
+    getData?: (request, context) => object | Promise<object>,
+
+    // <head> or <meta> tags that should be rendered when this route is
+    // active.
+    head?: any,
+    getHead?: (request, context) => any | Promise<any>,
+
+    // HTTP headers that should be sent to the client. This is only useful
+    // when performing server side rendering.
+    headers?: any,
+    getHeaders?: (request, context) => object | Promise<object>,
+
+    // The matched HTTP status code. This is only useful when performing
+    // server side rendering.
+    status?: any,
+    getStatus?: (request, context) => number | Promise<number>,
+
+    // The title that should be set within the `<title>` tag, and shown in
+    // the browser's title bar.
+    title?: string,
+    getTitle?: (request, context) => string | Promise<string>,
+
+    // Code to render this route. While you can pass anything in here,
+    // typically you'll pass a React element or component.
+    view?: any,
+    getView?: (request, context) => any | Promise<any>,
+  } |
+  (request, context) => {
+    data?: object,
+    head?: any,
+    headers?: object,
+    status?: any,
+    title?: string,
+    view?: any,
+  }  
 )
 ```
 
-The `createContext()` declaration will set the value of `env.context` within the `Declaration` passed as its second argument. It won't make any effort to merge in the parent context, but since the parent context is available in `env.context`, you can merge it in yourself.
+Used to map multiple pieces of content to a URL.
 
-This declaration can be used to fetch data that is common to a number of ancestors once, instead of fetching it within each ancestor's getters.
+There are two ways to use `route()`:
+
+1. You can pass a getter function that maps `(request, context)` to an object containing your content.
+2. You can pass an object that contains constant values, or getter functions for individual values.
+
+In the second case, if `request.method` is equal to `"HEAD"`, then any getters for `view` and `head` won't be called. This is particularly useful when your app uses `router.resolveSiteMap()`, as it uses the `"HEAD"` method by default -- ensuring that the act of creating a site map doesn't fetch all of your app's views.
 
 ### Examples
 
-Frontend Armory's courses are composed of a course Switch with a number of nested Switch and Page declarations. Context is used to provide the course details to each of the nested pages.
+#### Passing an object of props
 
 ```js
-import course from './courseDetails'
+route({
+  title: 'Frontend Armory',
+  data: {
+    language: "en",
+  },
+  head: <>
+    Level up your JavaScript through interactive exercises and examples.
+  </>,
+  getView: () => import('./landing.mdx'),
+})
+```
 
-let context = createContext(
-  (env) => ({
+#### Passing a getter function
+
+```js
+route(async (request, context) => {
+  let view
+
+  if (!context.currentUser || !context.currentUser.isPro) {
+    view = <SubscribePage />
+  }
+  else {
+    let { default: MDXDocument } = await import('./document.mdx')
+    view = <MDXDocument currentUser={context.currentUser} />
+  }
+
+  return {
+    data: {
+      exclusiveTo: 'pro',
+    },
+    title: 'Mastering Asynchronous JavaScript'
+    view,
+  }
+})
+```
+
+
+`withContext()`
+-----------------
+
+```typescript
+withContext(
+  getChildContext: (request, parentContext) => any | Promise<any>,
+  child?: Matcher
+)
+```
+
+The `withContext()` matcher sets the [Routing Context](../../guides/routing-context) within its children. It won't make any effort to merge in the parent context, but since the parent context is available via the getter function's second argument, you can merge it in yourself.
+
+This matcher is useful for providing information that is shared by multiple children -- similar to [React Context](https://reactjs.org/docs/context.html).
+
+### Examples
+
+Imagine that you're building a site with many online courses -- like Frontend Armory. Each course is composed of a number of nested `mount()` and `route()` matchers -- with one `route()` for each lesson. Context could be used to provide the course details to each of the nested pages.
+
+```js
+let context = withContext(
+  (route, parentContext) => ({
     course,
-    courseRoot: env.mountname,
+    courseRoot: rount.mountpath,
 
     // Merge in the parent context
-    ...env.context
+    ...parentContext,
   }),
-  createSwitch({
-    paths: course.paths,
-    meta: course,
+  mount({
+    // ...
   })
 )
 ```
 
 
-Constants vs. Getters
----------------------
+`withData()`
+------------
 
-The `createPage()` and `createSwitch()` declaration functions take an options object, where `title`, `content`, `meta` and each entry in `paths` can be specified in one of two ways: you can specify a **constant value**, or you can specify a **getter function**.
+```typescript
+withData(
+  dataOrGetter:
+    object |
+    (request, context) =>
+      object |
+      Promise<object | { default: object }>,
+  child?: Matcher
+)
+```
 
-For example, here's how you'd specify a constant value for a page's `content` option:
+Use `withData()` to add data to a Route's `data` property. If a child matcher adds data on the same properties as this matcher, then the child matcher's data will take precedence.
+
+
+`withHead()`
+------------
+
+```typescript
+withHead(
+  headOrGetter:
+    any |
+    (request, context) =>
+      any |
+      Promise<any | { default: any }>,
+  child?: Matcher
+)
+```
+
+Use `withHead()` to add a value to a Route's `heads` array. The value will be prepended to any values added by any child matcher.
+
+
+`withHeaders()`
+---------------
+
+```typescript
+withHeaders(
+  headersOrGetter:
+    object |
+    (request, context) =>
+      object |
+      Promise<object | { default: object }>,
+  child?: Matcher
+)
+```
+
+Use `withHeaders()` to add a HTTP headers to a Route's `headers` object. Any HTTP headers that a child matcher adds will take precedence of this matcher's headers.
+
+
+`withStatus()`
+--------------
+
+```typescript
+withStatus(
+  statusOrGetter:
+    number |
+    (request, context) =>
+      number |
+      Promise<number | { default: number }>,
+  child?: Matcher
+)
+```
+
+Use `withStatus()` to add a HTTP status to a Route's `status` object. Any status added by a child matcher will take precedence.
+
+### Example
+
+The `route()` function automatically adds a 200 status if you don't specify one, but internally, it just uses `withStatus()`. Here's how you could do the same thing yourself:
 
 ```js
-{
-  content: <div>how much wood could a woodchuck chuck</div>
+import { compose, map, mount, redirect, withStatus, withView } from 'navi'
+
+mount({
+  '/contact': map(async (request, context) => {
+    if (request.method === 'POST') {
+      try {
+        await context.api.postContact(request.body)
+        return redirect('/thankyou')
+      }
+      catch (error) {
+        return compose(
+          withView(<ContactForm error={error} />),
+          withStatus(400)
+        )
+      }
+    }
+    else {
+      return compose(
+        withView(<ContactForm />),
+        withStatus(200)
+      )
+    }
+  })
+})
+```
+
+
+`withTitle()`
+-------------
+
+```typescript
+withTitle(
+  titleOrGetter:
+    string |
+    (request, context) =>
+      string |
+      Promise<string | { default: string }>,
+  child?: Matcher
+)
+```
+
+Use `withTitle()` to specify a value for the matched Route's `title` string -- which will be used to set the page's `<title>` tag. Any title added by a child matcher will take precedence.
+
+
+`withView()`
+------------
+
+```typescript
+with(
+  viewOrGetter:
+    any |
+    (request, context) =>
+      any |
+      Promise<any | { default: any }>,
+  child?: Matcher
+)
+```
+
+Use `withView()` to add a view to a Route's `heads` array. The value will be prepended to any values added by any child matcher.
+
+
+
+## `compose()`
+
+There are times when you'll want to associate multiple pieces of information with a single URL. For example, you may want to associate both a view, some data, and a title.
+
+Matchers that accept a child argument can be composed in one of two ways:
+
+-   You can pass a child matcher as a second argument. E.g.
+
+    ```jsx
+    withView(
+      <About />,
+      withData({
+        language: 'en',
+      })
+    )
+
+-   You can pass multiple matchers to the `compose()` function, which allows you to specify nested matchers like the above example using a flat list of argument:
+
+    ```jsx
+    compose(
+      withView(<About />),
+      withData({ language: 'en' }),
+    )
+    ```
+
+
+## Custom Matchers
+
+Matchers are functions that accept a child matcher, and return a Generator Function that outputs arrays of [Segment](../types/#segment) objects.
+
+```js
+type Matcher = (child: Matcher) => ({ request, context }) => Iterator<Segment[]>
+```
+
+Why do matchers follow this signature?
+
+Firstly, accepting a child as an argument allows for composition via a standard `compose()` function -- just like the one that [comes with](https://redux.js.org/api/compose) Redux. While some matcher-creating functions allow for a child to be passed in as a second argument, this is actually just sugar for specifying a default value for the matcher's `child` argument.
+
+As for the generator function, it typically looks something like this:
+
+```js
+function* matcherGenerator({ request, context }) {
+  while (busy) {
+    segments = computeSegments(env.request, env.context)
+    yield segments
+  }
 }
 ```
 
-And here's how you'd specify a dynamic value using a getter function:
+The generator function is called once for each combination of `request` and `context`. Given that the matcher's result may be asynchronous, it may not be possible to immediately return a value. However, given that there may be multiple matchers composed together, each emitting their own `Segment` objects, it may not be desirable to wait until *all* matchers have completed to see each result.
 
-```js
-{
-  getContent: async (env, metaPromise) =>
-    fetch('/yo-google-how-much-wood')
-}
-```
+Generators are a useful way to solve this problem. A generator can immediately yield a **'busy'** segment that indicates that more data is to come, and then yield a final segment once it's available. In the meantime, it can call child generators and yield their results as appropriate.
 
-While getter functions are more verbose than constant values, they provide a number of extra capabilities:
-
-- Getters receive an [Env object](#env-objects), which can be used to create values that depend on a page's url, context, or on other routes.
-- Getters will be recomputed whenever the user navigates and whenever your `Navigation` object's context changes.
-- If a getter function returns a Promise, then Navi will use that value that the promise resolves to. This means that you can use both standard functions and async functions as getters.
-- If a getter function returns a promise to an object of the shape `{ default: value }`, then Navi will use the value under the `default` key. This facilitates use of JavaScript's dynamic `import()` expression.
-- The `getContent` and `getTitle` getters will receive a promise to the result of the `getMeta` getter as their second argument, helping to reduce duplicate code.
+Because matchers are just generators, it's possible to create your own matchers. As an example, it would be possible to create a `withTimeout()` function that returns a matcher that emits an error is its child matchers take too much time to resolve.
