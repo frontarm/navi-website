@@ -1,12 +1,12 @@
 import React from 'react'
-import { composeMatchers, map, redirect, withData, withView, withContext } from 'navi'
+import { compose, mount, redirect, withData, withView, withContext } from 'navi'
 import { fromPairs } from 'lodash'
 import { join } from 'path'
 import { Layout } from './components/Layout'
 import content from './content'
 
 function language(language) {
-  return composeMatchers(
+  return compose(
     withData({
       language
     }),
@@ -48,7 +48,7 @@ export default withContext(
     naviRoot: req.mountpath || '/',
     ...context,
   }),
-  map({
+  mount({
     '/': redirect('./en'),
 
     '/en': language('en'),

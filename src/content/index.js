@@ -1,7 +1,7 @@
 import React from 'react'
-import { composeMatchers, map, route, withData } from 'navi'
+import { compose, mount, route, withData } from 'navi'
 
-export default map({
+export default mount({
   '/': page({
     getDocument: (language) => import(`./start-here/document.${language}.mdx`),
     default: {
@@ -54,11 +54,11 @@ export default map({
     },
   }),
 
-  '/guides': composeMatchers(
+  '/guides': compose(
     withData({
       sectionTitle: 'Guides'
     }),
-    map({
+    mount({
       '/getting-started': page({
         getDocument: (language) => import(`./guides/getting-started/document.${language}.mdx`),
         default: {
@@ -131,11 +131,11 @@ export default map({
     })
   ),
 
-  '/reference': composeMatchers(
+  '/reference': compose(
     withData({
       sectionTitle: 'API Reference'
     }),
-    map({
+    mount({
       '/react-components-hooks': page({
         getDocument: (language) => import(`./reference/react-components-hooks/document.${language}.mdx`),
         default: {
@@ -178,11 +178,11 @@ export default map({
     })
   ),
 
-  '/integrations': composeMatchers(
+  '/integrations': compose(
     withData({
       sectionTitle: 'Usage with...'
     }),
-    map({
+    mount({
       // - TODO: express
 
       '/react-router': page({
@@ -203,11 +203,11 @@ export default map({
     }),
   ),
 
-  '/deploy': composeMatchers(
+  '/deploy': compose(
     withData({
       sectionTitle: 'Deploy with...'
     }),
-    map({
+    mount({
       '/netlify': page({
         getDocument: (language) => import(`./deploy/netlify/document.${language}.mdx`),
         default: {
