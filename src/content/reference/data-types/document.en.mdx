@@ -78,8 +78,8 @@ type RouteType =
 interface Route<Data = any> {
   type: RouteType
   url: URLDescriptor
-  segments: Segment[]
-  lastSegment: Segment
+  chunks: Chunk[]
+  lastChunk: Chunk
   
   /**
    * When "type" is "redirect", contains the redirected to URL.
@@ -92,12 +92,12 @@ interface Route<Data = any> {
   error?: any
 
   /**
-   * An object containing merged values from all data segments.
+   * An object containing merged values from all data chunks.
    */
   data?: Data
 
   /**
-   * An object contains HTTP headers added by header segments. 
+   * An object contains HTTP headers added by header chunks. 
    */
   headers: { [name: string]: string }
 
@@ -123,27 +123,27 @@ interface Route<Data = any> {
 }
 ```
 
-## `Segment`
+## `Chunk`
 
-Within your `Route` object, state for each individual matcher is available through the `route.segments` array. There are a number of possible segment types.
+Within your `Route` object, state for each individual matcher is available through the `route.chunks` array. There are a number of possible chunk types.
 
 ```typescript
 
 /**
- * This is used in place of a segment of another type whose final result is
+ * This is used in place of a chunk of another type whose final result is
  * not yet known.
  */
-interface BusySegment extends GenericSegment {
+interface BusyChunk extends GenericChunk {
   type: 'busy'
   url: URLDescriptor
   promise: PromiseLike<any>
 }
 
 /**
- * Data segments contain information that will be available on the produced
+ * Data chunks contain information that will be available on the produced
  * route object, but isn't meant to be rendered with the page itself.
  */
-interface DataSegment<Data=any> extends GenericSegment {
+interface DataChunk<Data=any> extends GenericChunk {
   type: 'data'
   url: URLDescriptor
   data: Data
@@ -152,9 +152,9 @@ interface DataSegment<Data=any> extends GenericSegment {
 /**
  * When encountered in a route by a `<NavView>`, this will be thrown, and
  * can then be handled by an Error Boundary. Behavior for handling error
- * segments on the server side is undefined.
+ * chunks on the server side is undefined.
  */
-interface ErrorSegment extends GenericSegment {
+interface ErrorChunk extends GenericChunk {
   type: 'error'
   url: URLDescriptor
   error: any
@@ -164,7 +164,7 @@ interface ErrorSegment extends GenericSegment {
  * Can be used to specify data for your page's <head> separately from
  * the view content.
  */
-interface HeadSegment extends GenericSegment {
+interface HeadChunk extends GenericChunk {
   type: 'head'
   url: URLDescriptor
   head: any
@@ -173,36 +173,28 @@ interface HeadSegment extends GenericSegment {
 /**
  * Used to specify any headers for your HTTP response.
  */
-interface HeadersSegment extends GenericSegment {
+interface HeadersChunk extends GenericChunk {
   type: 'headers'
   url: URLDescriptor
   headers: { [name: string]: string }
 }
 
 /**
- * Map segments are added for each map that is routed through. They're
- * useful for building maps, as they hold metadata on other possible paths.
+ * Mount chunks are added for each mount that is routed through. They're
+ * useful for building site maps, as they hold metadata on other possible
+ * paths.
  */
-interface MapSegment extends GenericSegment {
-  type: 'map'
+interface MountChunk extends GenericChunk {
+  type: 'mount'
   url: URLDescriptor
   patterns: string[]
-}
-
-/**
- * Added in place of child segments when a child returns an empty list of
- * segments, to prevent the length of the segments list from decreasing.
- */
-interface NullSegment extends GenericSegment {
-  type: 'null'
-  url: URLDescriptor
 }
 
 /**
  * When added to a route, indicates that the client should follow the redirect
  * to the given address.
  */
-interface RedirectSegment extends GenericSegment {
+interface RedirectChunk extends GenericChunk {
   type: 'redirect'
   url: URLDescriptor
   to: string
@@ -211,7 +203,7 @@ interface RedirectSegment extends GenericSegment {
 /**
  * Used to specify the status of your HTTP response.
  */
-interface StatusSegment extends GenericSegment {
+interface StatusChunk extends GenericChunk {
   type: 'status'
   url: URLDescriptor
   status: number
@@ -220,7 +212,7 @@ interface StatusSegment extends GenericSegment {
 /**
  * Allows matchers to specify a <title> tag, or document title.
  */
-interface TitleSegment extends GenericSegment {
+interface TitleChunk extends GenericChunk {
   type: 'title'
   url: URLDescriptor
   title: string
@@ -229,17 +221,17 @@ interface TitleSegment extends GenericSegment {
 /**
  * Contains the full URL that should be used for the route, including any hash.
  */
-interface URLSegment extends GenericSegment {
+interface URLChunk extends GenericChunk {
   type: 'url'
   url: URLDescriptor
 }
 
 /**
- * View segments contain data that will be used in a response on the
+ * View chunks contain data that will be used in a response on the
  * server, or that will be rendered in the browser. They can contain error
  * or redirect information, but they'll still be rendered as-is in the client.
  */
-interface ViewSegment<View=any> extends GenericSegment {
+interface ViewChunk<View=any> extends GenericChunk {
   type: 'view'
   url: URLDescriptor
   view: View

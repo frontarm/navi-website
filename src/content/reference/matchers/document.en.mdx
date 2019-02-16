@@ -539,20 +539,21 @@ Matchers that accept a child argument can be composed in one of two ways:
 
 ## Custom Matchers
 
-Matchers are functions that accept a child matcher, and return a Generator Function that outputs arrays of [Segment](../types/#segment) objects.
+Matchers are functions that accept a child generator, and return a [Generator Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) that outputs arrays of [Segment](../types/#segment) objects.
 
 ```js
-type Matcher = (child: Matcher) => ({ request, context }) => Iterator<Segment[]>
+type MatcherGenerator = (request: NaviRequest, context) => Iterator<Segment[]>
+type Matcher = (child: MatcherGenerator) => MatcherGenerator
 ```
 
 Why do matchers follow this signature?
 
-Firstly, accepting a child as an argument allows for composition via a standard `compose()` function -- just like the one that [comes with](https://redux.js.org/api/compose) Redux. While some matcher-creating functions allow for a child to be passed in as a second argument, this is actually just sugar for specifying a default value for the matcher's `child` argument.
+Firstly, accepting a child generator as an argument allows for composition via a standard `compose()` function -- just like the one that [comes with](https://redux.js.org/api/compose) Redux. While some matcher-creating functions allow for a child to be passed in as a second argument, this is actually just sugar for specifying a default value for the matcher's `child` argument.
 
 As for the generator function, it typically looks something like this:
 
 ```js
-function* matcherGenerator({ request, context }) {
+function* matcherGenerator(request, context) {
   while (busy) {
     segments = computeSegments(env.request, env.context)
     yield segments
