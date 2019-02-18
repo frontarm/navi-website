@@ -1,9 +1,16 @@
 export const filename = __filename
 export const header = null
 import { Doc } from '@frontarm/doc'
-import { Link } from 'react-navi'
 import TranslatedHeader from './header.jsx'
 import MasteringAsyncJavaScript from './mastering-async-javascript.mdx'
+export const demoboardHelpers = {
+  'api.js': require('!raw-loader!./demo/api.js'),
+  'index.js': require('!raw-loader!./demo/index.js'),
+  'product.js': require('!raw-loader!./demo/product.js'),
+  'Layout.js': require('!raw-loader!./demo/Layout.js'),
+  'Landing.js': require('!raw-loader!./demo/Landing.js'),
+  'styles.css': require('!raw-loader!./demo/styles.css'),
+}
 
 <TranslatedHeader
   getStarted='はじめる'
