@@ -29,6 +29,39 @@
         transition: transform 180ms cubic-bezier(0.165, 0.840, 0.440, 1.000);
       }
 
+      .directional-links {
+        display: flex;
+        justify-content: stretch;
+        padding: 0 0 5rem;
+        width: 100%;
+        
+        a {
+          text-decoration: none;
+        }
+
+        .direction {
+          color: $textColor;
+          display: block;
+        }
+
+        .title {
+          color: $textColor;
+          font-size: 3rem;
+        }
+
+        a:hover .title {
+          color: darken($primary, 10%);
+        }
+
+        .previous {
+          flex-grow: 1;
+          text-align: left;
+        }
+        .next {
+          text-align: right;
+        }
+      }
+
       > footer {
         border-top: 1px solid $border;
         font-size: 90%;
@@ -38,42 +71,9 @@
           text-align: left;
         }
 
-        .directional-links {
-          display: flex;
-          justify-content: stretch;
-          padding: 2rem 0 0;
-          width: 100%;
-          
-          a {
-            text-decoration: none;
-          }
-
-          .direction {
-            color: $textColor;
-            display: block;
-          }
-
-          .title {
-            color: $textColor;
-            font-size: 3rem;
-          }
-
-          a:hover .title {
-            color: darken($primary, 10%);
-          }
-
-          .previous {
-            flex-grow: 1;
-            text-align: left;
-          }
-          .next {
-            text-align: right;
-          }
-        }
-
         .social-links {
           display: block;
-          padding: 5rem 0;
+          padding: 0;
 
           a {
             color: $textColor;

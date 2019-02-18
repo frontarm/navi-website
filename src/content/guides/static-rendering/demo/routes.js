@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-navi'
 import { map, route } from 'navi'
 
-export default map({
+export default mount({
   // Map "/" to the given document title and child view.
   '/': route({
     title: "Navi",

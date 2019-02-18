@@ -1,6 +1,6 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import BusyIndicator from 'react-busy-indicator'
-import { Link, NaviProvider, NavLoading, View, NotFoundBoundary } from 'react-navi'
+import { Link, NotFoundBoundary, useLoadingRoute } from 'react-navi'
 
 
 // A simple "authentication" service that just saves the 
@@ -11,7 +11,9 @@ export const authService = {
   
     window.localStorage.setItem('auth', JSON.stringify(data))
     this.currentUser = data
-    this.callback(data)
+    if (this.callback) {
+      this.callback(data)
+    }
   },
   getCurrentUser() {
     return this.currentUser
@@ -19,10 +21,13 @@ export const authService = {
   logout() {
     delete this.currentUser
     window.localStorage.clear()
-    this.callback(undefined)
+    if (this.callback) {
+      this.callback(undefined)
+    }
   },
   subscribe(callback) {
     this.callback = callback
+    return () => { this.callback = undefined }
   }
 }
 try {
@@ -80,80 +85,62 @@ export function LoginLink({ redirectTo }) {
 }
 
 
-// The login screen component directly calls the auth service.
-// In a real app, you'd probably want to pass the auth state and
-// actions in via props.
-export class Login extends React.Component {
-  state = {
-    name: '',
+export function Login({ authService }) {
+  let [name, setName] = useState('')
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    authService.login({ name })
   }
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <h1>Who goes there?</h1>
-        <p>Your name, please:</p>
-        <input 
-          value={this.state.name}
-          onChange={this.handleChange}
-        />
-        &nbsp;
-        <button>Login with NullAuth&trade;</button>
-      </form>
-    )
+  const handleChange = (e) => {
+    setName(e.target.value)
   }
-  
-  handleChange = (e) => {
-    this.setState({ name: e.target.value })
-  }
-  
-  handleSubmit = (e) => {
-    e.preventDefault()
-    authService.login(this.state)
-  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <h1>Who goes there?</h1>
+      <p>Your name, please:</p>
+      <input 
+        value={name}
+        onChange={handleChange}
+      />
+      &nbsp;
+      <button>Login with NullAuth&trade;</button>
+    </form>
+  )
 }
 
-export class App extends React.Component {
-  render() {
-    return (
-      <NaviProvider navigation={this.props.navigation}>
-        <NavLoading>
-          {isBusy =>
-            <div className="App">
-              <BusyIndicator isBusy={isBusy} delayMs={100} />
-              <header className="App-header">
-                <h1 className="App-title">
-                <Link href='/'>
-                  ListMaker Pro 📈
-                </Link>
-                </h1>
-                {
-                  // This will be re-rendered whenever the navigation
-                  // changes due to the `<NavLoading>` component.
-                  // However, in a real world application you'd want
-                  // to pass in the navigation state via props.
-                  authService.getCurrentUser() &&
-                  <button onClick={() => authService.logout()}>
-                    Logout
-                  </button>
-                }
-              </header>
-              <main>
-                <NotFoundBoundary render={renderNotFound}>
-                  <View />
-                </NotFoundBoundary>
-              </main>
-            </div>
-          }
-        </NavLoading>
-      </NaviProvider>
-    );
-  }
+export function Layout({ children, currentUser, onLogout }) {
+  let loadingRoute = useLoadingRoute()
+  return (
+    <div className="Layout">
+      <BusyIndicator isBusy={!!loadingRoute} delayMs={100} />
+      <header className="Layout-header">
+        <h1 className="Layout-title">
+        <Link href='/'>
+          ListMaker Pro 📈
+        </Link>
+        </h1>
+        {
+          currentUser &&
+          <button onClick={onLogout}>
+            Logout
+          </button>
+        }
+      </header>
+      <main>
+        <NotFoundBoundary render={renderNotFound}>
+          {children}
+        </NotFoundBoundary>
+      </main>
+    </div>
+  )
 }
 
 function renderNotFound() {
   return (
-    <div className='App-error'>
+    <div className='Layout-error'>
       <h1>404 - Not Found</h1>
     </div>
   )

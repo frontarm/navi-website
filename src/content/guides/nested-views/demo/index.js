@@ -1,14 +1,13 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { NaviProvider, View } from 'react-navi'
-import { createBrowserNavigation } from 'navi'
-import pages from './pages'
-
-let navigation = createBrowserNavigation({ pages })
+import React, { Suspense } from 'react'
+import ReactDOM from 'react-dom'
+import { Router, View } from 'react-navi'
+import routes from './routes'
 
 ReactDOM.render(
-  <NaviProvider navigation={navigation}>
-    <View />
-  </NaviProvider>,
+  <Router routes={routes}>
+    <Suspense fallback={null}>
+      <View />
+    </Suspense>
+  </Router>,
   document.getElementById('root')
 );

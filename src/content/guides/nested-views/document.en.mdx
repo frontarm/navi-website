@@ -2,7 +2,7 @@ export const filename = __filename
 import { Doc } from '@frontarm/doc'
 export const demoboardHelpers = {
   'index.js': require('!raw-loader!./demo/index.js'),
-  'pages.js': require('!raw-loader!./demo/pages.js'),
+  'routes.js': require('!raw-loader!./demo/routes.js'),
   'Layout.js': require('!raw-loader!./demo/Layout.js'),
   'home.md': require('!raw-loader!./demo/home.md'),
   'about.md': require('!raw-loader!./demo/about.md'),
@@ -33,23 +33,52 @@ Navi's `route()` function actually uses `withView()` internally -- so every time
 </Doc.Details>
 </Doc.AsideTop>
 
-The `withView()` function can be wrapped around `route()`, `map()` or any other matcher. It tells Navi -- hey, I want this element to be rendered in place of my top-level `<View />` component. There's just one problem: if you wrap your `withView()` around a `route()` that declares its *own* view, then you'll be matching *two* views -- and the `<View />` component only renders the first. 
+The `withView()` function can be wrapped around `route()`, `mount()` or any other matcher. It tells Navi -- hey, I want this element to be rendered in place of my top-level `<View />` component. There's just one problem: if you wrap your `withView()` around a `route()` that declares its *own* view, then you'll be matching *two* views -- and the `<View />` component only renders the first. 
 
-```js
-// demo
+```jsx
+//---
+editorPathname: /routes.js
+rightPanel: console
+//--- index.js <-- index.js
+//--- routes.js
+import { compose, mount, route, withView } from 'navi'
+import React from 'react'
+import { View } from 'react-navi'
+import Layout from './Layout'
+
+export default compose(
+  withView(request =>
+    <Layout mountpath={request.mountpath || '/'} />
+  ),
+
+  mount({
+    '/': route({
+      title: "Home",
+      getView: () => import('./home.md'),
+    }),
+    '/about': route({
+      title: 'About',
+      getView: () => import('./about.md'),
+    }),
+  })
+)
+//--- Layout.js <-- Layout.js
+//--- home.md <-- home.md
+//--- about.md <-- about.md
+//--- styles.css <-- styles.css
 ```
 
 ## Nested `<View />` elements
 
-If you take a look at the console output of the above example, you'll notice that `route.views` is an *array*, and it contains *two* elements.
+If you take a look inside the above demo's [`Route`](../../reference/data-types#route) object, you'll notice that `route.views` is an *array*, and it contains *two* items.
 
-It looks like Navi knows that you've matched two views. So how do you render the second one? Easy -- you just render another `<View />` within the first! And because the nested `<View />` can be rendered *anywhere* within the first one, you can use views to make nested layouts, like this one:
+It turns out that Navi knows that you've matched two views. So how do you render the second one? Easy -- you just render another `<View />` within the first! And because the nested `<View />` can be rendered *anywhere* within the first one, you can use views to make nested layouts, like this one:
 
-```js
+```jsx
 //---
-editorPathname: /pages.js
+editorPathname: /routes.js
 //--- index.js <-- index.js
-//--- pages.js <-- pages.js
+//--- routes.js <-- routes.js
 //--- Layout.js <-- Layout.js
 //--- home.md <-- home.md
 //--- about.md <-- about.md

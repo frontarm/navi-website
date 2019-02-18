@@ -51,11 +51,10 @@ export function Layout({
                 ),
                 Beware: ({ className = "", title, children, ...props }) => (
                   <Doc.Block
-                    marginSize="half"
                     className={cx("Beware") + " " + className}
                     {...props}
                   >
-                    <Doc.Gutter half horizontal>
+                    <Doc.Gutter horizontal>
                       <header>
                         <h4>{title}</h4>
                       </header>
@@ -89,23 +88,24 @@ export function Layout({
               className={cx("document")}
               demoboardHelpers={content.demoboardHelpers}
             />
+            <Doc.Gutter horizontal>
+              <div className={cx('directional-links')}>
+                {previousRoute &&
+                  <Link href={previousRoute.url} className={cx('previous')}>
+                  <span className={cx('title')}>{previousRoute.data.navTitle || previousRoute.data.title}</span>
+                    <span className={cx('direction')}>&laquo; Previous</span>
+                  </Link>
+                }
+                {nextRoute &&
+                  <Link href={nextRoute.url} className={cx('next')}>
+                    <span className={cx('title')}>{nextRoute.data.navTitle || nextRoute.data.title}</span>
+                    <span className={cx('direction')}>Next &raquo;</span>
+                  </Link>
+                }
+              </div>
+            </Doc.Gutter>
             <footer>
               <Doc.Gutter>
-                <div className={cx('directional-links')}>
-                  {previousRoute &&
-                    <Link href={previousRoute.url} className={cx('previous')}>
-                    <span className={cx('title')}>{previousRoute.data.navTitle || previousRoute.data.title}</span>
-                      <span className={cx('direction')}>&laquo; Previous</span>
-                    </Link>
-                  }
-                  {nextRoute &&
-                    <Link href={nextRoute.url} className={cx('next')}>
-                      <span className={cx('title')}>{nextRoute.data.navTitle || nextRoute.data.title}</span>
-                      <span className={cx('direction')}>Next &raquo;</span>
-                    </Link>
-                  }
-                </div>
-
                 <div className={cx('social-links')}>
                   <a
                     className={cx("edit-link")}

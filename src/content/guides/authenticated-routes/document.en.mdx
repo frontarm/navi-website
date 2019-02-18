@@ -3,9 +3,9 @@ import { Doc } from '@frontarm/doc'
 export const demoboardHelpers = {
   'helpers.js': require('!raw-loader!./demo/helpers.js'),
   'index.js': require('!raw-loader!./demo/index.js'),
-  'pages.js': require('!raw-loader!./demo/pages.js'),
-  'resourceSwitchWithLink.js': require('!raw-loader!./demo/resourceSwitchWithLink.js'),
-  'resourceSwitchWithRedirects.js': require('!raw-loader!./demo/resourceSwitchWithRedirects.js'),
+  'routes.js': require('!raw-loader!./demo/routes.js'),
+  'resourceRoutesWithLink.js': require('!raw-loader!./demo/resourceRoutesWithLink.js'),
+  'resourceRoutesWithRedirects.js': require('!raw-loader!./demo/resourceRoutesWithRedirects.js'),
   'styles.css': require('!raw-loader!./demo/styles.css'),
 }
 
@@ -14,13 +14,13 @@ When building apps with authentication, you'll often find that URLs need to beha
 For example, say that you have a page that fetches a quote based on an id passed in via URL parameters.
 
 ```js
-map({
+mount({
   '/quote/:id': async request => {
     let quote = await fetchQuote(request.params.id)
 
-    return createPage({
-      title: resource.title,
-      content: resource.content,
+    return route({
+      title: `Quote #{request.params.id}`,
+      view: quote,
     })
   }
 })
@@ -32,7 +32,7 @@ Assuming that all of your quotes are meant to be public, this site will work gre
 Authentication State
 --------------------
 
-When you pass a function to `route()`, or to a path under `map()`, then that function will receive two arguments:
+When you pass a function to `route()`, or to a path under `mount()`, then that function will receive two arguments:
 
 1. A [Request](/404) object
 2. A configurable [Routing Context](../routing-context)
@@ -41,10 +41,10 @@ By storing the current authentication state on Navi's routing context, it become
 
 ```js
 //---
-editorPathname: /resourceSwitch.js
+editorPathname: /resourceRoutes.js
 //--- index.js <-- index.js
-//--- pages.js <-- pages.js
-//--- resourceSwitch.js <-- resourceSwitchWithLink.js
+//--- routes.js <-- routes.js
+//--- resourceRoutes.js <-- resourceRoutesWithLink.js
 //--- helpers.js <-- helpers.js
 //--- styles.css <-- styles.css
 ```
@@ -79,8 +79,8 @@ After adding some state to manage the value of `currentUser`, here's this will l
 //---
 editorPathname: /index.js
 //--- index.js <-- index.js
-//--- pages.js <-- pages.js
-//--- resourceSwitch.js <-- resourceSwitchWithLink.js
+//--- routes.js <-- routes.js
+//--- resourceRoutes.js <-- resourceRoutesWithLink.js
 //--- helpers.js <-- helpers.js
 //--- styles.css <-- styles.css
 ```
@@ -97,14 +97,14 @@ I go into more details in the [Routing Context](../routing-context) guide.
 Conditional redirects
 ---------------------
 
-Creating and styling a login link for each of your pages can be burdensome. In many cases, a simpler solution is to redirect unauthenticated users directly to a login screen -- while still displaying the page's original content to authenticated users. You can implement this by passing a context-consuming function to `map()` -- here's an example:
+Creating and styling a login link for each of your pages can be burdensome. In many cases, a simpler solution is to redirect unauthenticated users directly to a login screen -- while still displaying the page's original content to authenticated users. You can implement this by passing a context-consuming function to `map()` -- which lets you switch routes based on the request or context. Here's an example:
 
 ```js
 //---
-editorPathname: /resourceSwitch.js
+editorPathname: /resourceRoutes.js
 //--- index.js <-- index.js
-//--- pages.js <-- pages.js
-//--- resourceSwitch.js <-- resourceSwitchWithRedirects.js
+//--- routes.js <-- routes.js
+//--- resourceRoutes.js <-- resourceRoutesWithRedirects.js
 //--- helpers.js <-- helpers.js
 //--- styles.css <-- styles.css
 ```
@@ -123,7 +123,7 @@ export function withAuthentication(matcher) {
   )
 }
 
-map({
+mount({
   '/account-details':
     withAuthentication(
       route({
@@ -143,10 +143,10 @@ It often doesn't make sense for an authenticated user to be viewing a login scre
 
 ```js
 //---
-editorPathname: /pages.js
+editorPathname: /routes.js
 //--- index.js <-- index.js
-//--- pages.js <-- pages.js
-//--- resourceSwitch.js <-- resourceSwitchWithRedirects.js
+//--- routes.js <-- routes.js
+//--- resourceRoutes.js <-- resourceRoutesWithRedirects.js
 //--- helpers.js <-- helpers.js
 //--- styles.css <-- styles.css
 ```

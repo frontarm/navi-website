@@ -44,21 +44,45 @@ A Router/Fetcher
 Navi is a JavaScript library for mapping URLs to content; it's a router. But Navi has a difference from other routers: the content can be asynchronous, and it can be *anything*. It lets you map URLs to data, views, or even HTTP headers -- and then lets you easily compose these mappings. **It makes getting all of a URL's content as easy as waiting for a promise to resolve.**
 
 ```js
-//--- navi.js
-import { createMemoryNavigation, map, redirect } from 'navi'
+//--- index.js
+import { createBrowserNavigation, lazy, mount, redirect } from 'navi'
+import ReactDOMServer from 'react-dom/server'
 
-// Set up your routes and URL
-let routes = map({
-  '/': redirect('/quotes/1'),
-  '/quotes/:id': () => import('./quotePage')
+async function main() {
+  // Set up your routes
+  let navi = createBrowserNavigation({
+    routes: mount({
+      '/': redirect('/quotes/1'),
+      '/quotes/:id': lazy(() => import('./quotesRoute'))
+    })
+  })
+
+  // Wait for the content to load
+  let route = await navi.getSteadyValue()
+  
+  // Then render the route!
+  document.body.innerHTML = ReactDOMServer.renderToString(route.data)
+}
+
+main()
+//--- quotesRoute.js
+import React from 'react'
+import { route } from 'navi'
+
+const quotes = {
+  1: "It is a mistake to think you can solve any major problems just with potatoes.",
+  2: "The ships hung in the sky in much the same way that bricks don’t.",
+  3: "Don't Panic.",
+  42: "“Forty-two,” said Deep Thought, with infinite majesty and calm.",
+}
+
+export default route({
+  getData: ({ params }) => (
+    <blockquote>
+      {quotes[params.id]}
+    </blockquote>
+  )
 })
-let navigation = createMemoryNavigation({ routes, url: '/' })
-
-// Wait for the content to load
-let route = await navigation.getCurrentValue()
-
-// Then render the route!
-document.body.innerHtml = ReactDOMServer.renderToString(route.data)
 ```
 
 The above example demonstrates why static and server rendering is so much easier with Navi: **it moves your routing and initial data fetching code out of synchronous React components, and into async functions.**
@@ -85,10 +109,10 @@ Here's a more full featured example of what Navi can do:
 import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom'
 import { Navi, NaviView } from 'react-navi'
-import { composeMatchers, map, withHead, withView } from 'navi'
+import { compose, map, withHead, withView } from 'navi'
 import Layout from './Layout'
 
-let routes = composeMatchers(
+let routes = compose(
   // Specify the top-level view for each subsequently matched route.
   // Any nested view can then be rendered with `<NaviView />`.
   withView(
@@ -101,7 +125,7 @@ let routes = composeMatchers(
   withHead(
     <title>My Great Blog</title>
   ),
-  map(
+  mount(
     // Lazily load code that is specific to each URL.
     '/': () => import('./indexPage'),
     '/launch-silos/:id': () => import('./siloPage'),

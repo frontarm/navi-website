@@ -36,7 +36,7 @@ This is conceptually similar to Navi's `route()` function -- it lets you specify
 ```js
 // With Navi, you map URLs to routes using async functions. Routes can
 // contain any type of content, including React elements and components.
-map({
+mount({
   '/my-page': route({
     async getView({ params }) {
       try {

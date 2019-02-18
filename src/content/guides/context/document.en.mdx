@@ -1,19 +1,15 @@
 export const filename = __filename
 import { Doc } from '@frontarm/doc'
 
-Along with the latest request, matchers like `map()` and `route()` have access to an object called the **Context**. By default, the Context is just an empty object, but you can set it to anything you'd like.
+Along with the latest request, matchers like `mount()` and `route()` have access to an object called the **Context**. By default, the Context is just an empty object, but you can set it to anything you'd like.
 
-There are two ways to set the Context: you can pass a prop to your `<Router>` element, or you can use the `withContext()` matcher. In fact, you can use *both* methods in the same app:
-
-```js
-// demo
-```
+There are two ways to set the Context: you can pass a prop to your `<Router>` element, or you can use the `withContext()` matcher. In fact, you can use *both* methods in the same app.
 
 ## `withContext()`
 
 The `withContext()` matcher lets you specify the context of its children as **a function of the current request and the parent context**.
 
-```js
+```jsx
 withContext((request, parentContext) => childContext, children)
 ```
 
@@ -21,7 +17,7 @@ For example, you could use `withContext()` to add a `rootpath` property to the c
 
 <Doc.AsideTop>
 
-```js
+```jsx
 withContext(
   (request, parentContext) => ({
     ...parentContext,
@@ -33,7 +29,7 @@ withContext(
 
 <Doc.Details aside title="A spoonful of sugar...">
 
-If you're using `withContext()` inside a `composeMatchers()` function, then the specified context will apply to any subsequent arguments to `composeMatchers()`.
+If you're using `withContext()` inside a `compose()` function, then the specified context will apply to any subsequent arguments to `compose()`.
 
 </Doc.Details>
 </Doc.AsideTop>
@@ -47,7 +43,7 @@ Because the `withContext()` function specifies context as a *function* of its pa
 
 The `<Router>` component accepts a `context` prop, which you can use to set the Context for the routes that you've passed in. This is useful for passing in data and functions that you might want to use in your routes.
 
-```js
+```jsx
 <Router
   routes={routes}
   context={{
@@ -60,7 +56,7 @@ The `<Router>` component accepts a `context` prop, which you can use to set the 
 
 <Doc.Details aside title="Context and Static/Server Rendering">
 
-When performing static or server rendering, you'll need to imperatively set your routing context using [`navigation.setContext()`](/404).
+When performing static or server rendering, you'll need to imperatively set your routing context using [`navigation.setContext()`](../../reference/navigation/#navigationsetcontext).
 
 </Doc.Details>
 </Doc.AsideTop>

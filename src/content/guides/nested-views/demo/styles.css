@@ -28,9 +28,6 @@ body {
   line-height: 32px;
   vertical-align: -10px;
 }
-.Layout nav span {
-  font-weight: bold;
-}
 .Layout nav a {
   display: inline-block;
   color: #444444;

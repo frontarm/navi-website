@@ -162,22 +162,22 @@ let route = {
 
 Ok, so **matchers** map **requests** to individual chunks of data called **segments** -- which are then reduced into **routes**. But how do you write matchers? Actually, *you probably won't*. Because while it's entirely *possible* to write custom matchers (<small>they're just [generator functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*)</small>), Navi already includes all of the matcher-creating functions that you'll ever realistically need.
 
-For example, you could use [`map()`](../reference/matchers/#map) and [`withView()`](../reference/matchers/#withview) to map URL paths to views:
+For example, you could use [`mount()`](../../reference/matchers/#mount) and [`withView()`](../../reference/matchers/#withview) to map URL paths to views:
 
 ```jsx 
-map({
+mount({
   '/navi': withView(<NaviLayout />)
 })
 ```
 
-Or you could nest [`withData()`](../reference/matchers/#withdata) within [`withView()`](../reference/matchers/#withview) to match a URL to both its view *and* its data:
+Or you could nest [`withData()`](../../reference/matchers/#withdata) within [`withView()`](../../reference/matchers/#withview) to match a URL to both its view *and* its data:
 
 ```jsx
-map({
+mount({
   '/navi':
     withView(
       <NaviLayout />,
-      map({
+      mount({
         '/core-concepts':
           withView(
             async request => {
@@ -196,23 +196,23 @@ map({
 })
 ```
 
-You could also use [`composeMatchers()`](../reference/matchers/#composematchers) to improve readability by *composing* matchers instead of *nesting* them, and you could use dynamic `import()` to split matchers over multiple chunks -- improving scalability:
+You could also use [`compose()`](../../reference/matchers/#compose) to improve readability by *composing* matchers instead of *nesting* them, and you could use dynamic `import()` with [`lazy()`](../../reference/matchers/#lazy) to split matchers over multiple chunks -- improving scalability:
 
 ```jsx
-map({
-  '/navi': composeMatchers(
+mount({
+  '/navi': compose(
     withView(<NaviLayout />),
-    map({
-      '/core-concepts': () => import('./coreConcepts.js')
+    mount({
+      '/core-concepts': lazy(() => import('./coreConcepts.js'))
     })
   )
 })
 ```
 
-And given that your routes have both a `view` and `data`, you could simplify things even further by specifying them both with [`route()`](../reference/matchers/#route) -- along with the page's `title` and any `head` tags.
+And given that your routes have both a `view` and `data`, you could simplify things even further by specifying them both with [`route()`](../../reference/matchers/#route) -- along with the page's `title` and any `head` tags.
 
 ```jsx
-map({
+mount({
   '/core-concepts': route(async request => {
     let language = request.params.language || 'en'
     let { default: MDXComponent } =
@@ -228,17 +228,6 @@ map({
 })
 ```
 
-Navi puts a bunch of other matchers at your disposal -- for details, see the [Matchers Reference](../reference/matchers). But with this said, in most situations you'll need no more than `map()`, `route()` and `withView()` -- just like in the following example.
+Navi puts a bunch of other matchers at your disposal -- for details, see the [Matchers Reference](../../reference/matchers). But with this said, in most situations you'll need no more than `mount()`, `route()` and `withView()`.
 
-```jsx
-//---
-editorPathname: /App.js
-//--- pages.js <-- pages.js
-//--- App.js <-- App.js
-//--- index.mdx <-- index.mdx
-//--- getting-started.mdx <-- getting-started.mdx
-//--- index.js <-- index.js
-//--- styles.css <-- styles.css
-```
-
-One curious thing about the `Route` objects in these examples that you might have noticed, is that `Route` can have multiple view elements. This is how Navi handles nested layouts -- which we'll discuss on the next guide. See you there!
+One curious thing that you may have noticed about about the `Route` objects created by these matchers is that `Route` can have multiple view elements. This is how Navi handles nested layouts -- which we'll discuss on the next guide. See you there!

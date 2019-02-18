@@ -26,9 +26,6 @@ export default mount({
       navTitle: 'Motivation',
       description: `Navi lets you create big, fast, CDN-delivered apps with great SEO & SMO — and all with vanilla create-react-app.`,
     },
-    ja: {
-      navTitle: 'Motivation',
-    },
   }),
 
   '/comparisons': page({
@@ -63,7 +60,7 @@ export default mount({
         getDocument: (language) => import(`./guides/getting-started/document.${language}.mdx`),
         default: {
           title: 'Getting Started',
-          description: 'Navi lets you use React’s Suspense, Hooks and Error Boundary APIs to handle routing declaratively, and asynchronously.',
+          description: 'Navi lets you take advantage of React’s Suspense, Hooks and Error Boundary APIs to handle asynchronous routes declaratively.',
         },
       }),
 
@@ -71,7 +68,7 @@ export default mount({
         getDocument: (language) => import(`./guides/url-parameters/document.${language}.mdx`),
         default: {
           title: 'URL Parameters',
-          description: 'URL parameters let you create routes that fetch data based on the URL, and pass it directly to the view.',
+          description: 'URL parameters let you declare routes, views and data that depend on the current URL.',
         },
       }),
 

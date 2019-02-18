@@ -28,21 +28,21 @@ input {
   box-shadow: 2px 2px 3px inset rgba(0, 0, 0, 0.1)
 }
 
-.App main {
+.Layout main {
   margin: 2rem;
 }
-.App-header {
+.Layout-header {
   border-bottom: 1px solid #eee;
 }
-.App-header h1 {
+.Layout-header h1 {
   margin: 1rem 1.5rem;
 }
-.App-header button {
+.Layout-header button {
   position: absolute;
   right: 2rem;
   top: 1rem;
 }
-.App-header a {
+.Layout-header a {
   display: inline-block;
   color: #444444;
   font-family: Lato, sans-serif;

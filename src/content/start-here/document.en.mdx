@@ -9,11 +9,11 @@ export const header = null
   mitLicensed='MIT Licensed'
 >
 
-**A JavaScript library for declaratively mapping URLs to asynchronous content.**
+**Declarative, asynchronous routing for React.**
 
-Navi lets you use functions and `async`/`await` to map your app's URLs to its data and views. It comes with a set of modern React components to render your routes using Suspense and Hooks. And as icing on the cake, it makes static rendering for SEO a breeze.
+Navi is a JavaScript library for declaratively mapping URLs to asynchronous content. With Navi, you use simple functions, Promises and `async`/`await` to map your app's URLs to data and views.
 
-And the best part? You get all this without any vendor lock-in. *You don't even need to eject from create-react-app!*
+Navi comes with a set of modern React components that take advantage of Suspense and Hooks. And as icing on the cake, Navi is designed to make pre-rendering for SEO a breeze -- it even lets you statically render your app *without ejecting from create-react-app!*
 
 </TranslatedHeader>
 
@@ -31,15 +31,15 @@ npm install navi react-navi
 
 The quickest way to try Navi is to play with the embedded editor below. It demonstrates how to implement this documentation site, including the basics of routing, linking, code splitting, generating a list of a site's pages, and SEO.
 
-To try Navi in a new site, you can use a create-react-app based starter:
+To quickly try Navi in a new project, you can start with a create-react-app based template:
 
--   [create-react-navi-app](/create-react-navi-app/#create-react-navi-app)<br />
-    *Creates a project skeleton using create-react-app, then adds static rendering to the build script, and two routes to get you started.*
+-   [create-react-navi-app](./create-react-navi-app/#create-react-navi-app)<br />
+    *Creates a project skeleton using create-react-app, then adds a couple apps and static rendering.*
 
--   [create-react-blog](/create-react-navi-app/#create-react-blog)<br />
-    *Creates a project skeleton using create-react-app, then adds routing, static rendering, pagination, tags, [MDX](https://mdxjs.com), an RSS feed, a Netlify deploy script, and a theme based on Dan Abramov's [overreacted.io](http://overreacted.io), for a ready-to-go blog.*
+-   [create-react-blog](./create-react-navi-app/#create-react-blog)<br />
+    *Creates a project skeleton using create-react-app, then adds routes generated from your filesystem structure, static rendering, pagination, tags, [MDX](https://mdxjs.com), an RSS feed, a Netlify deploy script, and a theme inspired by Dan Abramov's [overreacted.io](http://overreacted.io), for a ready-to-go blog.*
 
-Or if you'd like to see how simple it is to add Navi to your own create-react-app project, head on over to [the minimal example](./guides/minimal-example/).
+Or if you'd like to see how simple it is to add Navi to your own create-react-app project, head on over to [Getting Started](./guides/getting-started/) guide.
 
 Oh, and if you already have an app built with react-router? Then adding Navi is ridiculously easy -- just mount your Navi routes within a react-router `<Route>`. For details, see the guide to [integrating with react-router](./integrations/react-router).
 
@@ -61,7 +61,7 @@ ReactDOM.render(
 //--- routes.js 
 import { map, route } from 'navi'
 
-export default map({
+export default mount({
   '/': route({
     title: 'Start Here',
   }),
@@ -80,8 +80,8 @@ export default map({
 
 ## Jump to...
 
-- [Getting Started](../guides/getting-started)
-- [Declaring Routes With Matchers](../reference/matchers)
-- [URL Parameters](../guides/url-parameters)
-- [Static Rendering](../guides/static-rendering)
-- [Usage with react-router](../integrations/react-router)
+- [Getting Started](./guides/getting-started)
+- [Declaring Routes With Matchers](./reference/matchers)
+- [URL Parameters](./guides/url-parameters)
+- [Static Rendering](./guides/static-rendering)
+- [Usage with react-router](./integrations/react-router)

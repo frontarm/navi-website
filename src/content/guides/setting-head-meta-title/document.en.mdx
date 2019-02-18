@@ -11,10 +11,34 @@ Many React apps use the [react-helmet](https://www.npmjs.com/package/react-helme
 
 ## Using `route()`
 
-Navi's `route()` functions accepts `head` and `title` properties.
+Navi's [`route()`](../../reference/#route) functions accepts `head` and `title` properties.
 
 ```jsx
-// demo
+//---
+defaultRightPanel: console
+//--- index.js
+import { createMemoryNavigation, mount, route } from 'navi'
+import { Router } from 'react-navi'
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+const routes = mount({
+  '/': route({
+    title: 'My Great Page',
+    head: <>
+      <meta name="description" content="My Great description" />
+      <script>
+        console.log('hello from your document head')
+      </script>
+    </>,
+    view: <div>My Great Page</div>
+  })
+})
+
+ReactDOM.render(
+  <Router routes={routes} />,
+  document.getElementById('root')
+)
 ```
 
 Internally, `route()` uses Navi's `withHead()` and `withTitle()` functions -- you can use these manually to accomplish the same thing, to apply `<meta>` tags to multiple routes, or to set a fallback title.

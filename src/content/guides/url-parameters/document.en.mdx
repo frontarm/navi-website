@@ -11,8 +11,8 @@ There are often times when you'll need to map many similar URLs to the same rout
 
 Here's how you'd map all of these URLs (and any other URLs following the same pattern) to a single route:
 
-```js
-map({
+```jsx
+mount({
   '/quotes/:id': route({
     view: <QuoteView />
   })
@@ -25,10 +25,15 @@ Navi passes the current value of any to your route through the `req.params` prop
 
 ```js
 //--- routes.js
-import { map, route } from 'navi'
-import { QutoeView, fetchQuote } from './helpers'
+import React from 'react'
+import { mount, redirect, route } from 'navi'
+import { QuoteView, fetchQuote } from './helpers'
 
-const routes = map({
+const routes = mount({
+  '/': redirect('/quotes/1'),
+
+  // The ':id' segment will match any value, and its value is made
+  // available within the route at `req.params.id`.
   '/quotes/:id': route(async req => {
     let id = req.params.id
     let quote = await fetchQuote(id)
@@ -40,12 +45,125 @@ const routes = map({
 })
 
 export default routes
+
+//--- helpers.js
+import React from 'react'
+import { NotFoundError } from 'navi'
+
+const quotes = {
+  1: "It is a mistake to think you can solve any major problems just with potatoes.",
+  2: "The ships hung in the sky in much the same way that bricks don’t.",
+  3: "Don't Panic.",
+  42: "“Forty-two,” said Deep Thought, with infinite majesty and calm.",
+}
+
+export async function fetchQuote(id) {
+  let quote = quotes[id]
+
+  return quote ? Promise.resolve(quote) : Promise.reject(new NotFoundError)
+}
+
+export function QuoteView({ id, quote }) {
+  return (
+    <article>
+      <h1>Quote #{id}</h1>
+      <blockquote>
+        {quote}
+      </blockquote>
+    </article>
+  )
+}
+//--- index.js
+import React, { Suspense } from 'react'
+import ReactDOM from 'react-dom'
+import { NotFoundBoundary, Router, View } from 'react-navi'
+import routes from './routes'
+
+ReactDOM.render(
+  <Router routes={routes}>
+    <Suspense fallback={null}>
+      <NotFoundBoundary render={() => <h1>Quote Not Found</h1>}>
+        <View />
+      </NotFoundBoundary>
+    </Suspense>
+  </Router>,
+  document.getElementById('root')
+)
 ```
 
-In fact, the `req.params` also contains any information extracted from the URL's query string. For an example, notice how this demo extracts both an `id` and a `referrer` parameter from the URL `/quotes/3?referrer=james`:
+In fact, the `req.params` also contains any information extracted from the URL's query string. For an example, notice how this demo extracts both an `id` and a `referrer` parameter from the URL `/quotes/3?welcome=true`:
 
 ```js
-// todo
+//---
+defaultRightPanel: console
+//--- routes.js
+import React from 'react'
+import { mount, redirect, route } from 'navi'
+import { QuoteView, fetchQuote } from './helpers'
+
+const routes = mount({
+  '/': redirect('/quotes/1?welcome=true'),
+
+  // The ':id' segment will match any value, and its value is made
+  // available within the route at `req.params.id`.
+  '/quotes/:id': route(async req => {
+    console.log('params', req.params)
+
+    let { id, welcome } = req.params
+    let quote = await fetchQuote(id)
+
+    return {
+      view: <QuoteView id={id} quote={quote} welcome={welcome} />,
+    }
+  })
+})
+
+export default routes
+
+//--- helpers.js
+import React from 'react'
+import { NotFoundError } from 'navi'
+
+const quotes = {
+  1: "It is a mistake to think you can solve any major problems just with potatoes.",
+  2: "The ships hung in the sky in much the same way that bricks don’t.",
+  3: "Don't Panic.",
+  42: "“Forty-two,” said Deep Thought, with infinite majesty and calm.",
+}
+
+export async function fetchQuote(id) {
+  let quote = quotes[id]
+
+  return quote ? Promise.resolve(quote) : Promise.reject(new NotFoundError)
+}
+
+export function QuoteView({ id, quote, welcome }) {
+  return (
+    <article>
+      {welcome && <h1>Welcome to QDB</h1>}
+      <h2>Quote #{id}</h2>
+      <blockquote>
+        {quote}
+      </blockquote>
+    </article>
+  )
+}
+//--- index.js
+import React, { Suspense } from 'react'
+import ReactDOM from 'react-dom'
+import { NotFoundBoundary, Router, View } from 'react-navi'
+import routes from './routes'
+
+ReactDOM.render(
+  <Router routes={routes}>
+    <Suspense fallback={null}>
+      <NotFoundBoundary render={() => <h1>Quote Not Found</h1>}>
+        <View />
+      </NotFoundBoundary>
+    </Suspense>
+  </Router>,
+  document.getElementById('root')
+)
 ```
 
 While URL parameters are a pretty standard featured for a JavaScript routing library, the combination of URL parameters and asynchronous content gives you a huge amount of declarative power. Just like controllers in an MVC framework, Navi's routes let you implement business logic, throw errors, and choose which views based on the request.
