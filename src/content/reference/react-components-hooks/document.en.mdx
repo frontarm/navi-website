@@ -28,9 +28,11 @@ By default, a partial match at the beginning of the current URL will also be con
 
 The url to navigate to; identical to the `href` attribute of a HTML `<a>` tag.
 
-#### `precache`: `boolean` <small>(required)</small>
+#### `prefetch`: `HTTPMethod` <small>(optional)</small>
 
-If specified, the linked page's content will be loaded as soon as the link is rendered.
+If specified, the linked page's content will be fetched as soon as the link is rendered, using the specified method.
+
+By default, links will be fetched using the HEAD method. Set this to `null` if you'd like to disable prefetch.
 
 
 ## `<NaviProvider>`

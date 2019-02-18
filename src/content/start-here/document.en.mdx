@@ -3,6 +3,14 @@ import { Doc } from '@frontarm/doc'
 import TranslatedHeader from './header.jsx'
 import MasteringAsyncJavaScript from './mastering-async-javascript.mdx'
 export const header = null
+export const demoboardHelpers = {
+  'api.js': require('!raw-loader!./demo/api.js'),
+  'index.js': require('!raw-loader!./demo/index.js'),
+  'product.js': require('!raw-loader!./demo/product.js'),
+  'Layout.js': require('!raw-loader!./demo/Layout.js'),
+  'Landing.js': require('!raw-loader!./demo/Landing.js'),
+  'styles.css': require('!raw-loader!./demo/styles.css'),
+}
 
 <TranslatedHeader
   getStarted='Get Started'
@@ -29,7 +37,7 @@ Navi is just a library, and so it works great with both new and existing apps.
 npm install navi react-navi
 ```
 
-The quickest way to try Navi is to play with the embedded editor below. It demonstrates how to implement this documentation site, including the basics of routing, linking, code splitting, generating a list of a site's pages, and SEO.
+The quickest way to try Navi is to play with the embedded editor below. It demonstrates how to implement a simple site selling hats and flamethrowers, including the basics of routing, linking, code splitting, and SEO.
 
 To quickly try Navi in a new project, you can start with a create-react-app based template:
 
@@ -43,40 +51,18 @@ Or if you'd like to see how simple it is to add Navi to your own create-react-ap
 
 Oh, and if you already have an app built with react-router? Then adding Navi is ridiculously easy -- just mount your Navi routes within a react-router `<Route>`. For details, see the guide to [integrating with react-router](./integrations/react-router).
 
-## This site uses Navi. Here's how it works.
+## Try a live example.
 
 ```jsx
-//--- index.js
-import React, { Suspense } from 'react'
-import { Navi } from 'react-navi'
-import Layout from './Layout'
-import routes from './routes'
-
-ReactDOM.render(
-  <Suspense fallback={<Layout />}>
-    <Navi routes={routes} />
-  </Suspense>,
-  document.getElementById('root')
-)
-//--- routes.js 
-import { map, route } from 'navi'
-
-export default mount({
-  '/': route({
-    title: 'Start Here',
-  }),
-
-  '/motivation': route({
-    title: 'Why Navi?',
-  })
-
-  '/getting-started': route({
-    title: 'Getting Started',
-  })
-})
+//---
+viewerURL: /product/hat
+//--- index.js <-- index.js
+//--- product.js <-- product.js
+//--- Landing.js <-- Landing.js
+//--- Layout.js <-- Layout.js
+//--- api.js <-- api.js
+//--- styles.css <-- styles.css
 ```
-
-[See this site's source on GitHub &raquo;](https://github.com/frontarm/navi-website)
 
 ## Jump to...
 
@@ -85,3 +71,4 @@ export default mount({
 - [URL Parameters](./guides/url-parameters)
 - [Static Rendering](./guides/static-rendering)
 - [Usage with react-router](./integrations/react-router)
+- [See this site's source on GitHub &raquo;](https://github.com/frontarm/navi-website)

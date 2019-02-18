@@ -66,7 +66,7 @@ viewerURL: /product/hat
 //--- styles.css <-- styles.css
 ```
 
-<Doc.Details aside title="Isn't `<View>` part of react-native?">
+<Doc.Details aside title={<>Isn't <code>&lt;View&gt;</code> part of react-native?</>}>
 
 It is! But react-native apps would be far better served by [react-native-navigation](https://github.com/wix/react-native-navigation) or [react-navigation](https://reactnavigation.org/) than by Navi.
 
@@ -129,11 +129,19 @@ Ok. So far, so good. But imagine that you've just clicked a link to `/products` 
 
 Well, the first option is to use `<Suspense>` to show a fallback while it's loading. But this has the probably of briefly of jumping around all over the place as it hides and shows loading indicators.
 
-*gif*
+<img
+  src={require('./suspense-loading.gif')}
+  alt="terrible looking loading"
+  style={{ border: '1px solid #f0f0f0', borderRadius: '1rem' }}
+/>
 
 What you'd *really* like to do is to display a loading bar over the current page while the next route loads... well, unless the transition only takes 100ms. Then you probably just want to keep displaying the current page until the next one is ready, because showing a loading bar for only 100ms doesn't look great either.
 
-*gif*
+<img
+  src={require('./no-delay-loading.gif')}
+  alt="loading indicator with no delay"
+  style={{ border: '1px solid #f0f0f0', borderRadius: '1rem' }}
+/>
 
 So how do you show a loading indicator, but only when the route doesn't load instantly? This would usually be incredibly complicated to accomplish, but Navi makes it simple: you just use the `useLoadingRoute()` hook.
 
@@ -191,14 +199,14 @@ Let's rewind for a moment to the `<Suspense>` tag that wraps your `<View />`.  W
 
 Similarly, if `<View />` finds that `getView()` or `getData()` have failed, then it throws an error. In fact, if the router encounters a 404-not-found error, then `<View />` will throw that, too. These errors can be caught by [Error Boundary](https://reactjs.org/docs/error-boundaries.html) components. For the most part, you'll need to make your own error boundaries, but Navi includes a `<NotFoundBoundary>` to show you how its done:
 
-```
+```jsx
 //---
 editorPathname: /Layout.js
 viewerURL: /product/flamethrower
 //--- index.js <-- index.js
 //--- product.js <-- product.js
 //--- Landing.js <-- Landing.js
-//--- Layout.js <-- Layout.js
+//--- Layout.js
 import BusyIndicator from 'react-busy-indicator@1.0.0'
 import React from 'react'
 import { Link, NotFoundBoundary, useLoadingRoute } from 'react-navi'
