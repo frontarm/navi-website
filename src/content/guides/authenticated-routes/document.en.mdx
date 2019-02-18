@@ -34,7 +34,7 @@ Authentication State
 
 When you pass a function to `route()`, or to a path under `mount()`, then that function will receive two arguments:
 
-1. A [Request](/404) object
+1. A [Request](../../reference/data-types/#request) object
 2. A configurable [Routing Context](../routing-context)
 
 By storing the current authentication state on Navi's routing context, it becomes possibles to refer to the authentication state within your matchers. For example, you could create a route that checks for a `context.authToken` object, and if it doesn't exist, just renders a link to the login screen:
@@ -55,7 +55,7 @@ Setting authentication state
 
 <Doc.AsideTop>
 
-In order to access the `currentUser` object through `context.currentUser`, you'll first need to add it to your routing context. The simplest way to do this is to pass a `context` prop to your [`<Router />`](../../reference/react/#router) element.
+In order to access the `currentUser` object through `context.currentUser`, you'll first need to add it to your routing context. The simplest way to do this is to pass a `context` prop to your [`<Router />`](../../reference/react-components-hooks/#router) element.
 
 ```js
 <Router
@@ -68,7 +68,7 @@ In order to access the `currentUser` object through `context.currentUser`, you'l
 
 <Doc.Details aside title="Context and Static/Server Rendering">
 
-When performing static or server rendering, you'll need to imperatively set your routing context using [`navigation.setContext()`](/404)
+When performing static or server rendering, you'll need to imperatively set your routing context using [`navigation.setContext()`](../../reference/navigation/#navigationsetcontext)
 
 </Doc.Details>
 </Doc.AsideTop>

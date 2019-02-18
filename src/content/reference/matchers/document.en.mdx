@@ -5,7 +5,7 @@ export const demoboardHelpers = {
   'styles.css': require('!raw-loader!./demo/styles.css'),
 }
 
-Matchers are objects that map a [Request](../types/#request) and [Context](../../guides/routing-context) to their associated content, including views, data, and other information.
+Matchers are objects that map a [Request](../data-types/#request) and [Context](../../guides/routing-context) to their associated content, including views, data, and other information.
 
 ### Functions for creating matchers
 
@@ -539,7 +539,7 @@ Matchers that accept a child argument can be composed in one of two ways:
 
 ## Custom Matchers
 
-Matchers are functions that accept a child generator, and return a [Generator Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) that outputs arrays of [Segment](../types/#segment) objects.
+Matchers are functions that accept a child generator, and return a [Generator Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) that outputs arrays of [Segment](../data-types/#segment) objects.
 
 ```js
 type MatcherGenerator = (request: NaviRequest, context) => Iterator<Segment[]>
