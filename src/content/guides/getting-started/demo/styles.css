@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,900|Inconsolata:400,700');
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Lato, sans-serif;
+  font-size: 8px;
+}
+
+body {
+  margin: 0;
+  font-size: 16px;
+  line-height: 3rem;
+}
+
+button {
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 1rem;
+  text-align: center;
+  font-family: Lato;
+}
+input {
+  height: 4rem;
+  border: 1px solid #ddd;
+  box-shadow: 2px 2px 3px inset rgba(0, 0, 0, 0.1)
+}
+
+.Layout main {
+  margin: 2rem;
+}
+.Layout-header {
+  border-bottom: 1px solid #eee;
+}
+.Layout-header h1 {
+  margin: 1rem 1.5rem;
+}
+.Layout-header button {
+  position: absolute;
+  right: 2rem;
+  top: 1rem;
+}
+.Layout-header a {
+  display: inline-block;
+  color: #444444;
+  font-family: Lato, sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 32px;
+  margin-left: 0.25rem;
+  text-decoration: none;
+}
+
+.Product {
+  text-align: center;
+}
+.Product-emoji {
+  display: block;
+  font-size: 72px;
+  margin: 50px 0;
+}
