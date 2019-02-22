@@ -80,7 +80,7 @@ Once you have the `Route` object that corresponds to a given Request, rendering 
 
 But let's say that you have a Request, and you want a `Route`. Getting that `Route` can be trickier than you may first  think:
 
-- The views and data in the `Route` object may come from multiple disparate sources.
+- The views and data in the `Route` object may come from multiple different sources.
 - You'll want to fetch any dependencies in parallel if at all possible.
 - The `<AppLayout />` might be shared over the entire sites routes, while the `<PageLayout />` probably isn't.
 - The data might depend on URL parameters or the URL query.
@@ -91,7 +91,7 @@ Navi's key innovation is that it lets you avoid all this and effortlessly declar
 Matchers
 --------
 
-Imagine that you've just clicked a link (you should be pretty good at this by now), and your browser has navigated to a new URL:
+Imagine that you've just clicked a link, and your browser has navigated to a new URL:
 
 ```text
 https://frontarm.com/navi/core-concepts/
@@ -103,7 +103,7 @@ Looking at this URL, you can infer a few things about the result:
 - The content for `/navi/core-concepts` is written with Markdown, so there'll be a `<NaviMDXLayout>` element.
 - There's no language specified in the query string, so it's going to default to English.
 
-Navi lets you specify each of these rules as individual **Matchers** -- objects that map Requests to individual **Segments** of data within your Route. For example, here are some segments that represent the above URL:
+Navi lets you specify each of these rules as individual [Matchers](../../reference/matchers) -- objects that map Requests to individual [Chunks](../../reference/data-types/#chunk) of data within your Route. For example, here are some chunks of information about the above URL:
 
 ```jsx
 {
@@ -125,7 +125,7 @@ Navi lets you specify each of these rules as individual **Matchers** -- objects 
 }
 ```
 
-Your Route is then created by reducing all of the matched segments into a single `Route` object.
+Your Route is then created by reducing all of the matched chunks into a single `Route` object.
 
 ```jsx
 let route = {
@@ -133,7 +133,7 @@ let route = {
     pathname: '/navi/core-concepts/',
     // ...
   }  
-  segments: [
+  chunks: [
     {
       type: 'view',
       url: '/navi',
@@ -160,7 +160,7 @@ let route = {
 }
 ```
 
-Ok, so **matchers** map **requests** to individual chunks of data called **segments** -- which are then reduced into **routes**. But how do you write matchers? Actually, *you probably won't*. Because while it's entirely *possible* to write custom matchers (<small>they're just [generator functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*)</small>), Navi already includes all of the matcher-creating functions that you'll ever realistically need.
+Ok, so **matchers** map **requests** to individual **chunks** of data -- which are then reduced into **routes**. But how do you write matchers? Actually, *you probably won't*. Because while it's entirely *possible* to write custom matchers (<small>they're just [generator functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*)</small>), Navi already includes all of the matcher-creating functions that you'll ever realistically need.
 
 For example, you could use [`mount()`](../../reference/matchers/#mount) and [`withView()`](../../reference/matchers/#withview) to map URL paths to views:
 
@@ -209,7 +209,7 @@ mount({
 })
 ```
 
-And given that your routes have both a `view` and `data`, you could simplify things even further by specifying them both with [`route()`](../../reference/matchers/#route) -- along with the page's `title` and any `head` tags.
+In fact, you could simplify things even further with [`route()`](../../reference/matchers/#route) -- which lets you specify `view`, `data`,  `title` and any `head` tags in one function call.
 
 ```jsx
 mount({
@@ -230,4 +230,4 @@ mount({
 
 Navi puts a bunch of other matchers at your disposal -- for details, see the [Matchers Reference](../../reference/matchers). But with this said, in most situations you'll need no more than `mount()`, `route()` and `withView()`.
 
-One curious thing that you may have noticed about about the `Route` objects created by these matchers is that `Route` can have multiple view elements. This is how Navi handles nested layouts -- which we'll discuss on the next guide. See you there!
+One curious thing that you may have noticed about the `Route` objects created by these matchers is that `Route` can have multiple view elements. This is how Navi handles nested layouts -- which we'll discuss on the next guide. See you there!

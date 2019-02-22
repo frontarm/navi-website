@@ -15,29 +15,31 @@ For example, say that you have a page that fetches a quote based on an id passed
 
 ```js
 mount({
-  '/quote/:id': async request => {
+  '/quote/:id': route(async request => {
     let quote = await fetchQuote(request.params.id)
 
-    return route({
+    return {
       title: `Quote #{request.params.id}`,
       view: quote,
-    })
-  }
+    }
+  })
 })
 ```
 
-Assuming that all of your quotes are meant to be public, this site will work great! But imagine for a moment that the `fetchQuote()` function needs an auth token. If the current user isn't logged in, then you'll be unable to call `fetchQuote()` -- you'll need to display a login screen instead. And even if the user *is* logged in, you'll still need some way of knowing which auth token to pass to `fetchQuote()`.
+Assuming that all of your quotes are meant to be public, this will work great! But imagine for a moment that the above `fetchQuote()` function needs an auth token. If the current user isn't logged in, then you'll be unable to call `fetchQuote()` -- you'll need to display a login screen instead. And even if the user *is* logged in, you'll still need some way of knowing which auth token to pass to `fetchQuote()`.
 
 
 Authentication State
 --------------------
 
-When you pass a function to `route()`, or to a path under `mount()`, then that function will receive two arguments:
+When you pass a function to `route()` or a `map()`, then that function will receive two arguments:
 
 1. A [Request](../../reference/data-types/#request) object
 2. A configurable [Routing Context](../routing-context)
 
-By storing the current authentication state on Navi's routing context, it becomes possibles to refer to the authentication state within your matchers. For example, you could create a route that checks for a `context.authToken` object, and if it doesn't exist, just renders a link to the login screen:
+By storing the current authentication state on Navi's routing context, it becomes possibles to refer to that authentication state within your routes (and within your other matchers).
+
+For example, you could create a route that checks for a `context.authToken` object, and if it doesn't exist, just renders a link to the login screen:
 
 ```js
 //---
@@ -57,13 +59,13 @@ Setting authentication state
 
 In order to access the `currentUser` object through `context.currentUser`, you'll first need to add it to your routing context. The simplest way to do this is to pass a `context` prop to your [`<Router />`](../../reference/react-components-hooks/#router) element.
 
-```js
+```jsx
 <Router
   routes={routes}
   context={{
     currentUser,
   }}
-})
+/>
 ```
 
 <Doc.Details aside title="Context and Static/Server Rendering">
@@ -73,7 +75,7 @@ When performing static or server rendering, you'll need to imperatively set your
 </Doc.Details>
 </Doc.AsideTop>
 
-After adding some state to manage the value of `currentUser`, here's this will look like in practice:
+After adding some component state to manage the value of `currentUser`, here's what this will look like in practice:
 
 ```js
 //---
@@ -97,7 +99,7 @@ I go into more details in the [Routing Context](../routing-context) guide.
 Conditional redirects
 ---------------------
 
-Creating and styling a login link for each of your pages can be burdensome. In many cases, a simpler solution is to redirect unauthenticated users directly to a login screen -- while still displaying the page's original content to authenticated users. You can implement this by passing a context-consuming function to `map()` -- which lets you switch routes based on the request or context. Here's an example:
+Creating and styling a login link for each of your pages can be burdensome. In many cases, a simpler solution is to redirect unauthenticated users directly to a login screen -- while still displaying the page's original content to authenticated users. You can implement this by passing a context-consuming function to `map()` -- which lets you switch routes based on the current request or context. Here's an example:
 
 ```js
 //---
@@ -109,9 +111,9 @@ editorPathname: /resourceRoutes.js
 //--- styles.css <-- styles.css
 ```
 
-If you have many authenticated pages, you can create a helper that simplifies this even further by creating a `withAuthentication()` helper, like so:
+If you have many authenticated pages, you can create a helper that simplifies this even further, like so:
 
-```js
+```jsx
 export function withAuthentication(matcher) {
   return map((request, context) =>
     context.currentUser

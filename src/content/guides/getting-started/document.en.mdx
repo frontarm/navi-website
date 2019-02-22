@@ -75,7 +75,7 @@ It is! But react-native apps would be far better served by [react-native-navigat
 
 ## Routing Hooks
 
-Did you notice how your route defined a `getData()` function along its `view`?
+Did you notice how your route defined a `getData()` function along with its `view`?
 
 ```jsx
 route({
@@ -87,7 +87,7 @@ route({
 
 *How do you access the data?* With React hooks!
 
-Navi's `useCurrentRoute()` hook can be called from any function component that is rendered within the `<Router>` tag. It returns a [`Route`](../../reference/data-types/#route) object that contains everything that Navi knows about the current URL.
+Navi's `useCurrentRoute()` hook can be called from any function component that is rendered within the `<Router>` tag. It returns a [`Route`](../../reference/data-types/#route) object that contains everything that Navi knows about the current URL -- including any data you've declared on you routes.
 
 ```js
 //---
@@ -127,7 +127,7 @@ export default function Landing() {
 
 Ok. So far, so good. But imagine that you've just clicked a link to `/products` -- which is dynamically imported. It's going to take some time to fetch the route, so what are you going to display in the meantime?
 
-Well, the first option is to use `<Suspense>` to show a fallback while it's loading. But this has the probably of briefly of jumping around all over the place as it hides and shows loading indicators.
+Well, the first option is to use `<Suspense>` to show a fallback while it's loading. But this has the problem of jumping around all over the place as it hides and shows loading indicators.
 
 <img
   src={require('./suspense-loading.gif')}
@@ -249,7 +249,7 @@ function renderNotFound() {
 
 ## What's Next?
 
-You can get a long with Navi by just using these components and a few basic matcher functions. However, if you take a look underneath all the components, Navi is actually written in pure JavaScript -- that's why it's split into two packages:
+You can get a long way with Navi by just using these components and a few basic matcher functions. However, if you take a look underneath all the components, Navi is actually written in pure JavaScript -- that's why it's split into two packages:
 
 - `navi` contains a pure JavaScript implementation of the core routing code
 - `react-navi` gives you a thin wrapper around the core that's designed specifically for React

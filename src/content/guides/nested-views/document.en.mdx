@@ -9,7 +9,7 @@ export const demoboardHelpers = {
   'styles.css': require('!raw-loader!./demo/styles.css'),
 }
 
-Occasionally, you'll find that you have some content that is shared between a *section* of your app, without being shared across the whole thing. You can't render it at the topl level because it's not needed for every page, but you don't want to repeat it across every single page that uses it. For example, the navigation bar on the left of this documentation site is shared by all pages within Navi's documentation, while not being displayed on Frontend Armory's [courses](https://frontarm.com/learn/) and [blog](https://frontarm.com/articles/).
+Occasionally, you'll find that you have some content that is shared between a *section* of your app, without being shared across the whole thing. You can't render it at the top level because it's not needed for every page, but you don't want to repeat it across every single page that uses it. For example, the navigation bar on the left of this documentation site is shared by all pages within Navi's documentation, while not being displayed on Frontend Armory's [courses](https://frontarm.com/learn/) and [blog](https://frontarm.com/articles/).
 
 In situations like this, you'll need a way to render *layout* components -- i.e. components that are shared between pages. And Navi lets you solve this by specifying *multiple* views.
 
@@ -19,7 +19,7 @@ In situations like this, you'll need a way to render *layout* components -- i.e.
 
 While you'll often map a URL to a view with the `route()` function, Navi gives you another way to declare views: `withView()`.
 
-```js
+```jsx
 withView(
   req => <SomeElementOrComponent />,
   childMatcher
@@ -62,7 +62,35 @@ export default compose(
     }),
   })
 )
-//--- Layout.js <-- Layout.js
+//--- Layout.js
+import React from 'react'
+import { Link, useCurrentRoute } from 'react-navi'
+
+export default function Layout(props) {
+  let route = useCurrentRoute()
+
+  console.log('views:', route.views.map(x => x.type ? x.type.name : x.name))
+
+  return (
+    <div className="Layout">
+      <nav>
+        <Link
+          href={props.mountpath}
+          exact
+          activeStyle={{ fontWeight: 'bold' }}>
+          <img src="https://frontarm.com/navi-logo.png" />
+          <span>Home</span>
+        </Link>
+        <Link
+          href={props.mountpath + 'about'}
+          activeStyle={{ fontWeight: 'bold' }}>
+          About
+        </Link>
+      </nav>
+      <main>{props.children || null}</main>
+    </div>
+  )
+}
 //--- home.md <-- home.md
 //--- about.md <-- about.md
 //--- styles.css <-- styles.css
@@ -87,6 +115,6 @@ editorPathname: /routes.js
 
 Here's the golden rule:
 
-**The `<View />` component will always render the first view that hasn't been rendered yet.**
+**The `<View />` component will always render the next view that hasn't been rendered yet.**
 
 One result of this rule is that it becomes possible to create entire applications with multiple routes, that can be reused by mapping them to a URL and rendering a single `<View />`. In fact, the Navi website itself is built this way -- you can load it independently during development, or you can embed it within another website like Frontend Armory. For more details, take a look at the website's [source](https://github.com/frontarm/navi-website).

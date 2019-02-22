@@ -21,7 +21,7 @@ mount({
 
 See how the varying part of the URL has been replaced by a segment starting with a colon `:`? This tells Navi that the segment is a **URL parameter**, and can be matched to *any* value.
 
-Navi passes the current value of any to your route through the `req.params` property -- allowing you to fetch data that depends on URL parameters.
+Navi passes the current value of any URL Parameters to your route through the `req.params` property -- allowing you to fetch data for multiple URLs with a single route.
 
 ```js
 //--- routes.js
@@ -91,7 +91,7 @@ ReactDOM.render(
 )
 ```
 
-In fact, the `req.params` also contains any information extracted from the URL's query string. For an example, notice how this demo extracts both an `id` and a `referrer` parameter from the URL `/quotes/3?welcome=true`:
+In fact, `req.params` also contains any information extracted from the URL's query string. For an example, notice how this demo extracts both an `id` and a `referrer` parameter from the URL `/quotes/3?welcome=true`:
 
 ```js
 //---
@@ -166,6 +166,6 @@ ReactDOM.render(
 )
 ```
 
-While URL parameters are a pretty standard featured for a JavaScript routing library, the combination of URL parameters and asynchronous content gives you a huge amount of declarative power. Just like controllers in an MVC framework, Navi's routes let you implement business logic, throw errors, and choose which views based on the request.
+While URL parameters are a pretty standard featured for a JavaScript routing library, the combination of URL parameters and asynchronous content gives you a huge amount of declarative power. Just like controllers in an MVC framework, Navi's routes let you implement business logic, throw errors, and choose views -- all based on the request.
 
 We'll cover more of the controller-like abilities of Navi routes in the [Context](../routing-context) and [Authentication](../authenticated-routes) guides. But in the meantime, let's take a look at something a little simpler. I'll see you in the next guide!

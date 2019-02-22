@@ -6,10 +6,9 @@ export default mount({
     getDocument: (language) => import(`./start-here/document.${language}.mdx`),
     default: {
       title: "Navi",
-      htmlTitle: "Navi – A library for mapping URLs to content",
+      htmlTitle: "Navi",
       navTitle: 'Start Here',
-      description: 'Create big, fast, CDN-delivered websites with great SEO & SMO, and all with vanilla create-react-app.',
-      socialImageURL: require('./social-media-card.png'),
+      description: 'Declarative, asynchronous routing for React.',
       navTableOfContents: null,
     },
     ja: {
@@ -244,19 +243,14 @@ function page({ getDocument, default: base, ...languages }) {
       data.blurb = <p>{data.blurb}</p>
     }
 
+    if (data.description) {
+      data.metaDescription = data.description
+    }
+
     return data
   }
 
   const getTitle = (req, context) => getData(req, context).htmlTitle
-  const getHead = (req, context) => {
-    let data = getData(req, context)
-    if (data.description) {
-      return <meta name="description" content={data.description} />
-    }
-    else {
-      return null
-    }
-  }
 
   const getView = async (req, context) => {
     let language = context.language || 'en'
@@ -290,7 +284,6 @@ function page({ getDocument, default: base, ...languages }) {
 
   return route({
     getTitle,
-    getHead,
     getData,
     getView,
   })

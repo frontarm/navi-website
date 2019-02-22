@@ -9,11 +9,11 @@ Here's an example:
 
 ```js
 //--- App.js
-import React from 'react'
-import { Router } from 'react-navi'
+import React, { Suspense } from 'react'
+import { Router, View } from 'react-navi'
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import { routes } from './routes'
-import { Index } from './Index'
+import Index from './Index'
 
 // Here's your react-router app
 export default function App(props) {
@@ -21,11 +21,11 @@ export default function App(props) {
     <BrowserRouter>
       <Switch>
         <Route path="/" exact component={Index} />
-        <Route path="/navi-app" render={({ history, match }) =>
+        <Route path="/support" render={({ history, match }) =>
           <Router 
             routes={routes}
-            history={props.history}
-            basename={props.match.url}
+            history={history}
+            basename={match.url}
           >
             <Suspense fallback={null}>
               <View />
@@ -37,7 +37,7 @@ export default function App(props) {
   )
 }
 //--- routes.js
-import { map, route, withView } from 'navi'
+import { mount, route, withView } from 'navi'
 import React from 'react'
 import { Link, NotFoundBoundary, View, useLoadingRoute } from 'react-navi'
 import BusyIndicator from 'react-busy-indicator'
@@ -76,7 +76,7 @@ export const routes = withView(
   })
 )
 
-function Layout({ children }) {
+function Layout({ basename, children }) {
   let loadingRoute = useLoadingRoute()
 
   return (
@@ -84,18 +84,21 @@ function Layout({ children }) {
       <BusyIndicator
         color="#1ee79e"
         delayMs={333}
-        isBusy={isLoading}
+        isBusy={!!loadingRoute}
       />
       <header className="App-header">
         <h1 className="App-title">
-          <Link href={this.props.basename}>
+          <Link href='/' style={{float: 'right'}} prefetch={null}>
+            <span>Back to app &raquo;</span>
+          </Link>
+          <Link href={basename}>
             <span>Support</span>
           </Link>
         </h1>
       </header>
       <main>
         <NotFoundBoundary render={renderNotFound}>
-          {childern || null}
+          {children || null}
         </NotFoundBoundary>
       </main>
     </div>

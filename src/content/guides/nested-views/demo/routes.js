@@ -5,6 +5,8 @@ import Layout from './Layout'
 
 export default compose(
   withView(request =>
+    // This is the first view -- it renders the second within a
+    // `<Layout>` component.
     <Layout mountpath={request.mountpath || '/'}>
       <View />
     </Layout> 

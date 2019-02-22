@@ -37,11 +37,9 @@ The `navi-scripts` tool is responsible for statically rendering your HTML. To cu
 
 There's one problem with this flow -- how does `navi-scripts` find your routes? create-react-app doesn't provide a way to export anything. So in order to tell Navi what to render, you'll need to import the `register()` function from `navi-scripts/register`, and then call it with your routes.
 
-Usually, you'll want to call register in your app's entry point, i.e. `src/index.js`. Here's what it'll look like for a typical create-react-app setup.
+Usually, you'll want to call register in your app's entry point, i.e. `src/index.js`. Assuming that you're using the default `src/index.js` from create-react-app, here's what it'll look after importing and calling `register()`:
 
-Assuming that you're using the default `src/index.js` from create-react-app, here's what it'll look after importing and calling to `register()`:
-
-```js
+```jsx
 import register from 'navi-scripts/register'
 import routes from './routes'
 
@@ -105,7 +103,7 @@ Finally, since `navi-scripts` doesn't call your `main()` function during static 
 
 Assuming you're happy with the default of just rendering a `<View />`, here's what your `register()` call will look like:
 
-```js
+```jsx
 import register from "navi-scripts/register";
 import * as Navi from "navi";
 import React from "react";
@@ -153,25 +151,19 @@ register({
 
 ## Update your `package.json`
 
-Navi's static renderer is part of the `navi-scripts` package, so start by installing it:
-
-```bash
-npm install --save navi-scripts
-```
-
 To render your app, navi-scripts loads the result of the create-react-app's build script in a [jsdom](https://github.com/jsdom/jsdom). Because of this, you'll always need to run create-react-app's build script before running Navi's build script:
 
 ```bash
 npx react-scripts build
 ```
 
-Finally, once you've added `Navi.app()` to your entry point, and build it with create-react-app's build script, all that's left is to execute Navi's build script:
+Then, once you've added `register()` to your entry point and built it with create-react-app's build script, all that's left is to execute Navi's build script:
 
 ```bash
 npx navi-scripts build
 ```
 
-You can simplify the build process further by modifying the `build` script with in your `package.json` file to call both React and Navi's build scripts:
+You can simplify the build process further by modifying the `build` script with in your `package.json` file to call both React *and* Navi's build scripts:
 
 ```js
 "build": "react-scripts build && navi-scripts build"
