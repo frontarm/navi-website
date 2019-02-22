@@ -288,7 +288,15 @@ route(options:
     status?: any,
     title?: string,
     view?: any,
-  }  
+  } |
+  (request, context) => Promise<{
+    data?: object,
+    head?: any,
+    headers?: object,
+    status?: any,
+    title?: string,
+    view?: any,
+  }>
 )
 ```
 
