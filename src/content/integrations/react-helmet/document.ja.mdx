@@ -1,0 +1,5 @@
+export const filename = __filename
+
+React アプリケーションの多くは `<head>` タグを管理するために [react-helmet](https://www.npmjs.com/package/react-helmet) を使用します。`navi-scripts` でアプリケーションを静的にレンダリングすれば、追加の設定をしなくても react-helment がサポートされます！他のアプリケーションのように `<Helmet>` コンポーネントをインポートして使用すれば、そのほかのコンテンツと共に helmet の `title` タグと `meta` タグを静的にレンダリングするでしょう。
+
+`<head>` タグの静的なレンダリングの実装の詳細については、[react-navi/create-react-app.js](https://github.com/frontarm/navi/blob/8d11274c92d6492ccbe529ad17da980ffa61715d/packages/react-navi/create-react-app.js) の中の `renderPageToString()` のソースコードを参照して下さい。
