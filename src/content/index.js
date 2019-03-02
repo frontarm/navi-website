@@ -199,7 +199,10 @@ export default mount({
         default: {
           title: 'Using Navi with react-helmet',
           navTitle: 'react-helmet',
-        }
+        },
+        ja: {
+          title: 'react-helment の使い方',
+        },
       }),
     }),
   ),
