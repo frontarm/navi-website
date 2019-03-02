@@ -201,9 +201,9 @@ function delay(ms) {
 
 非同期な data と view につきものなのは、ロードが失敗することです。幸運にも、React は エラーが投げられた場合にそれをうまく処理するツールを提供してくれています。そう、Error Boundaries です。
 
-ちょっと `<Suspense>` タグで `<View />` をラップした部分を振り返ってみましょう。 `<View />` がまだロードされていない route に遭遇すると、it throws a promise (nakanishi: What 'it' indicate. route? View?)、それによって React に*少しの間フォールバック用の要素を表示させておく* ことができます。`<Suspense>` が promise をキャッチしてようなものだと考えていいでしょう。Promise が解決されると、子要素は再レンダリングされます。
+`<Suspense>` タグで `<View />` をラップした部分を振り返ってみましょう。 `<View />` がまだロードされていない route に遭遇すると、`<View />` は promise を投げます。それによって React に*ある一定の期間、フォールバック用の要素を表示させておく* ことができます。`<Suspense>` が promise をキャッチしてようなものだと考えていいでしょう。Promise が解決されると、子要素は再レンダリングされます。
 
-同様に `<View />` が `getView()` もしくは `getData()` が失敗したのを見つけると、`<View />`  はエラーを投げます。例えば router が 404-not-found に遭遇した場合には、`<View />` もエラーを投げています。これらのエラーは [Error Boundary](https://reactjs.org/docs/error-boundaries.html) コンポーネントでキャッチすることができます。For the most part, you'll need to make your own error boundaries, but Navi includes a `<NotFoundBoundary>` to show you how its done: (nakanishi: please describe 'to show you how its done' more in detail.)
+同様に `<View />` が `getView()` もしくは `getData()` が失敗したのを見つけると、`<View />`  はエラーを投げます。例えば router が 404-not-found に遭遇した場合には、`<View />` もエラーを投げています。これらのエラーは [Error Boundary](https://reactjs.org/docs/error-boundaries.html) コンポーネントでキャッチすることができます。大抵の場合は自分自身で error boundaries を作る必要がありますが、Navi には `<NotFoundBoundary>` コンポーネントがあります。これを使うことで Not Found errors をキャッチして、フォールバック用のメッセージを表示することができます。
 
 ```jsx
 //---
