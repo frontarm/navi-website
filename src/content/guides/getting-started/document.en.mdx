@@ -197,7 +197,7 @@ One of the things about asynchronous data and views is that sometimes they fail 
 
 Let's rewind for a moment to the `<Suspense>` tag that wraps your `<View />`.  When `<View />` encounters a not-yet-loaded route, it *throws a promise*, which effectively asks React to *please show the fallback for a moment*. You can imagine that `<Suspense>` catches that promise, and then re-renders its children once it resolves.
 
-Similarly, if `<View />` finds that `getView()` or `getData()` have failed, then it throws an error. In fact, if the router encounters a 404-not-found error, then `<View />` will throw that, too. These errors can be caught by [Error Boundary](https://reactjs.org/docs/error-boundaries.html) components. For the most part, you'll need to make your own error boundaries, but Navi includes a `<NotFoundBoundary>` to show you how its done:
+Similarly, if `<View />` finds that `getView()` or `getData()` have failed, then the `View` component will throw an error. In fact, if the router encounters a 404-not-found error, then `<View />` will throw that, too. These errors can be caught by [Error Boundary](https://reactjs.org/docs/error-boundaries.html) components. For the most part, you'll need to make your own error boundaries, but Navi includes a `<NotFoundBoundary>` that can catch Not Found errors for you and show a fallback message instead:
 
 ```jsx
 //---
