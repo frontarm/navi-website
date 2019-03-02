@@ -139,9 +139,9 @@ export default function Landing() {
   style={{ border: '1px solid #f0f0f0', borderRadius: '1rem' }}
 />
 
-*本当に* やりたいのは多分、次のルートが読み込まれるまでの間、現在のページでロードバーを表示することでしょう。しかもロードに 100ms しかかからない場合には表示したくない。つまりロードされるまでの間、現在のページにローディング（途中）
+*本当に* やりたいのは多分、次のルートが読み込まれるまでの間、現在のページでロードバーを表示することでしょう。しかもロードに 100ms しかかからない場合には表示したくない。つまりロードしてから 100ms までの間はインディケーターを表示せず、100ms からロードが終わるまでの間は現在のページにインディケーターを表示させる、という挙動です。たった 100ms の時間のためにインディケーターを表示するのはあまりかっこよくないからです。
 
-What you'd like to do is to display a loading bar over the current page while the next route loads... well, unless the transition only takes 100ms. Then you probably just want to keep displaying the current page until the next one is ready, because showing a loading bar for only 100ms doesn't look great either.
+(nakanishi: Is my understanding correct? / 0=>100ms: no indicator, 100ms => load completed: show indicator on current page.)
 
 <img
   src={require('./no-delay-loading.gif')}
