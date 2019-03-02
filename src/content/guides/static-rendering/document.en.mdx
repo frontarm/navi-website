@@ -70,7 +70,7 @@ So what can you put in `main()`? Anything you want, really! But there are a few 
 
 ### `render()` vs. `hydrate()`
 
-When running in the `production` environment, you'll want to call `ReactDOM.hydrate()` instead of `ReactDOM.server()`. This lets React re-use the initial DOM, instead of rendering everything from scratch upon load.
+When running in the `production` environment, you'll want to call `ReactDOM.hydrate()` instead of `ReactDOM.render()`. This lets React re-use the initial DOM, instead of rendering everything from scratch upon load.
 
 ```js
 // React requires that you call `ReactDOM.hydrate` if there is statically
