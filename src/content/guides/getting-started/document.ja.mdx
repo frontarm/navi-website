@@ -141,8 +141,6 @@ export default function Landing() {
 
 *本当に* やりたいのは多分、次のルートが読み込まれるまでの間、現在のページでロードバーを表示することでしょう。しかもロードに 100ms しかかからない場合には表示したくない。つまりロードしてから 100ms までの間はインディケーターを表示せず、100ms からロードが終わるまでの間は現在のページにインディケーターを表示させる、という挙動です。たった 100ms の時間のためにインディケーターを表示するのはあまりかっこよくないからです。
 
-(nakanishi: Is my understanding correct? / 0=>100ms: no indicator, 100ms => load completed: show indicator on current page.)
-
 <img
   src={require('./no-delay-loading.gif')}
   alt="loading indicator with no delay"
