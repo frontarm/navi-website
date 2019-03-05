@@ -139,9 +139,7 @@ export default function Landing() {
   style={{ border: '1px solid #f0f0f0', borderRadius: '1rem' }}
 />
 
-*本当に* やりたいのは多分、次のルートが読み込まれるまでの間、現在のページでロードバーを表示することでしょう。しかもロードに 100ms しかかからない場合には表示したくない。つまりロードされるまでの間、現在のページにローディング（途中）
-
-What you'd like to do is to display a loading bar over the current page while the next route loads... well, unless the transition only takes 100ms. Then you probably just want to keep displaying the current page until the next one is ready, because showing a loading bar for only 100ms doesn't look great either.
+*本当に* やりたいのは多分、次のルートが読み込まれるまでの間、現在のページでロードバーを表示することでしょう。しかもロードに 100ms しかかからない場合には表示したくない。つまりロードしてから 100ms までの間はインディケーターを表示せず、100ms からロードが終わるまでの間は現在のページにインディケーターを表示させる、という挙動です。たった 100ms の時間のためにインディケーターを表示するのはあまりかっこよくないからです。
 
 <img
   src={require('./no-delay-loading.gif')}
@@ -201,9 +199,9 @@ function delay(ms) {
 
 非同期な data と view につきものなのは、ロードが失敗することです。幸運にも、React は エラーが投げられた場合にそれをうまく処理するツールを提供してくれています。そう、Error Boundaries です。
 
-ちょっと `<Suspense>` タグで `<View />` をラップした部分を振り返ってみましょう。 `<View />` がまだロードされていない route に遭遇すると、it throws a promise (nakanishi: What 'it' indicate. route? View?)、それによって React に*少しの間フォールバック用の要素を表示させておく* ことができます。`<Suspense>` が promise をキャッチしてようなものだと考えていいでしょう。Promise が解決されると、子要素は再レンダリングされます。
+`<Suspense>` タグで `<View />` をラップした部分を振り返ってみましょう。 `<View />` がまだロードされていない route に遭遇すると、`<View />` は promise を投げます。それによって React に*ある一定の期間、フォールバック用の要素を表示させておく* ことができます。`<Suspense>` が promise をキャッチしてようなものだと考えていいでしょう。Promise が解決されると、子要素は再レンダリングされます。
 
-同様に `<View />` が `getView()` もしくは `getData()` が失敗したのを見つけると、`<View />`  はエラーを投げます。例えば router が 404-not-found に遭遇した場合には、`<View />` もエラーを投げています。これらのエラーは [Error Boundary](https://reactjs.org/docs/error-boundaries.html) コンポーネントでキャッチすることができます。For the most part, you'll need to make your own error boundaries, but Navi includes a `<NotFoundBoundary>` to show you how its done: (nakanishi: please describe 'to show you how its done' more in detail.)
+同様に `<View />` が `getView()` もしくは `getData()` が失敗したのを見つけると、`<View />`  はエラーを投げます。例えば router が 404-not-found に遭遇した場合には、`<View />` もエラーを投げています。これらのエラーは [Error Boundary](https://reactjs.org/docs/error-boundaries.html) コンポーネントでキャッチすることができます。大抵の場合は自分自身で error boundaries を作る必要がありますが、Navi には `<NotFoundBoundary>` コンポーネントがあります。これを使うことで Not Found errors をキャッチして、フォールバック用のメッセージを表示することができます。
 
 ```jsx
 //---
@@ -253,11 +251,11 @@ function renderNotFound() {
 //--- styles.css <-- styles.css
 ```
 
-## What's Next?
+## 次に扱う内容
 
-You can get a long way with Navi by just using these components and a few basic matcher functions. However, if you take a look underneath all the components, Navi is actually written in pure JavaScript -- that's why it's split into two packages:
+さて Navi に取り組んできました。その過程で Navi のコンポーネントや、いくつかの matcher 関数 を使いました。しかし、コンポーネントの実装内部を見ていただくとわかるのですが、navi 自体は純粋な JavaScript で書かれています。実は Navi は二つのパッケージに分かれているのです。
 
-- `navi` contains a pure JavaScript implementation of the core routing code
-- `react-navi` gives you a thin wrapper around the core that's designed specifically for React
+- `navi` はコアとなるルーティングの実装部分で、ピュア JavaScript で書かれています。
+- `react-navi` は navi のコア部分の薄いラッパーで、React のために設計されています。
 
-If you want to understand the full set of possibilities that Navi opens up, you'll want to understand the core concepts of Navi itself -- **requests**, **routes**, and **matchers**. As it happens, you've already run into each of these concepts in *this* page -- and we'll cover them in a moment. But first, let's take a brief look at URL parameters.
+Navi が持つすべての可能性を理解するためには、Navi それ自体のコアコンセプトを理解したいはずです。つまり **requests** や **routes** や **matchers** といった要素です。実はすでにこれらの概念はこのページで扱いました。そしてさらにこれらの概念を、説明していきます。まずは URL パラメーターを次のセクションで見ていきましょう。
