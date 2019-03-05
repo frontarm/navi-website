@@ -1,0 +1,261 @@
+export const filename = __filename
+import { Doc } from '@frontarm/doc'
+export const demoboardHelpers = {
+  'api.js': require('!raw-loader!./demo/api.js'),
+  'index.js': require('!raw-loader!./demo/index.js'),
+  'product.js': require('!raw-loader!./demo/product.js'),
+  'Layout.js': require('!raw-loader!./demo/Layout.js'),
+  'Landing.js': require('!raw-loader!./demo/Landing.js'),
+  'styles.css': require('!raw-loader!./demo/styles.css'),
+}
+
+このガイドでは create-react-app を用いて作成したまっさらなプロジェクトに、Navi を使ってルーティング機能を追加していきます。
+
+## 基礎となるコンポーネント  
+
+大抵の Navi を使用するアプリケーションにおいては、Navi の `<Router>` コンポーネントが一番上の階層に配置されます。このコンポーネントが、宣言的で非同期なルーティング機能を React アプリケーションに追加する役割を担います。手始めに `<Router>` コンポーネントを create-react-app によって生成された `index.js` ファイルの中でレンダーしていきましょう。
+
+`<Router>` コンポーネントで用いる routes は Navi の `mount()`, `route()` や [matcher](../../reference/matchers) 関数を用いて次のように宣言します。
+
+```jsx{6,7,12,16}
+import { lazy, mount, route } from 'navi'
+import { Router } from 'react-navi'
+
+// routes を定義する
+const routes =
+  mount({
+    '/': route({
+      title: 'My Shop',
+      getData: () => api.fetchProducts(),
+      view: <ShopLandingPage />,
+    }),
+    '/products': lazy(() => import('./productsRoutes')),
+  })
+
+// 定義した routes を `<Router>` コンポーネントに渡す
+<Router routes={routes}>
+  ...
+</Router>
+```
+
+これで `<Router>` ができました。`/` へはお店のランディングページがひもづけられ、`/products`　には遅延読み込みされるページがひもづけられています。
+
+では次のステップに進みましょう。現在の route のための `view` 要素をどこに描画するのか、ということを決めます。そのためには `<View />` コンポーネントを `<Router>` の中でどこでもいいので配置しましょう。これはどこでも配置できます。例えば `<Link>` を含んだヘッダー部分を与える `<Layout>` コンポーネント中に配置することもできます。 
+
+```jsx{6}
+import { View } from 'react-navi'
+
+ReactDOM.render(
+  <Router routes={routes}>
+    <Layout>
+      <View />
+    </Layout>
+  </Router>,
+  document.getElementById('root')
+)
+```
+
+<Doc.AsideTop>
+
+どうですか？非常にシンプルですよね。けれどちょっと気になるところがありますね… もし遅延読み込みされる `/products` に移動したら、一体何が表示されるのでしょうか？ この部分は `import()` を用いて読み込みされるので、Promise オブジェクトを返します。つまり最初は描画するものが何もありません。ですが幸いなことに React の新機能である [`<Suspense>`](https://reactjs.org/docs/react-api.html#reactsuspense) を使うことで、宣言的に promise が解決されるのを待つことができます。つまり `<View>` を `<Suspense>` でラップしてあげれば、you're off and racing!
+
+```
+//---
+viewerURL: /product/hat
+//--- index.js <-- index.js
+//--- product.js <-- product.js
+//--- Landing.js <-- Landing.js
+//--- Layout.js <-- Layout.js
+//--- api.js <-- api.js
+//--- styles.css <-- styles.css
+```
+
+<Doc.Details aside title={<><code>&lt;View&gt;</code> は react-native では使えない?</>}>
+
+使えません！ですが react-native アプリケーションにおいては [react-native-navigation](https://github.com/wix/react-native-navigation) や [react-navigation](https://reactnavigation.org/) のほうが Navi よりもうまく機能をはたしますので、こちらをおすすめします。
+
+</Doc.Details>
+</Doc.AsideTop>
+
+## Routing Hooks
+
+`view` で使用するデータを取得するための `getData()` 関数を route の中で定義したのを覚えていますか？
+
+```jsx
+route({
+  title: 'My Shop',
+  getData: () => api.fetch('/products'),
+  view: <Landing />,
+})
+```
+
+*一体これによって取得したデータにアクセするにはどうしたらいいのでしょうか？* そのためには React の Hooks を使用します！
+
+Navi's `useCurrentRoute()` hook は `<Router>` タグの内側に存在するファンクショナルコンポーネント内であればどこでも実行することができます。`useCurrentRoute()` hook は [`Route`](../../reference/data-types/#route) オブジェクトを返します。これには Navi が現在の URL について知りうる全ての情報が含まれています。この情報の中に、`getData()` で取得した情報も含まれています。
+
+```js
+//---
+editorPathname: /Landing.js
+rightPanel: console
+//--- index.js <-- index.js
+//--- product.js <-- product.js
+//--- Landing.js
+import React from 'react'
+import { Link, useCurrentRoute } from 'react-navi'
+
+export default function Landing() {
+  // useCurrentRoute returns the lastest loaded Route object
+  let route = useCurrentRoute()
+  let data = route.data
+  let productIds = Object.keys(data)
+
+  console.log('views', route.views)
+  console.log('url', route.url)
+  console.log('data', route.data)
+  console.log('status', route.status)
+  
+  return (
+    <ul>
+      {productIds.map(id => 
+        <li key={id}>
+          <Link href={`/product/${id}`}>{data[id].title}</Link>
+        </li>
+      )}
+    </ul>
+  )
+}
+//--- Layout.js <-- Layout.js
+//--- api.js <-- api.js
+//--- styles.css <-- styles.css
+```
+
+今の所うまくいっていますね。ただ `/products` をクリックした場合のことを想像してみてください。このリンク先は動的に読み込まれるのでした。フェッチするのには時間がかかりますので、その間に何も表示されません。何かを表示したほうがいいですよね。
+
+最初の選択肢は `<Suspense>` を使って、ローディング中に fallback 用の要素を表示する方法です。ただしこの方法の問題点は、クリックした瞬間に目的のルートへすぐに移動してしまい、何も情報が見えなくなってしまうことです。
+
+<img
+  src={require('./suspense-loading.gif')}
+  alt="terrible looking loading"
+  style={{ border: '1px solid #f0f0f0', borderRadius: '1rem' }}
+/>
+
+*本当に* やりたいのは多分、次のルートが読み込まれるまでの間、現在のページでロードバーを表示することでしょう。しかもロードに 100ms しかかからない場合には表示したくない。つまりロードしてから 100ms までの間はインディケーターを表示せず、100ms からロードが終わるまでの間は現在のページにインディケーターを表示させる、という挙動です。たった 100ms の時間のためにインディケーターを表示するのはあまりかっこよくないからです。
+
+<img
+  src={require('./no-delay-loading.gif')}
+  alt="loading indicator with no delay"
+  style={{ border: '1px solid #f0f0f0', borderRadius: '1rem' }}
+/>
+
+どうすればロードインディケーターを、ロードがすぐに終わらない時にだけ表示できるでしょうか？通常これは実装が非常に難しいのですが、Navi であればシンプルに実現できます。`useLoadingRoute()` hook を使うだけです。
+
+```js
+//---
+editorPathname: /Layout.js
+//--- index.js <-- index.js
+//--- product.js <-- product.js
+//--- Landing.js <-- Landing.js
+//--- Layout.js <-- Layout.js
+//--- api.js
+import { NotFoundError } from 'navi'
+
+const db = {
+  hat: {
+    emoji: '🧢',
+    title: 'Hat',
+    price: '$50.00',
+  },
+  flamethrower: {
+    emoji: '🔥🔫',
+    title: 'Not a flamethrower',
+    price: '$500.00',
+  },
+}
+
+export default {
+  fetchProduct: async (id) => {
+    await delay(1000)
+    let product = await db[id]
+    if (!product) {
+      throw new NotFoundError()
+    }
+    return product
+  },
+  fetchProducts: async () => {
+    await delay(100)
+    return db
+  }
+}
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+//--- styles.css <-- styles.css
+```
+
+これがどのようになされているか説明しますね。`useCurrentRoute()` は直近の *ロードが完了した* ルートを返します。そして `useLoadingRoute()` のほうは「リクエストはされたが、まだロードが完了していない」ルートを返します。ユーザーが*リンクをクリックするまでは*、`useLoadingRoute()` は `undefined` を返します。どうです。シンプルでしょう？
+
+## Error Boundaries
+
+非同期な data と view につきものなのは、ロードが失敗することです。幸運にも、React は エラーが投げられた場合にそれをうまく処理するツールを提供してくれています。そう、Error Boundaries です。
+
+`<Suspense>` タグで `<View />` をラップした部分を振り返ってみましょう。 `<View />` がまだロードされていない route に遭遇すると、`<View />` は promise を投げます。それによって React に*ある一定の期間、フォールバック用の要素を表示させておく* ことができます。`<Suspense>` が promise をキャッチしてようなものだと考えていいでしょう。Promise が解決されると、子要素は再レンダリングされます。
+
+同様に `<View />` が `getView()` もしくは `getData()` が失敗したのを見つけると、`<View />`  はエラーを投げます。例えば router が 404-not-found に遭遇した場合には、`<View />` もエラーを投げています。これらのエラーは [Error Boundary](https://reactjs.org/docs/error-boundaries.html) コンポーネントでキャッチすることができます。大抵の場合は自分自身で error boundaries を作る必要がありますが、Navi には `<NotFoundBoundary>` コンポーネントがあります。これを使うことで Not Found errors をキャッチして、フォールバック用のメッセージを表示することができます。
+
+```jsx
+//---
+editorPathname: /Layout.js
+viewerURL: /product/flamethrower
+//--- index.js <-- index.js
+//--- product.js <-- product.js
+//--- Landing.js <-- Landing.js
+//--- Layout.js
+import BusyIndicator from 'react-busy-indicator@1.0.0'
+import React from 'react'
+import { Link, NotFoundBoundary, useLoadingRoute } from 'react-navi'
+
+export default function Layout({ children }) {
+  // If there is a route that hasn't finished loading, it can be
+  // retrieved with `useLoadingRoute()`.
+  let loadingRoute = useLoadingRoute()
+
+  return (
+    <div className="Layout">
+      {/* This component shows a loading indicator after a delay */}
+      <BusyIndicator isBusy={!!loadingRoute} delayMs={200} />
+      <header className="Layout-header">
+        <h1 className="Layout-title">
+        <Link href='/'>
+          Hats 'n' Flamethrowers 'r' Us
+        </Link>
+        </h1>
+      </header>
+      <main>
+        <NotFoundBoundary render={renderNotFound}>
+          {children}
+        </NotFoundBoundary>
+      </main>
+    </div>
+  )
+}
+
+function renderNotFound() {
+  return (
+    <div className='Layout-error'>
+      <h1>404 - Not Found</h1>
+    </div>
+  )
+}
+//--- api.js <-- api.js
+//--- styles.css <-- styles.css
+```
+
+## 次に扱う内容
+
+さて Navi に取り組んできました。その過程で Navi のコンポーネントや、いくつかの matcher 関数 を使いました。しかし、コンポーネントの実装内部を見ていただくとわかるのですが、navi 自体は純粋な JavaScript で書かれています。実は Navi は二つのパッケージに分かれているのです。
+
+- `navi` はコアとなるルーティングの実装部分で、ピュア JavaScript で書かれています。
+- `react-navi` は navi のコア部分の薄いラッパーで、React のために設計されています。
+
+Navi が持つすべての可能性を理解するためには、Navi それ自体のコアコンセプトを理解したいはずです。つまり **requests** や **routes** や **matchers** といった要素です。実はすでにこれらの概念はこのページで扱いました。そしてさらにこれらの概念を、説明していきます。まずは URL パラメーターを次のセクションで見ていきましょう。

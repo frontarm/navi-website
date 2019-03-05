@@ -61,6 +61,11 @@ export default mount({
           title: 'Getting Started',
           description: 'Navi lets you take advantage of React’s Suspense, Hooks and Error Boundary APIs to handle asynchronous routes declaratively.',
         },
+        ja: {
+          title: '始めよう',
+          description: 'Navi は React の Suspense、Hooks、Error Boundary APIs を活用することで、非同期なルーティングを宣言的に扱うことができます。',
+          navTitle: '始めよう',
+        },
       }),
 
       '/url-parameters': page({
@@ -268,11 +273,11 @@ function page({ getDocument, default: base, ...languages }) {
     }
 
     let { default: Component, demoboardHelpers, tableOfContents, filename, ...other } = documentModule
-    
+
     if (!filename) {
       console.warn(`The content for URL "${req.mountpath}" should export a "filename" string.`)
     }
-    
+
     return {
       ...other,
       Component,
