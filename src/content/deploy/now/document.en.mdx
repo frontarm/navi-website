@@ -6,7 +6,7 @@ This guide will show you how you can deploy a Navi project in just a few steps:
 
 ## Step 1: Getting Started with Navi
 
-If you haven't already set up your Navi-based project, head to the [Getting Started page](/) to learn how you can quickly create your own, ready to deploy.
+If you haven't already set up your Navi-based project, use [Create React Navi App](../../create-react-navi-app/#create-react-navi-app) to bootstrap one.
 
 ## Step 2: Getting Now
 
@@ -33,13 +33,11 @@ The first piece of configuration is a `now.json` file, containing the following:
   "version": 2,
   "name": "my-navi-project",
   "builds": [
-    {"src": "package.json", "use": "@now/static-build", "config": { "distDir": "build" }}
-  ],
-  "routes": [
-    {"src": "^/static/(.*)", "dest": "/static/$1"},
-    {"src": "^/favicon.ico", "dest": "/favicon.ico"},
-    {"src": "^/manifest.json", "dest": "/manifest.json"},
-    {"src": "^/(.*)", "dest": "/index.html"}
+    {
+      "src": "package.json",
+      "use": "@now/static-build",
+      "config": { "distDir": "build" }
+    }
   ]
 }
 ```
@@ -48,7 +46,6 @@ To explain the above briefly, this `now.json` file tells Now to:
 - Build using [the latest Now 2.0 platform](https://zeit.co/docs/v2/platform/overview/#versioning).
 - Set [a project name](https://zeit.co/docs/v2/deployments/configuration/#name) for all deployments.
 - Build your application using [the @now/static-build builder](https://zeit.co/docs/v2/deployments/official-builders/static-build-now-static-build/) and configure the builder to look in the `build` directory for the built app.
-- Sets paths for Now to [route users](https://zeit.co/docs/v2/deployments/configuration/#routes) to depending on a specific path, otherwise fall back to the `index.html` file (the app).
 
 With this in place, the final piece of configuration is to tell the @now/static-build builder how to build the app for Now to serve from the `build` directory.
 
