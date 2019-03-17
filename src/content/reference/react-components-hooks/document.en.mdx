@@ -89,7 +89,7 @@ If you don't pass in any children, then a [`<View>`](#view) will be rendered by 
 
 #### `context`: `Context` <small>(optional)</small>
 
-#### `history`: [`History`](../history) <small>(optional)</small>
+#### `history`: `History` <small>(optional)</small>
 
 
 ## `<View>`
@@ -201,38 +201,6 @@ function Layout({ children }) {
 ```
 
 
-## `useHistory()`
-
-A [React Hook](https://reactjs.org/docs/hooks-intro.html) that returns your app's [`history`](../history) object, which can be used to facilitate [programmatic navigation](../../guides/programmatic-navigation).
-
-*You can also access the result of `useHistory()` by passing a child function to the `<History>` component, similar to the API for React context consumers.*
- 
-### Example
-
-You can use `useHistory()` to programmatically navigate after a form is successfully submitted.
-
-```js
-import React, { useState } from 'react'
-import { useHistory } from 'react-navi'
-
-function EmailForm() {
-  let history = useHistory()
-  let [email, setEmail] = useState()
-
-  function handleSubmit() {
-    history.push('/thanks')
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="EmailForm">
-      <input value={email} onChange={e => setEmail(e.target.value)} />
-      <button>Join 13,000 other subscribers</button>
-    </div>
-  )
-}
-```
-
-
 ## `useLoadingRoute()`
 
 A [React Hook](https://reactjs.org/docs/hooks-intro.html) that outputs the [`Route`](../data-types/#route) object for any page whose content is currently being fetched. If no page is currently being fetched, then it outputs `undefined`.
@@ -261,8 +229,32 @@ function Layout({ children }) {
 
 ## `useNavigation()`
 
-A [React Hook](https://reactjs.org/docs/hooks-intro.html) that returns your app's [`navigation`](../navigation/) store.
-
-This hooks should not be necessary in most circumstances, but is available for completeness. If you need to access the `history` object, use the [`useHistory()`](#usehistory) hook instead.
+A [React Hook](https://reactjs.org/docs/hooks-intro.html) that returns your app's [`navigation`](../navigation/) store, which can be used to facilitate [programmatic navigation](../../guides/programmatic-navigation).
 
 *You can also access the result of `useNavigation()` by passing a child function to the `<NaviConsumer>` component, similar to the API for React context consumers.*
+
+
+### Example
+
+You can use `useHistory()` to programmatically navigate after a form is successfully submitted.
+
+```js
+import React, { useState } from 'react'
+import { useNavigation } from 'react-navi'
+
+function EmailForm() {
+  let navigation = useNavigation()
+  let [email, setEmail] = useState()
+
+  function handleSubmit() {
+    navigation.navigate('/thanks')
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="EmailForm">
+      <input value={email} onChange={e => setEmail(e.target.value)} />
+      <button>Join 13,000 other subscribers</button>
+    </div>
+  )
+}
+```

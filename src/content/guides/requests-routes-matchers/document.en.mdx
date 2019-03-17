@@ -21,7 +21,7 @@ https://frontarm.com/navi/core-concepts/
 
 <Doc.AsideTop>
 
-In modern browsers, the History API lets applications change the current URL *without* reloading the page or sending a new Request. Navi wraps the History API with an observable [history object](), and then uses it to keep track of the latest URL. For simple apps, this is all you'd really need from a router -- it lets you render changes in response to navigation, and it lets you programatically navigate by calling methods of the `history` object:
+In modern browsers, the History API lets applications change the current URL *without* reloading the page or sending a new Request. Navi uses this API to keep track of the latest URL, and for programmatic navigation. In fact, for simple apps, you wouldn't even really need Navi for this -- you could just use a simple wrapper around the History API, like the [history](https://www.npmjs.com/package/history) package used by react-router:
 
 ```js
 // Update the URL, adding a new entry to the browser history
@@ -33,12 +33,12 @@ history.replace('/the-same-thing-we-do-everyday-pinky')
 
 <Doc.Details aside title="A little history">
 
-Navi's `history` object is managed by the same [history](https://www.npmjs.com/package/history) package as react-router, smoothing integration between the two libraries.
+Navi is able to access the browser history through the same [history](https://www.npmjs.com/package/history) package as react-router, smoothing integration between the two libraries. To make use of this feature, just pass a `history` prop to your `<Router>` or `createBrowserNavigation()` call.
 
 </Doc.Details>
 </Doc.AsideTop>
 
-But for larger apps, just knowing the URL isn't enough. You also need to know what data and code are associated with each URL. And in a Navi app, you can find this information in **Route** objects.
+Of course, for larger apps it's not enough to just know the URL. You also need to know what data and code are associated with each URL. And in a Navi app, you can find this information in **Route** objects.
 
 
 Routes

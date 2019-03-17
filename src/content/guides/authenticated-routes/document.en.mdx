@@ -164,7 +164,7 @@ The default behavior of `navi-scripts` is to render each of your site's redirect
 
 -   When an unauthenticated user views an authenticated page, their browser will redirect to the login screen, just as expected.
 
--   When an authenticated user views a page, the user will initially be redirected to a login screen, but they'll then be automatically redirected back to the requested page via `history.replaceState()` once the app has loaded.
+-   When an authenticated user views a page, the user will initially be redirected to a login screen, but they'll then be automatically redirected back to the requested page via `navigation.navigate(redirectTo, { replace: true })` once the app has loaded.
 
     <br />
     <Doc.Image src={require('./auth-redirect-flow.svg')} alt="Redirect flow diagram" />

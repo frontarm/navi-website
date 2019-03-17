@@ -1,11 +1,10 @@
 import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Link } from "react-navi";
-import { NaviBar } from "navi-bar";
+import { NaviBar, CloseOverlayContext } from "navi-bar";
 import classNames from "classnames/bind";
 import logo from "../assets/logo.svg";
 import styles from "./Nav.module.scss";
-import { CloseOverlayContext } from "navi-bar/dist/commonjs/CloseOverlay";
 
 const cx = classNames.bind(styles);
 

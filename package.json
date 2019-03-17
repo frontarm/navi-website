@@ -2,7 +2,7 @@
   "name": "navi-docs",
   "version": "0.8.1",
   "private": true,
-  "devDependencies": {
+  "peerDependencies": {
     "@frontarm/doc": "^0.5.0",
     "@types/node": "^10.12.24",
     "@types/react": "^16.8.2",

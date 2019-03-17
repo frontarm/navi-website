@@ -1,7 +1,7 @@
 export const filename = __filename
 import { Doc } from '@frontarm/doc'
 
-Navi works great with react-router. Internally, they both interact with `window.history` through the same [history](https://www.npmjs.com/package/history) package, ensuring consistency between both routers.
+Navi is designed to work alongside react-router. This is made possible because react-router interacts with the browser history API using a separate [history](https://www.npmjs.com/package/history) package -- which can be shared with Navi by passing it to your `<Router>` component or `createBrowserNavigation()` call.
 
 In order to use Navi with react-router, you'll just need to render your `<Router>` element within the handler for a react-router `<Route>`. You'll also need to pass in `history` and `basename` props to get your Navi router to sync up with react-router.
 

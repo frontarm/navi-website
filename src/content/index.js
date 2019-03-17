@@ -143,13 +143,6 @@ export default mount({
           title: 'Components and Hooks',
         }
       }),
-      '/history': page({
-        getDocument: (language) => import(`./reference/history/document.${language}.mdx`),
-        default: {
-          title: "Navi's history object",
-          navTitle: <code>history</code>,
-        }
-      }),
       '/matchers': page({
         getDocument: (language) => import(`./reference/matchers/document.${language}.mdx`),
         default: {

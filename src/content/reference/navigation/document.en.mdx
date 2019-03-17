@@ -1,10 +1,10 @@
 export const filename = __filename
 
-Each Navi app has a `navigation` store that holds the app's [`history`](../history), [`router`](../router), and current route.
+Each Navi app has a `navigation` store that holds the app's current location, the [`router`](../router) object, and current route.
 
 There are three ways to create a `Navigation` object:
 
-1. The [`<Router>`](../react-components-hooks/#router) internally creates a `navigation` store.
+1. The [`<Router>`](../react-components-hooks/#router) component internally creates a `navigation` store if you don't pass it a `navigation` prop.
 2. [`createBrowserNavigation()`](#createbrowsernavigation) -- for use within the browser.
 3. [`createMemoryNavigation()`](#creatememorynavigation) -- for use on server and within tests.
 
@@ -17,11 +17,6 @@ Your `navigation` object
 ------------------------
 
 An Observable that manages your app's navigation state.
-
-
-### `navigation.history`
-
-An [`history`](../history/) object, as created by the [history package](https://www.npmjs.com/package/history). You can use this object to directly interact with the browser history, and to implement programmatic navigation.
 
 
 ### `navigation.router`
@@ -105,10 +100,8 @@ createBrowserNavigation(options: {
   context?: any,
 
   /**
-   * You can manually supply a history object. This is useful for
-   * integration with react-router.
-   * 
-   * By default, a browser history object will be created.
+   * You can supply a history object as output by react-router, allowing
+   * Navi and react-router to be used within the same app.
    */
   history?: History,
 })
