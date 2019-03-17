@@ -1,7 +1,7 @@
 import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Link } from "react-navi";
-import { NaviBar, CloseOverlayContext } from "navi-bar";
+import { NaviBar } from "navi-bar";
 import classNames from "classnames/bind";
 import logo from "../assets/logo.svg";
 import styles from "./Nav.module.scss";
@@ -64,7 +64,7 @@ export default function Nav(props) {
 
 export const SidebarSection = props => {
   let { active, children, data } = props;
-  let closeCurrentRef = React.useContext(CloseOverlayContext);
+  let closeCurrentRef = React.useContext(OpenContext);
   function closeOpen() {
     setOpen(false);
   }
@@ -93,6 +93,12 @@ export const SidebarSection = props => {
       toggleOpen()
     }
     wasActiveRef.current = active
+
+    return () => {
+      if (closeCurrentRef.current === closeOpen) {
+        closeCurrentRef.current = undefined
+      }
+    }
   }, [active])
   if (!data.sectionTitle) {
     open = true;
