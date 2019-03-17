@@ -10,7 +10,7 @@ import styles from "./Layout.module.scss"
 const cx = classNames.bind(styles);
 
 export function Layout({
-  routeMap,
+  routes,
   repositoryRoot,
   rootPathname,
   isAuthenticated,
@@ -160,7 +160,7 @@ export function Layout({
           <div className={cx("Layout")}>
             <Nav
               className={cx("nav")}
-              routeMap={routeMap}
+              routes={routes}
               rootPathname={rootPathname}
               tableOfContents={tableOfContents}
               renderToggle={({ onToggleOpen, isOpen }) => (

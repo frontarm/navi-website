@@ -254,32 +254,34 @@ function page({ getDocument, default: base, ...languages }) {
   const getTitle = (req, context) => getData(req, context).htmlTitle
 
   const getView = async (req, context) => {
-    let language = context.language || 'en'
-    let isTranslationMissing = false
-    let documentModule
-    try {
-      documentModule = await getDocument(language)
-    }
-    catch (e) {
-      documentModule = await getDocument('en')
-      isTranslationMissing = true
-    }
+    if (req.method !== 'HEAD') {
+      let language = context.language || 'en'
+      let isTranslationMissing = false
+      let documentModule
+      try {
+        documentModule = await getDocument(language)
+      }
+      catch (e) {
+        documentModule = await getDocument('en')
+        isTranslationMissing = true
+      }
 
-    let { default: Component, demoboardHelpers, tableOfContents, filename, ...other } = documentModule
+      let { default: Component, demoboardHelpers, tableOfContents, filename, ...other } = documentModule
 
-    if (!filename) {
-      console.warn(`The content for URL "${req.mountpath}" should export a "filename" string.`)
-    }
+      if (!filename) {
+        console.warn(`The content for URL "${req.mountpath}" should export a "filename" string.`)
+      }
 
-    return {
-      ...other,
-      Component,
-      demoboardHelpers,
-      tableOfContents,
-      filename,
-      isTranslationMissing,
-      documentComponents:
-        context.getDocumentComponents ? await context.getDocumentComponents() : {},
+      return {
+        ...other,
+        Component,
+        demoboardHelpers,
+        tableOfContents,
+        filename,
+        isTranslationMissing,
+        documentComponents:
+          context.getDocumentComponents ? await context.getDocumentComponents() : {},
+      }
     }
   }
 

@@ -1,38 +1,50 @@
 import React from 'react'
-import { compose, mount, redirect, withData, withView, withContext } from 'navi'
+import { compose, crawl, mount, redirect, resolve, withData, withView, withContext } from 'navi'
 import { fromPairs } from 'lodash'
 import { join } from 'path'
 import { Layout } from './components/Layout'
 import content from './content'
 
 function language(language) {
-  return compose(
+  let languageRoutes = compose(
     withData({
       language
     }),
     withView(async (req, context) => {
-      let routeMap = await req.router.resolveRouteMap(req.mountpath)
-      let paths = Object.keys(routeMap)
-      let currentPath = join(req.mountpath, req.path, '/')
-      let currentIndex = paths.indexOf(currentPath)
-      let previousRoute, nextRoute
+      if (req.method !== 'HEAD') {
+        let { paths } = await crawl({
+          routes: languageRoutes,
+          basename: req.mountpath,
+          root: req.mountpath,
+        })
+        let routes = await resolve({
+          routes: languageRoutes,
+          basename: req.mountpath,
+          method: 'HEAD',
+          root: req.mountpath,
+          urls: paths,
+        })
+        let currentPath = join(req.mountpath, req.path, '/')
+        let currentIndex = paths.indexOf(currentPath)
+        let previousRoute, nextRoute
 
-      if (currentIndex !== -1) {
-        previousRoute = routeMap[paths[currentIndex - 1]]
-        nextRoute = routeMap[paths[currentIndex + 1]]
+        if (currentIndex !== -1) {
+          previousRoute = routes[currentIndex - 1]
+          nextRoute = routes[currentIndex + 1]
+        }
+
+        return (
+          <Layout
+            isAuthenticated={context.isAuthenticated}
+            isPro={context.isPro}
+            repositoryRoot={context.repositoryRoot || ''}
+            rootPathname={req.mountpath || '/'}
+            routes={routes}
+            nextRoute={nextRoute}
+            previousRoute={previousRoute}
+          />
+        )
       }
-
-      return (
-        <Layout
-          isAuthenticated={context.isAuthenticated}
-          isPro={context.isPro}
-          repositoryRoot={context.repositoryRoot || ''}
-          rootPathname={req.mountpath || '/'}
-          routeMap={routeMap}
-          nextRoute={nextRoute}
-          previousRoute={previousRoute}
-        />
-      )
     }),
     withContext((req, context) => ({
       language,
@@ -41,6 +53,8 @@ function language(language) {
     })),
     content
   )
+
+  return languageRoutes
 }
 
 export default withContext(

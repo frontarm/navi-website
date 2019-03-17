@@ -16,7 +16,7 @@ export default function Nav(props) {
   return (
     <OpenContext.Provider value={closeCurrentRef}>
       <NaviBar
-        routeMap={props.routeMap}
+        routes={props.routes}
         tableOfContents={props.tableOfContents}
         renderSection={props => <SidebarSection {...props} />}
         renderPage={props => <SidebarPage {...props} />}
