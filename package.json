@@ -77,7 +77,8 @@
     "clean": "rimraf build",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js && cross-env CANONICAL_URL=https://frontarm.com/navi navi-scripts build",
-    "map": "node scripts/build.js && navi-scripts map",
+    "build:static": "cross-env CANONICAL_URL=https://frontarm.com/navi navi-scripts build",
+    "crawl": "node scripts/build.js && navi-scripts crawl",
     "test": "node scripts/test.js --env=jsdom",
     "serve": "navi-scripts serve"
   },
