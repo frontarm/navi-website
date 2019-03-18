@@ -28,24 +28,9 @@ By default, a partial match at the beginning of the current URL will also be con
 
 The url to navigate to; identical to the `href` attribute of a HTML `<a>` tag.
 
-#### `prefetch`: `HTTPMethod` <small>(optional)</small>
+#### `prefetch`: `boolean` <small>(optional)</small>
 
-If specified, the linked page's content will be fetched as soon as the link is rendered, using the specified method.
-
-By default, links will be fetched using the HEAD method. Set this to `null` if you'd like to disable prefetch.
-
-
-## `<NaviProvider>`
-
-Your app's `<NaviProvider>` component is responsible for subscribing to the latest navigation state, and passing that state to Navi's *other* components.
-
-`<NaviProvider>` is used internally by `<Router>`. If you are not using a `<Router>` component, then all other components must be rendered inside a `<NaviProvider>` instead.
-
-### Props
-
-#### `navigation`: [`Navigation`](../navigation/)
-
-Your app's `Navigation` object, as returned from [`createBrowserNavigation()`](../navigation/#createbrowsernavigation) or [`createMemoryNavigation()`](../navigation/#creatememorynavigation)
+If specified, the linked page's content will be fetched as soon as the link is rendered.
 
 
 ## `<NotFoundBoundary>`
@@ -73,23 +58,39 @@ function Layout() {
 
 ## `<Router>`
 
-When you don't need static rendering, you can wrap your app in a `<Router>` component to set up routing.
+Your app's `<Router>` component is responsible for subscribing to the latest navigation state, and passing that state to Navi's *other* components.
 
-Creates a [`navigation`](../navigation) object with the specified props, and passes it to an internal [`<NaviProvider>`](#naviprovider).
-
-If you don't pass in any children, then a [`<View>`](#view) will be rendered by default.
+By default, `<Router>` creates a [`navigation`](../navigation) object internally, passing through the `routes`, `basename`, `context` and `history` props. However, if you'd like to define your `navigation` object manually -- i.e. for static or server rendering support -- then you can pass it in via the `navigation` prop.
 
 ### Props
 
-#### `routes`: [`Matcher`](../matchers/)
+#### `navigation`: [`Navigation`](../navigation/)
+
+Your app's `Navigation` object, as returned from [`createBrowserNavigation()`](../navigation/#createbrowsernavigation) or [`createMemoryNavigation()`](../navigation/#creatememorynavigation)
+
+By default, this will be created internally.
 
 #### `basename`: `string` <small>(optional)</small>
 
+The `basename` to use for the created `navigation` object. Only used when a `navigation` prop is not manually supplied.
+
 #### `children`: `React.ReactNode` <small>(optional)</small>
+
+If you don't pass in any children, then a [`<View>`](#view) will be rendered by default.
 
 #### `context`: `Context` <small>(optional)</small>
 
+The `<Router>` object will keep your `navigation` object's context in sync with this prop by calling it's [`setContext()`](../navigation/#navigationsetcontext) method.
+
+This will be used even if you supply a `navigation` prop.
+
 #### `history`: `History` <small>(optional)</small>
+
+The `history` to use for the created `navigation` object. Only used when a `navigation` prop is not manually supplied.
+
+#### `routes`: [`Matcher`](../matchers/)
+
+The `routes` to use for the created `navigation` object. Only used when a `navigation` prop is not manually supplied.
 
 
 ## `<View>`
@@ -102,7 +103,7 @@ If the content is a React element or component, then the `children` render funct
 
 When the page initially loads, it can be the case that *no* content is available -- even for previous routes. In this case, `<View>` will use React Suspense to pause execution until content is available. However, React requires you to wrap the suspended `<View>` with a [`<Suspense fallback>`](https://reactjs.org/docs/react-api.html#reactsuspense), so that you can decide what will be shown in place of the not-yet-ready content. If you've used [`React.lazy()`](https://reactjs.org/docs/code-splitting.html#suspense), then this should be familiar -- otherwise, check out the example below.
 
-As React doesn't yet support Suspense for server-side rendering, you'll want to avoid using `<Suspense>` for statically rendered apps. Instead, wait for Navi's initial content to render before calling `ReactDOMServer.render()` by creating a custom `navigation` object and using its [`navigation.steady()`](../navigation/#navigationsteady) function. Note that you'll also need to pass the navigation to a [`<NaviProvider>`](#naviprovider) component instead of using `<Router>`.
+As React doesn't yet support Suspense for server-side rendering, you'll want to avoid using `<Suspense>` for statically rendered apps. Instead, wait for Navi's initial content to render before calling `ReactDOMServer.render()` by creating a custom `navigation` object and using its [`navigation.getRoute()`](../navigation/#navigationgetroute) function, before passing the `navigation` object to your [`<Router>`](#router) component's `navigation` prop.
 
 ### Props
 
@@ -116,17 +117,17 @@ If a `children` prop is not provided, the default behavior is to render the next
 
 #### Basic Usage
 
-A `<View>` can be placed anywhere inside a `<Router>` or `<NaviProvider>` component -- it doesn't have to be a direct descendent. In fact, because `<View>` components can pause rendering with React Suspense, you'll often want to wrap them in a `<Suspense>` component.
+A `<View>` can be placed anywhere inside a `<Router>` component -- it doesn't have to be a direct descendent. You'll often want your `<View>` to be nested within a `<Suspense>` component, or a `<Layout>` component, like so:
 
 ```jsx
-import { NaviProvider, View } from 'react-navi'
+import { Router, View } from 'react-navi'
 
 ReactDOM.render(
-  <NaviProvider navigation={navigation}>
+  <Router navigation={navigation}>
     <Layout>
       <View />
     </Layout>
-  </NaviProvider>,
+  </Router>,
   document.getElementById('root')
 );
 ```
@@ -149,7 +150,7 @@ By suppling a render prop, you can manually decide how to render the next unrend
 
 By wrapping your content in a React [`<Suspense>`](https://reactjs.org/docs/react-api.html#reactsuspense) element, you can specify a fallback element to display while your app's initial content is loading.
 
-Note that this only makes sense for apps that are *not* pre-rendered with `ReactDOMServer.render()`. For static or server rendered apps, use [`navigation.steady()`](../navigation/#navigationsteady) to wait for the initial content to load before hydrating the pre-rendered HTML with `ReactDOM.hydrate()`.
+Note that until `<Suspense>` gets server-rendering support, this only makes sense for apps that are *not* pre-rendered with `ReactDOMServer.render()`. For static or server rendered apps, use [`navigation.getRoute()`](../navigation/#navigationgetroute) to wait for the initial content to load before hydrating the pre-rendered HTML with `ReactDOM.hydrate()`.
 
 ```js
 import React, { Suspense } from 'react'
@@ -236,7 +237,7 @@ A [React Hook](https://reactjs.org/docs/hooks-intro.html) that returns your app'
 
 ### Example
 
-You can use `useHistory()` to programmatically navigate after a form is successfully submitted.
+You can use `useNavigation()` to programmatically navigate after a form is successfully submitted.
 
 ```js
 import React, { useState } from 'react'

@@ -20,24 +20,24 @@ interface NaviRequest {
   params: { [name: string]: string }
 
   /**
-   * A Router object, which can be used to make further requests.
-   */
-  router: Router<any, any>
-
-  /**
    * An object containing the information from the URL's query string.
    */
   query: { [name: string]: string }
 
   /**
-   * The raw URL query string, including the "?" character. E.g. "?q=test".
+   * The raw URL query string, including any "?" character. E.g. "?q=test".
    */
   search: string
 
   /**
+   * The URL hash string, including any "#" character. E.g. "#top".
+   */
+  hash: string
+
+  /**
    * A HTTP method as an uppercase string. This defaults to "GET".
    */
-  method: HTTPMethod
+  method: string
 
   /**
    * Contains the unmatched part of the request URL.
@@ -53,9 +53,26 @@ interface NaviRequest {
   url: string
 
   /**
-   * The originally requested URL
+   * The originally requested URL.
    */
   originalUrl: string
+
+  /**
+   * The most recent routing context.
+   */
+  context: any
+
+  /**
+   * Contains the history state (from window.history.state) that was used
+   * when processing this request in the browser.
+   */
+  state: any
+
+  /**
+   * When using the `crawl()` function, this will contain the function
+   * that is used to map patterns within a `mount()` to more requests.
+   */
+  crawler?: Crawler
 
   body: any
   hostname: string
@@ -107,6 +124,12 @@ interface Route<Data = any> {
   heads: any[]
 
   /**
+   * Any state from window.history.state that was used associated with the
+   * route.
+   */
+  state?: any
+
+  /**
    * A HTTP status code.
    */
   status?: number
@@ -128,24 +151,28 @@ interface Route<Data = any> {
 Within your `Route` object, state for each individual matcher is available through the `route.chunks` array. There are a number of possible chunk types.
 
 ```typescript
-
 /**
  * This is used in place of a chunk of another type whose final result is
  * not yet known.
  */
-interface BusyChunk extends GenericChunk {
+export interface BusyChunk extends GenericChunk {
   type: 'busy'
-  url: URLDescriptor
   promise: PromiseLike<any>
+}
+
+/**
+ * A chunk that is added for each crawled pattern.
+ */
+export interface CrawlChunk extends GenericChunk {
+  type: 'crawl'
 }
 
 /**
  * Data chunks contain information that will be available on the produced
  * route object, but isn't meant to be rendered with the page itself.
  */
-interface DataChunk<Data=any> extends GenericChunk {
+export interface DataChunk<Data=any> extends GenericChunk {
   type: 'data'
-  url: URLDescriptor
   data: Data
 }
 
@@ -154,9 +181,8 @@ interface DataChunk<Data=any> extends GenericChunk {
  * can then be handled by an Error Boundary. Behavior for handling error
  * chunks on the server side is undefined.
  */
-interface ErrorChunk extends GenericChunk {
+export interface ErrorChunk extends GenericChunk {
   type: 'error'
-  url: URLDescriptor
   error: any
 }
 
@@ -164,18 +190,16 @@ interface ErrorChunk extends GenericChunk {
  * Can be used to specify data for your page's <head> separately from
  * the view content.
  */
-interface HeadChunk extends GenericChunk {
+export interface HeadChunk extends GenericChunk {
   type: 'head'
-  url: URLDescriptor
   head: any
 }
 
 /**
  * Used to specify any headers for your HTTP response.
  */
-interface HeadersChunk extends GenericChunk {
+export interface HeadersChunk extends GenericChunk {
   type: 'headers'
-  url: URLDescriptor
   headers: { [name: string]: string }
 }
 
@@ -184,9 +208,8 @@ interface HeadersChunk extends GenericChunk {
  * useful for building site maps, as they hold metadata on other possible
  * paths.
  */
-interface MountChunk extends GenericChunk {
+export interface MountChunk extends GenericChunk {
   type: 'mount'
-  url: URLDescriptor
   patterns: string[]
 }
 
@@ -194,34 +217,40 @@ interface MountChunk extends GenericChunk {
  * When added to a route, indicates that the client should follow the redirect
  * to the given address.
  */
-interface RedirectChunk extends GenericChunk {
+export interface RedirectChunk extends GenericChunk {
   type: 'redirect'
-  url: URLDescriptor
   to: string
+}
+
+/**
+ * Specifies that history.state for this request should be set to the given
+ * value.
+ */
+export interface StateChunk extends GenericChunk {
+  type: 'state'
+  state: any
 }
 
 /**
  * Used to specify the status of your HTTP response.
  */
-interface StatusChunk extends GenericChunk {
+export interface StatusChunk extends GenericChunk {
   type: 'status'
-  url: URLDescriptor
   status: number
 }
 
 /**
  * Allows matchers to specify a <title> tag, or document title.
  */
-interface TitleChunk extends GenericChunk {
+export interface TitleChunk extends GenericChunk {
   type: 'title'
-  url: URLDescriptor
   title: string
 }
 
 /**
  * Contains the full URL that should be used for the route, including any hash.
  */
-interface URLChunk extends GenericChunk {
+export interface URLChunk extends GenericChunk {
   type: 'url'
   url: URLDescriptor
 }
@@ -231,25 +260,9 @@ interface URLChunk extends GenericChunk {
  * server, or that will be rendered in the browser. They can contain error
  * or redirect information, but they'll still be rendered as-is in the client.
  */
-interface ViewChunk<View=any> extends GenericChunk {
+export interface ViewChunk<View=any> extends GenericChunk {
   type: 'view'
-  url: URLDescriptor
   view: View
-}
-```
-
-## `SiteMap`
-
-Contains an object mapping non-redirect URLs to `Route` objects, and an additional object containing any redirects. To generate a `SiteMap`, use the [`router.resolveSiteMap()`](../router/#routerresolvesitemap) method. 
-
-```typescript
-interface SiteMap {
-  redirects: {
-    [url: string]: string,
-  }
-  pages: {
-    [url: string]: Route,
-  }
 }
 ```
 
@@ -295,14 +308,9 @@ type URLDescriptor = {
    * string.
    */
   href: string,
-
-  /**
-   * The `state` object, as stored in your browser's `history` object.
-   */
-  state?: object,
 }
 ```
 
 When you're supplying a URL to Navi, you don't need to supply the entire object. You can just supply a **Partial URL Descriptor** that contains only some of the above properties, and the remaining properties will be given sane defaults.
 
-In fact, you don't even need to supply objects at all -- whenever you need to pass Navi a URL, you can also pass it a URL string, like `/my-great-page?q=icecream#top`, and Navi will convert it into a URL object for internal use. The only exception to this rule is that when you need to provide a value for `state`, you'll need to use an object.
+In fact, you don't even need to supply objects at all -- whenever you need to pass Navi a URL, you can also pass it a URL string, like `/my-great-page?q=icecream#top`, and Navi will convert it into a URL object for internal use.

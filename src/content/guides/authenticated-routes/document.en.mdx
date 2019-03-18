@@ -137,6 +137,26 @@ mount({
 })
 ```
 
+When you have many authenticated pages at the same level, another approach is to use a wildcard pattern and a non-exact redirect: 
+
+```jsx
+mount({
+  '/login': lazy(() => import('./login')),
+
+  '*': map(({ context }) =>
+    !context.currentUser
+      ? redirect(
+          '/login?redirectTo='+
+          encodeURIComponent(request.mountpath+request.search),
+          { exact: false }
+        )
+      : mount({
+          '/account-details': import(() => './account-details'),
+          '/billing-history': import(() => './billing-history'),
+        })
+  )
+})
+```
 
 Bypassing the login screen
 --------------------------

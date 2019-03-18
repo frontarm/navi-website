@@ -1,20 +1,51 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { createBrowserNavigation } from 'navi'
-import pages from './pages'
-import App from './App'
+import React, { Suspense } from 'react'
+import ReactDOM from 'react-dom'
+import { Link, NotFoundBoundary, Router, View, useLoadingRoute } from 'react-navi'
+import BusyIndicator from 'react-busy-indicator'
+import routes from './routes'
 
-async function main() {
-  let navigation = createBrowserNavigation({ pages })
+function Layout({ children }) {
+  let loadingRoute = useLoadingRoute()
 
-  // Wait until async content is ready (or has failed).
-  await navigation.steady()
-
-  ReactDOM.render(
-    <App navigation={navigation} />,
-    document.getElementById('root')
-  );
+  return (
+    <div className="App">
+      <BusyIndicator
+        color="#1ee79e"
+        delayMs={333}
+        isBusy={!!loadingRoute}
+      />
+      <header className="App-header">
+        <h1 className="App-title">
+          <Link href='/'>
+            <img src="https://frontarm.com/navi-logo.png" />
+            <span>Navi</span>
+          </Link>
+        </h1>
+      </header>
+      <main>
+        <NotFoundBoundary render={renderNotFound}>
+          {children}
+        </NotFoundBoundary>
+      </main>
+    </div>
+  )
 }
 
-// Start the app
-main()
+function renderNotFound() {
+  return (
+    <div className='App-error'>
+      <h1>404 - Not Found</h1>
+    </div>
+  )
+}
+
+ReactDOM.render(
+  <Router routes={routes}>
+    <Layout>
+      <Suspense fallback={null}>
+        <View />
+      </Suspense>
+    </Layout>
+  </Router>,
+  document.getElementById('root')
+)

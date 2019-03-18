@@ -1,6 +1,6 @@
 export const filename = __filename
 
-Each Navi app has a `navigation` store that holds the app's current location, the [`router`](../router) object, and current route.
+Each Navi app has a `navigation` store that holds the app's current route, and provides methods that allow you to navigate the user to a new route.
 
 There are three ways to create a `Navigation` object:
 
@@ -10,7 +10,7 @@ There are three ways to create a `Navigation` object:
 
 When you're not statically rendering your site, you'll typically just use the `<Router>` component. If you need to access the `navigation` store created by `<Router>`, then you can access it through the `useNavigation()` hook or `<NaviConsumer>` component.
 
-When you *are* statically rendering, testing, or just want a little more control, you can manually create your `navigation` store and make it available to Navi's components and hooks using the `<NaviProvider>` component.
+When you *are* statically rendering, testing, or just want a little more control, you can manually create your `navigation` object and pass it to your `<Router>` via its `navigation` prop.
 
 
 Your `navigation` object
@@ -19,9 +19,15 @@ Your `navigation` object
 An Observable that manages your app's navigation state.
 
 
-### `navigation.router`
+### `navigation.extractState()`
 
-A [`Router`](../router/) object, which you can use to manually resolve URLs to [`Route`](../data-types/#route)  objects.
+```typescript
+navigation.extractState(): any
+```
+
+Returns the current value of `window.history.state`, or the in-memory copy when called from a Memory navigation.
+
+This is useful when performing server-side rendering, as it allows any state produced by server-side routes to be extracted, serialized, and injected into the browser history via `createBrowserHistory()`.
 
 
 ### `navigation.getCurrentValue()`
@@ -30,18 +36,79 @@ A [`Router`](../router/) object, which you can use to manually resolve URLs to [
 navigation.getCurrentValue(): Route
 ```
 
-Returns the current [`Route`](../data-types/#route) -- even if it is not yet fully ready.
+Returns the latest [`Route`](../data-types/#route) object that corresponds to the current URL -- even if it is not yet fully ready.
 
 
-### `navigation.getSteadyValue()`
+### `navigation.getRoute()`
 
 ```typescript
-navigation.getSteadyValue(): Promise<NavigationSnapshot>
+navigation.getRoute(): Promise<Route>
 ```
 
-Returns a promise to a *steady* [`Route`](../data-types/#route) -- i.e. one that will not have any further changes until the next navigation action.
+Returns a promise to the fully loaded [`Route`](../data-types/#route) object that represents the current URL.
 
-Note that a steady Route can still contain errors or redirects -- the only guarantee is that it does not have status of `"busy"`.
+The returned promise will only resove once the `Route` object reaches its steady state for the current URL. To get the current `Route` object even before it reaches its steady state, use `navigation.getCurrentValue()`.
+
+
+### `navigation.goBack()`
+
+```typescript
+navigation.goBack(): Promise<Route>
+```
+
+Equivalent to pressing the browser's *back* button. Returns a promise that resolves to the route of the page that is navigated to.
+
+
+### `navigation.goBack()`
+
+```typescript
+navigation.goBack(): Promise<Route>
+```
+
+Equivalent to pressing the browser's *back* button. Returns a promise that resolves to the route of the page that is navigated to.
+
+
+### `navigation.navigate()`
+
+```typescript
+navigation.navigate(url, options: {
+  body?: any,
+  headers?: { [name: string]: string },
+  method?: string,
+  replace?: boolean,
+  state?: any,
+}): Promise<Route>
+```
+
+Navigates to the provided URL using the History API. By default, it uses `history.pushState()`, but this is configurable through the `replace` option.
+
+The `navigation.navigation()` function returns a Promise to the `Route` object of the URL that is navigated to, which is useful when using it to navigate in response to forms.
+
+#### Options
+
+##### `body`
+
+The value that will be made available under `request.body` while processing the new URL.
+
+##### `headers`
+
+An object of HTTP headers that will be made available under `request.headers` while processing the new URL.
+  
+##### `method`
+
+A HTTP method, like `'GET'` or `'POST'`. Defaults to 'GET'.
+
+This will be made available on your route matchers under `request.method`. It is useful for writing code that handles form submittions on the client, in the same way as it would be handled on the server.
+
+##### `replace`
+
+A flag that indicates that the History API's `history.replaceState()` function should be called instead of `history.pushState()`.
+
+##### `state`
+
+A state object that can be stored with the URL, and will be remembered even if the user navigates with the back/forward buttons.
+
+Where possible, prefer to set this using a `state` option for your `route()` calls, or with the `withState()` matcher.
 
 
 ### `navigation.setContext()`
@@ -51,15 +118,6 @@ navigation.setContext(context)
 ```
 
 Updates the [Routing Context](../../guides/routing-context) that is passed to the navigation's matchers.
-
-
-### `navigation.steady()`
-
-```typescript
-navigation.steady(): Promise<void>
-```
-
-Returns a promise that resolves once the current route has a `status` property that is not `"busy"`. This will resolve at the same time as `navigation.getSteadyValue()`.
 
 
 ### `navigation.subscribe()`
@@ -72,7 +130,7 @@ Registers a callback that will be called each time that the current route change
 
 The callback will be called with the latest [`Route`](../data-types/#route) object.
 
-While this function gives you low level access to Navi's state, it's rare that you'll need to call it directly (unless you're writing an integration). It's far easier to subscribe through a component like [`<Router>`](../react-components-hooks/#router) or [`<NaviProvider>`](../react-components-hooks/#naviprovider).
+While this function gives you low level access to Navi's state, it's rare that you'll need to call it directly (unless you're writing an integration). It's far easier to subscribe through a component like [`<Router>`](../react-components-hooks/#router).
 
 
 ## `createBrowserNavigation()`
@@ -104,17 +162,30 @@ createBrowserNavigation(options: {
    * Navi and react-router to be used within the same app.
    */
   history?: History,
+
+  /**
+   * Accepts the history.state of the Navigation object used to pre-render the
+   * page on the server, as extracted with `navigation.extractState()`.
+   */
+  state?: any,
+
+  /**
+   * Configures whether trailing slashes on your URLs will be added or removed.
+   * By default, they will be removed.
+   */
+  trailingSlash?: 'add' | 'remove' | null
 })
 ```
 
 ### Example
 
 ```js
-let navigation = Navi.createBrowserNavigation({
+let navigation = createBrowserNavigation({
+  // Your app's routes.
   routes,
-  context: {
-    isAuthenticated,
-  }
+
+  // The state of the server-rendered route.
+  state: window.__NAVI_STATE__,
 })
 ```
 
@@ -154,18 +225,13 @@ createMemoryNavigation(options: {
    * The initial Context for your matchers.
    */
   context?: any,
-
-  /**
-   * The function that reduces segments into a Route object.
-   */
-  reducer?: Reducer<Segment, R>,
 })
 ```
 
 ### Example
 
 ```js
-let navigation = Navi.createMemoryNavigation({
+let navigation = createMemoryNavigation({
   routes,
   url: '/test',
 })

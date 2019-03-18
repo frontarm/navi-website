@@ -28,7 +28,7 @@ ReactDOM.render(
 )
 //--- components.js
 import React, { useState } from 'react'
-import { Link, useNavigation } from 'react-navi'
+import { useNavigation } from 'react-navi'
 
 export function NewForm() {
   let [name, setName] = useState('Spartacus')
@@ -55,6 +55,191 @@ export function NewForm() {
 export function Thankyou({ name }) {
   return (
     <h1>Thankyou, {name}!</h1>
+  )
+}
+```
+
+Navi's `navigation.navigate()` function returns a promise to the `Route` object of the new URL. This makes it perfect for use in form submit handlers that expect a promise as a return -- like [react-final-form](https://github.com/final-form/react-final-form/).
+
+Here's another form handling example, but this time using react-final-form, and POSTing the form result to a `map()` handler so the form can be handled server-side if JavaScript is disabled.
+
+```jsx
+//---
+editorPathname: /index.js
+//--- index.js
+import { map, mount, redirect, route } from 'navi'
+import React, { Suspense } from 'react'
+import ReactDOM from 'react-dom'
+import { Router } from 'react-navi'
+import { Form, FormErrors, FormField, FormSubmitButton } from './components'
+
+async function login(name) {
+  alert('trying login')
+  if (name === 'Spartacus') {
+    throw new Error("I don't believe you.")
+  }
+}
+
+const loginRoute = map(async req => {
+  let state = {}
+
+  // If the request fails, store the error in window.history.state so
+  // that re-running the route will not retry the request.
+  if (req.method === 'POST' && !req.state.error) {
+    let name = req.body.name
+
+    try {
+      await login(name)
+      return redirect('/thankyou/'+encodeURIComponent(name))
+    }
+    catch (error) {
+      state.error = error && error.message
+    }
+  }
+
+  return route({
+    error: state.error,
+    state,
+    status: state.error ? 400 : 200,
+    head: <title>Login</title>,
+    view: <Login />
+  })
+})
+
+function Login() {
+  return (
+    <Form method='POST' initialValues={{ name: 'Spartacus' }}>
+      <h1>Login</h1>
+      <FormErrors render={error =>
+        error ? <div style={{color: 'red'}}>{error}</div> : null
+      } />
+      <label>
+        Name:&nbsp;
+        <FormField name='name' component='input' />
+      </label>
+      <FormSubmitButton type='submit'>Login</FormSubmitButton>
+    </Form>
+  )
+}
+
+export function Thankyou({ name }) {
+  return (
+    <h1>Thankyou, {name}!</h1>
+  )
+}
+
+ReactDOM.render(
+  <Suspense fallback={null}>
+    <Router routes={
+      mount({
+        '/': loginRoute,
+        '/thankyou/:name': map(req =>
+          route({
+            view: <Thankyou name={req.params.name} />
+          })
+        ),
+      })
+    } />
+  </Suspense>,
+  document.getElementById('root')
+)
+//--- components.js
+import React, { useCallback } from 'react'
+import { useCurrentRoute, useNavigation } from 'react-navi'
+import { FORM_ERROR } from 'final-form'
+import { Form as FinalForm, FormSpy } from 'react-final-form'
+
+export { Field as FormField } from 'react-final-form'
+
+export function Form({
+  action,
+  children,
+  className,
+  method = 'POST',
+  style,
+  validate,
+  ...props
+}) {
+  let { url } = useCurrentRoute()
+  let navigation = useNavigation()
+
+  if (!action) {
+    action = url.pathname
+  }
+
+  let onSubmitFinalForm = useCallback(async (body, form) => {
+    try {
+      let route = await navigation.navigate(action, {
+        body,
+        method,
+      })
+
+      if (route.type === 'error') {
+        throw route.error
+      }
+    }
+    catch (error) {
+      let message = error
+      if (error instanceof Error) {
+        message = error.message
+      }
+      return typeof message === 'string' ? { [FORM_ERROR]: message } : message
+    }
+  }, [action, method])
+
+  return (
+    <FinalForm
+      {...props}
+      onSubmit={onSubmitFinalForm}
+      subscription={{}}>
+      {({ handleSubmit }) =>
+        <form
+          action={action}
+          children={children}
+          className={className}
+          method={method}
+          onSubmit={handleSubmit}
+          style={style}
+        />
+      }
+    </FinalForm>
+  )
+}
+
+export function FormErrors(props) {
+  let {
+    defaultMessage = "Your data couldn't be saved.",
+    render,
+  } = props
+
+  return (
+    <FormSpy render={state => {
+      let error =
+        state.submitFailed ? (state.submitError || defaultMessage) : undefined
+      
+      return render(error)
+    }} />
+  )
+}
+
+
+function defaultFormSubmitButtonRender(props) {
+  return <button {...props.button} />
+}
+
+export function FormSubmitButton({ render=defaultFormSubmitButtonRender, children='Save', ...props }) {
+  return (
+    <FormSpy render={state =>
+      render({
+        ...state,
+        button: {
+          disabled: state.submitting,
+          children,
+          ...props,
+          type: 'submit',
+        }
+      })
+    } />
   )
 }
 ```

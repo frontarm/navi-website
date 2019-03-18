@@ -58,7 +58,7 @@ async function main() {
   })
 
   // Wait for the content to load
-  let route = await navi.getSteadyValue()
+  let route = await navi.getRoute()
   
   // Then render the route!
   document.body.innerHTML = ReactDOMServer.renderToString(route.data)

@@ -159,8 +159,8 @@ export default mount({
       '/router': page({
         getDocument: (language) => import(`./reference/router/document.${language}.mdx`),
         default: {
-          title: 'Router objects',
-          navTitle: <code>router</code>,
+          title: 'Functions',
+          navTitle: <code>functions</code>,
         }
       }),
       '/data-types': page({

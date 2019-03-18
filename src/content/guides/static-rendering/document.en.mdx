@@ -80,10 +80,10 @@ let hasStaticContent = process.env.NODE_ENV === "production";
 let renderer = hasStaticContent ? ReactDOM.hydrate : ReactDOM.render;
 ```
 
-Since you can't use `<Suspense>` with `ReactDOMServer.renderToString()`, you'll need to manually wait for your intial route to load. This means that instead of using a `<Router>` component, you'll need to manually create a `navigation` object and pass it to a `<NaviProvider>` component.
+Since you can't use `<Suspense>` with `ReactDOMServer.renderToString()`, you'll need to manually wait for your intial route to load. This means that instead of letting your `<Router>` component create a `navigation` object, you'll need to manually create one, wait for the initial route to be ready, and then only render the app and pass `navigation` to `<Router>`.
 
 ```js
-let navigation = Navi.createBrowserNavigation({
+let navigation = createBrowserNavigation({
   routes,
   context: {
     // ...
@@ -93,7 +93,7 @@ let navigation = Navi.createBrowserNavigation({
 // Wait until the navigation has loaded the page's content, or failed to do
 // so. If you want to load other data in parallel while the initial page is
 // loading, make sure to start loading before this line.
-await navigation.steady();
+await navigation.getRoute();
 ```
 
 Finally, since `navi-scripts` doesn't call your `main()` function during static rendering, you'll need to make sure that your `main()` function is rendering the same thing as `navi-scripts`. Here's the rule:
@@ -108,7 +108,7 @@ import register from "navi-scripts/register";
 import * as Navi from "navi";
 import React from "react";
 import ReactDOM from "react-dom";
-import { NaviProvider, View } from "react-navi";
+import { Router, View } from "react-navi";
 import routes from "./routes";
 
 // `register()` is responsible for exporting your app's pages and App
@@ -127,7 +127,7 @@ register({
     // Wait until the navigation has loaded the page's content, or failed to do
     // so. If you want to load other data in parallel while the initial page is
     // loading, make sure to start loading before this line.
-    await navigation.steady();
+    await navigation.getRoute();
 
     // React requires that you call `ReactDOM.hydrate` if there is statically
     // rendered content in the root element, but prefers us to call
@@ -135,12 +135,12 @@ register({
     let hasStaticContent = process.env.NODE_ENV === "production";
     let renderer = hasStaticContent ? ReactDOM.hydrate : ReactDOM.render;
 
-    // Start react, passing in the current navigation state via the
-    // NaviProvider.
+    // Start react, passing in the current navigation state via the <Router>
+    // component's `navigation` prop.
     renderer(
-      <NaviProvider navigation={navigation}>
+      <Router navigation={navigation}>
         <View />
-      </NaviProvider>,
+      </Router>,
       document.getElementById("root")
     )
   }
@@ -210,7 +210,7 @@ async function renderPageToString({ config, exports={}, routes, siteMap, depende
   })
 
   // Wait for any asynchronous content to finish fetching
-  let route = await navigation.getSteadyValue()
+  let route = await navigation.getRoute()
 
   // react-helmet thinks it's in a browser because of jsdom, so we need to
   // manually let it know that we're doing static rendering.
@@ -220,7 +220,7 @@ async function renderPageToString({ config, exports={}, routes, siteMap, depende
   let bodyHTML =
     ReactDOMServer.renderToString(
       React.createElement(
-        NaviProvider,
+        Router,
         { navigation }, 
         React.createElement(exports.App || View)
       )
@@ -268,10 +268,10 @@ Unfortunately, there's no common standard between hosting platforms by which you
 import fs from 'fs-extra'
 import path from 'path'
 
-export async function createRedirectFiles({ config, siteMap }) {
-  // The `siteMap.redirects` object contains all of the site's
+export async function createRedirectFiles({ config, redirects }) {
+  // The `redirects` object contains all of the site's
   // redirects, mapping the "from" URL to the "to" URL.
-  for (let [ url, to ] of Object.entries(siteMap.redirects)) {
+  for (let [ url, to ] of Object.entries(redirects)) {
     // Compute an `index.html` pathname instead of using the raw path.
     let pathname =
       url === '/'

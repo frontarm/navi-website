@@ -1,6 +1,5 @@
 export const filename = __filename
 export const demoboardHelpers = {
-  'App.js': require('!raw-loader!./demo/App.js'),
   'index.js': require('!raw-loader!./demo/index.js'),
   'styles.css': require('!raw-loader!./demo/styles.css'),
 }
@@ -23,6 +22,7 @@ Navi also provides a number of child-accepting functions that can be composed to
 - [withData()](#withdata)
 - [withHead()](#withhead)
 - [withHeaders()](#withheaders)
+- [withState()](#withstate)
 - [withStatus()](#withstatus)
 - [withTitle()](#withtitle)
 - [withView()](#withview)
@@ -110,7 +110,7 @@ This matcher transforms the `Request` object passed to child matchers by:
 This example specifies two URLs -- on '/about', a `route()` matcher is used that dynamically loads its view form another file, and on `/`, a matcher is mounted that redirects users to `/about`.
 
 ```js
-//--- pages.js
+//--- routes.js
 import { mount, redirect, route } from 'navi'
 
 export default mount({
@@ -122,7 +122,6 @@ export default mount({
   '/': redirect('./about'),
 })
 //--- index.js <-- index.js
-//--- App.js <-- App.js
 //--- styles.css <-- styles.css
 //--- about.mdx
 # About This Example
@@ -201,6 +200,33 @@ export default mount({
 ```
 
 
+#### Wildcard paths
+
+The `*` pattern is a special pattern that will always be matched if no other pattern is matched. By using the `*` pattern, you're can mount multiple `mount()` matchers at the same path, which is useful for:
+
+- Splitting multiple routes out into another file using `lazy()`
+- Adding a layout to a number of routes using `withView()`
+- Guarding a number of routes against unauthenticated users
+
+Here's a basic example:
+
+```js
+export default mount({
+  '/': lazy(() => import('./landing')),
+  '/articles': : lazy(() => import('./articles')),
+
+  '*': withView(
+    <AuthenticationLayout>
+      <View />
+    </AuthenticationLayout>,
+    mount({
+      '/login': lazy(() => import('./login')),
+      '/register': lazy(() => import('./register')),
+    })
+  )
+})
+```
+
 `redirect()`
 ------------
 
@@ -213,13 +239,18 @@ redirect(
         | string
         | Partial<URLDescriptor>
         | Promise<string | Partial<URLDescriptor>
-      )
+      ),
+  options?: {
+    exact?: boolean
+  }
 )
 ```
 
 Redirects can be mapped to one of a map's paths to declare that any visits to that path will automatically navigate to the specified path.
 
 The value of `to` can be an absolute path, a [partial URL descriptor](../data-types/#urldescriptor), or a getter function that returns either of these.
+
+By default, a `redirect()` will only match the exact URL. However, you can pass { exact: false } to allow a redirect to match any URL underneath it.
 
 ### Examples
 
@@ -256,6 +287,11 @@ route(options:
     data?: object,
     getData?: (request, context) => object | Promise<object>,
 
+    // If specified, the produced route will have a type of `error`,
+    // and will contain the specified error object.
+    error?: object,
+    getError?: (request, context) => any | Promise<any>,
+
     // <head> or <meta> tags that should be rendered when this route is
     // active.
     head?: any,
@@ -265,6 +301,12 @@ route(options:
     // when performing server side rendering.
     headers?: any,
     getHeaders?: (request, context) => object | Promise<object>,
+
+    // State that should be stored on `window.history.state`, and remembered
+    // between server/client or when the user navigates forward/back.
+    // Previously stored state is available at `request.state`.
+    state?: any,
+    getState?: (request, context) => any | Promise<any>,
 
     // The matched HTTP status code. This is only useful when performing
     // server side rendering.
@@ -285,6 +327,7 @@ route(options:
     data?: object,
     head?: any,
     headers?: object,
+    state?: any,
     status?: any,
     title?: string,
     view?: any,
@@ -293,6 +336,7 @@ route(options:
     data?: object,
     head?: any,
     headers?: object,
+    state?: any,
     status?: any,
     title?: string,
     view?: any,
@@ -307,7 +351,7 @@ There are two ways to use `route()`:
 1. You can pass a getter function that maps `(request, context)` to an object containing your content.
 2. You can pass an object that contains constant values, or getter functions for individual values.
 
-In the second case, if `request.method` is equal to `"HEAD"`, then any getters for `view` and `head` won't be called. This is particularly useful when your app uses `router.resolveSiteMap()`, as it uses the `"HEAD"` method by default -- ensuring that the act of creating a site map doesn't fetch all of your app's views.
+In the second case, if `request.method` is equal to `"HEAD"`, then any getters for `view` won't be called. This is particularly useful when your app uses `crawl()`, as it uses the `"HEAD"` method by default -- ensuring that the act of creating a site map doesn't fetch all of your app's views.
 
 ### Examples
 
@@ -436,6 +480,27 @@ withHeaders(
 Use `withHeaders()` to add a HTTP headers to a Route's `headers` object. Any HTTP headers that a child matcher adds will take precedence of this matcher's headers.
 
 
+`withState()`
+-------------
+
+```typescript
+withState(
+  stateOrGetter:
+    any |
+    (request, context) =>
+      any |
+      Promise<any | { default: any }>,
+  child?: Matcher
+)
+```
+
+Use `withState()` to specify data that should be merged into `window.history.state`, and thus remembered as the user navigates with the forward/back buttons. Previously stored state is available at `request.state`.
+
+As state is stored on `window.history.state`, it must be serializable. Unfortunately, this means that `Error` objects are not able to be stored on `request.state` -- instead, you'll need to extract the message and store that.
+
+The most recent state stored with `withState()` can be extracted from your `navigation` object using `navigation.extractState()`, and can be fed into your navigation object on load by passing a `state` property to `createBrowserNavigation()`. This allows navigation state to be passed from server to client.
+
+
 `withStatus()`
 --------------
 
@@ -515,8 +580,9 @@ with(
 )
 ```
 
-Use `withView()` to add a view to a Route's `heads` array. The value will be prepended to any values added by any child matcher.
+Use `withView()` to add a view to a Route's `views` array. The value will be prepended to any values added by any child matcher.
 
+Views getters will not be called when `request.method` is `'HEAD'`, as is the case by default when calling `crawl()`.
 
 
 ## `compose()`
