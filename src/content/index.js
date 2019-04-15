@@ -74,6 +74,11 @@ export default mount({
           title: 'URL Parameters',
           description: 'URL parameters let you declare routes, views and data that depend on the current URL.',
         },
+        ja: {
+          title: 'URL パラメータ',
+          description: 'URL パラメータを用いることで、現在の URL にもとずいて route, view, data の宣言をすることができます。',
+          navTitle: 'URL パラメータ',
+        },
       }),
 
       '/requests-routes-matchers': page({
