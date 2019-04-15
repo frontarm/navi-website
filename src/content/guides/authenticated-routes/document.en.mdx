@@ -140,22 +140,79 @@ mount({
 When you have many authenticated pages at the same level, another approach is to use a wildcard pattern and a non-exact redirect: 
 
 ```jsx
-mount({
-  '/login': lazy(() => import('./login')),
+//---
+editorPathname: /routes.js
+//--- index.js <-- index.js
+//--- routes.js
+import { compose, lazy, map, mount, redirect, route, withView } from 'navi'
+import React from 'react'
+import { View } from 'react-navi'
+import { Layout } from './helpers'
 
-  '*': map(({ context }) =>
-    !context.currentUser
-      ? redirect(
-          '/login?redirectTo='+
-          encodeURIComponent(request.mountpath+request.search),
-          { exact: false }
-        )
-      : mount({
-          '/account-details': import(() => './account-details'),
-          '/billing-history': import(() => './billing-history'),
-        })
-  )
+export default compose(
+  withView((request, context) =>
+    <Layout
+      currentUser={context.currentUser}
+      onLogout={() => context.authService.logout()}
+    >
+      <View />
+    </Layout>
+  ),
+  mount({
+    '*': map((request, context) =>
+      !context.currentUser
+        ? redirect(
+            '/login?redirectTo='+
+            encodeURIComponent(request.originalUrl),
+            // By specifying exact: false, the redirect will match *all*
+            // urls.
+            { exact: false }
+          )
+        : mount({
+            '/resource': lazy(() => import('./resourceRoutes')),
+          })
+    ),
+
+    '/': redirect('/login'),
+    '/login': map(async (request, context) =>
+      context.currentUser ? redirect(
+        // Redirect to the value of the URL's `redirectTo` parameter. If no
+        // redirectTo is specified, default to `/resource/favorite-foods/`.
+        request.params.redirectTo
+          ? decodeURIComponent(request.params.redirectTo)
+          : '/resource/favorite-foods/'
+      ) : route({
+        title: 'Login',
+        getView: async (req, context) => {
+          const { Login } = await import('./helpers')
+          return <Login authService={context.authService} />
+        },
+      })
+    ),
+  })
+)
+//--- resourceRoutes.js
+import { map, mount, redirect, route } from 'navi'
+import { fetchResource } from './helpers'
+
+export default mount({
+  '/:id': map(async (request, context) => {
+    // Pass in the currentUser object, which could contain a JSON
+    // web token that is used for authentication.
+    let resource = await fetchResource(
+      request.params.id,
+      context.currentUser
+    )
+
+    // Return a page with the resulting data.
+    return route({
+      title: resource.title,
+      view: resource.content,
+    })
+  })
 })
+//--- helpers.js <-- helpers.js
+//--- styles.css <-- styles.css
 ```
 
 Bypassing the login screen
