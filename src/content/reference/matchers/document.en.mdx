@@ -616,7 +616,7 @@ Matchers that accept a child argument can be composed in one of two ways:
 Matchers are functions that accept a child generator, and return a [Generator Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) that outputs arrays of [Segment](../data-types/#segment) objects.
 
 ```js
-type MatcherGenerator = (request: NaviRequest, context) => Iterator<Segment[]>
+type MatcherGenerator = (request: NaviRequest) => Iterator<Segment[]>
 type Matcher = (child: MatcherGenerator) => MatcherGenerator
 ```
 
@@ -627,15 +627,14 @@ Firstly, accepting a child generator as an argument allows for composition via a
 As for the generator function, it typically looks something like this:
 
 ```js
-function* matcherGenerator(request, context) {
+function* matcherGenerator(request) {
   while (busy) {
-    segments = computeSegments(env.request, env.context)
-    yield segments
+    yield computeSegments(env.request)
   }
 }
 ```
 
-The generator function is called once for each combination of `request` and `context`. Given that the matcher's result may be asynchronous, it may not be possible to immediately return a value. However, given that there may be multiple matchers composed together, each emitting their own `Segment` objects, it may not be desirable to wait until *all* matchers have completed to see each result.
+The generator function is called once for each new `request`. Given that the matcher's result may be asynchronous, it may not be possible to immediately return a value. However, given that there may be multiple matchers composed together, each emitting their own `Segment` objects, it may not be desirable to wait until *all* matchers have completed to see each result.
 
 Generators are a useful way to solve this problem. A generator can immediately yield a **'busy'** segment that indicates that more data is to come, and then yield a final segment once it's available. In the meantime, it can call child generators and yield their results as appropriate.
 
