@@ -50,6 +50,16 @@ export default mount({
     },
   }),
 
+  '/release-history': page({
+    getDocument: (language) => import(`./release-history/document.${language}.mdx`),
+    default: {
+      title: 'Release History 📜',
+      htmlTitle: 'Release History – Navi',
+      navTitle: 'Release History',
+      socialImageURL: require('./create-react-navi-app/social.png'),
+    },
+  }),
+
   '/guides': compose(
     withData({
       sectionTitle: 'Guides'
@@ -59,11 +69,11 @@ export default mount({
         getDocument: (language) => import(`./guides/getting-started/document.${language}.mdx`),
         default: {
           title: 'Getting Started',
-          description: 'Navi lets you take advantage of React’s Suspense, Hooks and Error Boundary APIs to handle asynchronous routes declaratively.',
+          description: 'This guide will walk you through the process of adding routing to a fresh create-react-app project, using Navi.',
         },
         ja: {
           title: '始めよう',
-          description: 'Navi は React の Suspense、Hooks、Error Boundary APIs を活用することで、非同期なルーティングを宣言的に扱うことができます。',
+          description: 'このガイドでは create-react-app を用いて作成したまっさらなプロジェクトに、Navi を使ってルーティング機能を追加していきます。',
           navTitle: '始めよう',
         },
       }),
@@ -182,14 +192,14 @@ export default mount({
       sectionTitle: 'Usage with...'
     }),
     mount({
-      // - TODO: express
+      // - TODO: universal-react-scripts
 
-      '/react-router': page({
-        getDocument: (language) => import(`./integrations/react-router/document.${language}.mdx`),
+      '/styled-components': page({
+        getDocument: (language) => import(`./integrations/styled-components/document.${language}.mdx`),
         default: {
-          title: 'Using Navi with react-router',
-          navTitle: 'react-router',
-        }
+          title: 'Using Navi with styled-components',
+          navTitle: 'styled-components',
+        },
       }),
 
       '/react-helmet': page({
@@ -200,6 +210,24 @@ export default mount({
         },
         ja: {
           title: 'react-helment の使い方',
+        },
+      }),
+
+      '/react-router': page({
+        getDocument: (language) => import(`./integrations/react-router/document.${language}.mdx`),
+        default: {
+          title: 'Using Navi with react-router',
+          navTitle: 'react-router',
+        }
+      }),
+
+      '/react-spring': page({
+        getDocument: (language) => import(`./integrations/react-spring/document.${language}.mdx`),
+        default: {
+          title: 'Using Navi with react-spring',
+          navTitle: 'react-spring',
+          htmlTitle: 'Animated route transitions with react-spring and Navi',
+          description: 'Learn to create simple route transitions using three react hooks from react-spring and react-navi.',
         },
       }),
     }),

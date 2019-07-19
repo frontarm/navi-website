@@ -9,8 +9,6 @@ export const demoboardHelpers = {
   'styles.css': require('!raw-loader!./demo/styles.css'),
 }
 
-このガイドでは create-react-app を用いて作成したまっさらなプロジェクトに、Navi を使ってルーティング機能を追加していきます。
-
 ## 基礎となるコンポーネント  
 
 大抵の Navi を使用するアプリケーションにおいては、Navi の `<Router>` コンポーネントが一番上の階層に配置されます。このコンポーネントが、宣言的で非同期なルーティング機能を React アプリケーションに追加する役割を担います。手始めに `<Router>` コンポーネントを create-react-app によって生成された `index.js` ファイルの中でレンダーしていきましょう。

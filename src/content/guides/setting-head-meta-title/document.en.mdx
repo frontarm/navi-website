@@ -1,17 +1,7 @@
 export const filename = __filename
 import { Doc } from '@frontarm/doc'
 
-One of the major reasons for implementing static rendering is SEO -- so given that you've set up static rendering, you're also going to want to know how to render `<meta>`, `<title>`, and other `<head>` tags.
-
-Actually, Navi gives you two ways to do this.
-
-## Using react-helmet
-
-Many React apps use the [react-helmet](https://www.npmjs.com/package/react-helmet) package to manage their `<head>` tags. If you're statically rendering your app with `navi-scripts`, then react-helmet is supported out of the box! You can import and use the `<Helmet>` component like in any other app, and the helmet's `<title>` and `<meta>` tags will be statically rendered along with the rest of your content.
-
-## Using `route()`
-
-Navi's [`route()`](../../reference/data-types/#route) functions accepts `head` and `title` properties.
+Navi lets you define `title` and `head` tags with each call to `route()`:
 
 ```jsx
 //---
@@ -41,8 +31,36 @@ ReactDOM.render(
 )
 ```
 
+<Doc.Details aside title='Under the hood'>
+
 Internally, `route()` uses Navi's `withHead()` and `withTitle()` functions -- you can use these manually to accomplish the same thing, to apply `<meta>` tags to multiple routes, or to set a fallback title.
 
-When you declare a `head` or `title` using `route()`, `withHead()` or `withTitle()`, their values will be added to your Route object. This can be useful if you want to set their values from data read from the filesystem, a database, or an API.
+</Doc.Details>
 
-As long as you're using Navi's `<View />` component, your route's `head` and `title` properties will be rendered using react-helmet -- just as if you'd specified them yourself using the `<Helmet>` component. This means that you can mix `<Helmet>` elements and `head` or `title` properties.
+The resulting `title` and `head` objects will be available on the current `route` object -- but that's it. Navi won't automatically render these properties until you tell it *how* you'd like to render them. And currently, you have two options: `react-helmet` and `react-helmet-async`.
+
+
+## The react-helmet and react-helmet-async integrations
+
+Many React apps use [react-helmet](https://www.npmjs.com/package/react-helmet) (and [react-helmet-async](https://www.npmjs.com/package/react-helmet-async)) to manage their `<head>` tags, so Navi has special support for rendering your route `title` and `head` with helmet. Setup is simple: just add the `react-navi-helmet` or `react-navi-helmet-async` package, and wrap your app with the exported `HelmetProvider`:
+
+```bash
+npm install --save react-navi-helmet-async
+```
+
+<br />
+
+```jsx
+import HelmetProvider from 'react-navi-helmet-async'
+
+ReactDOM.render(
+  <HelmetProvider>
+    <Router routes={routes}>
+      ...
+    </Router>
+  </HelmetProvider>,
+  document.getElementById('root')
+)
+```
+
+With this, your `<View />` components will now know how to render their associated `title` and `head` properties. In fact, this will even work for static rendering using `navi-scripts`!

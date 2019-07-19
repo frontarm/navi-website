@@ -1,5 +1,35 @@
 export const filename = __filename
+import { Doc } from '@frontarm/doc'
 
-Many React apps use the [react-helmet](https://www.npmjs.com/package/react-helmet) package to manage their `<head>` tags. If you're statically rendering your app with `navi-scripts`, then react-helmet is supported out of the box! You can import and use the `<Helmet>` component like in any other app, and the helmet's `<title>` and `<meta>` tags will be statically rendered along with the rest of your content.
+Many React apps use [react-helmet](https://www.npmjs.com/package/react-helmet) (and [react-helmet-async](https://www.npmjs.com/package/react-helmet-async)) to manage their `<head>` tags, so Navi has special support for rendering your route `title` and `head` with helmet. Setup is simple: just add the `react-navi-helmet` or `react-navi-helmet-async` package, and wrap your app with the exported `HelmetProvider`:
+
+```bash
+npm install --save react-navi-helmet-async
+```
+
+<br />
+<Doc.AsideTop>
+
+```jsx
+import HelmetProvider from 'react-navi-helmet-async'
+
+ReactDOM.render(
+  <HelmetProvider>
+    <Router routes={routes}>
+      ...
+    </Router>
+  </HelmetProvider>,
+  document.getElementById('root')
+)
+```
+
+<Doc.Details aside>
+
+The `HelmetProvider` exported by `react-navi-helmet-async` wraps the underlying `react-helmet-async` library, then adds it to context so that Navi knows where to render `<title>` and `<head>` tags to.
+
+</Doc.Details>
+</Doc.AsideTop>
+
+With this, your `<View />` components will now know how to render their associated `title` and `head` properties. In fact, this will even work for static rendering using `navi-scripts`!
 
 For details on how your `<head>` is statically rendered, see the source for `renderPageToString()` in [react-navi/create-react-app.js](https://github.com/frontarm/navi/blob/8d11274c92d6492ccbe529ad17da980ffa61715d/packages/react-navi/create-react-app.js).

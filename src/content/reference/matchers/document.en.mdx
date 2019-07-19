@@ -462,6 +462,8 @@ withHead(
 
 Use `withHead()` to add a value to a Route's `heads` array. The value will be prepended to any values added by any child matcher.
 
+If you're using the [react-helmet integrations](../../integrations/react-helmet), these tags will be added to your page head.
+
 
 `withHeaders()`
 ---------------
@@ -563,7 +565,7 @@ withTitle(
 )
 ```
 
-Use `withTitle()` to specify a value for the matched Route's `title` string -- which will be used to set the page's `<title>` tag. Any title added by a child matcher will take precedence.
+Use `withTitle()` to specify a value for the matched Route's `title` string -- which can be used to set the page's `<title>` tag by the [react-helmet integrations](../../integrations/react-helmet). Any title added by a child matcher will take precedence.
 
 
 `withView()`

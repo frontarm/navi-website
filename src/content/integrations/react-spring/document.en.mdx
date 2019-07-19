@@ -1,0 +1,18 @@
+export const filename = __filename
+import { Doc } from '@frontarm/doc'
+export const demoboardHelpers = {
+  'animated-app.js': require('!raw-loader!./animated-transitions/app.js'),
+  'animated-card.js': require('!raw-loader!./animated-transitions/card.js'),
+  'animated-index.js': require('!raw-loader!./animated-transitions/index.js'),
+  'animated-routes.js': require('!raw-loader!./animated-transitions/routes.js')
+}
+
+Navi works great with react-spring's [useTransition()](https://www.react-spring.io/docs/hooks/use-transition) hook. Together with the [`useViewElement()`](../../reference/react-components-hooks/#useviewelement) and [`useCurrentRoute()`](../../reference/react-components-hooks/#usecurrentroute) hooks, creating transitions between routes is a walk in the park.
+
+```js
+//---
+//--- app.js <-- animated-app.js
+//--- card.js <-- animated-card.js
+//--- index.js <-- animated-index.js
+//--- routes.js <-- animated-routes.js
+```

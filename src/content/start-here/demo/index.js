@@ -6,7 +6,7 @@ import api from './api'
 import Landing from './Landing'
 import Layout from './Layout'
 
-// Define routes using mount(), route(), and other simple functions.
+// Define routes using mount(), route(), and other middleware.
 const routes =
   mount({
     '/': route({

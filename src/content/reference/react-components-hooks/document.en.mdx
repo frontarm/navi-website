@@ -1,4 +1,14 @@
 export const filename = __filename
+export const demoboardHelpers = {
+  'styled-index.js': require('!raw-loader!./styled-link-list/index.js'),
+  'styled-layout.js': require('!raw-loader!./styled-link-list/layout.js'),
+  'styled-list.js': require('!raw-loader!./styled-link-list/list.js'),
+  'styled-routes.js': require('!raw-loader!./styled-link-list/routes.js'),
+  'animated-app.js': require('!raw-loader!./animated-transitions/app.js'),
+  'animated-card.js': require('!raw-loader!./animated-transitions/card.js'),
+  'animated-index.js': require('!raw-loader!./animated-transitions/index.js'),
+  'animated-routes.js': require('!raw-loader!./animated-transitions/routes.js')
+}
 
 ## `<Link>`
 
@@ -43,7 +53,7 @@ You can wrap a `<NotFoundBoundary>` around a view to show a "not found" message 
 
 ### Example
 
-```js
+```jsx
 function Layout() {
   return (
     <NotFoundBoundary render={() =>
@@ -83,6 +93,10 @@ If you don't pass in any children, then a [`<View>`](#view) will be rendered by 
 The `<Router>` object will keep your `navigation` object's context in sync with this prop by calling it's [`setContext()`](../navigation/#navigationsetcontext) method.
 
 This will be used even if you supply a `navigation` prop.
+
+#### `hashScrollBehavior`: `'smooth' | 'auto'` <small>(optional)</small>
+
+Specify whether to use native smooth scrolling using [window.scroll()](https://developer.mozilla.org/en-US/docs/Web/API/Window/scroll). By default, does not use smooth scrolling, as it is not supported by a number of browsers.
 
 #### `history`: `History` <small>(optional)</small>
 
@@ -132,27 +146,13 @@ ReactDOM.render(
 );
 ```
 
-#### Usage with render prop
-
-By suppling a render prop, you can manually decide how to render the next unrendered view. This makes it possible to specify view objects other than React elements and components
-
-```jsx
-<View>
-  {(view, route) => 
-    React.isValidElement(content)
-      ? content
-      : React.createElement(content)
-  }
-</View>
-```
-
 #### Usage with React Suspense
 
 By wrapping your content in a React [`<Suspense>`](https://reactjs.org/docs/react-api.html#reactsuspense) element, you can specify a fallback element to display while your app's initial content is loading.
 
 Note that until `<Suspense>` gets server-rendering support, this only makes sense for apps that are *not* pre-rendered with `ReactDOMServer.render()`. For static or server rendered apps, use [`navigation.getRoute()`](../navigation/#navigationgetroute) to wait for the initial content to load before hydrating the pre-rendered HTML with `ReactDOM.hydrate()`.
 
-```js
+```jsx
 import React, { Suspense } from 'react'
 import { Router, View } from 'react-navi'
 import Layout from './Layout'
@@ -167,6 +167,28 @@ ReactDOM.render(
   </Router>,
   document.getElementById('root')
 );
+```
+
+
+## `useActive()`
+
+```typescript
+useActive(
+  href: string | Partial<LocationObject>,
+  options?: { exact?: boolean }
+)
+```
+
+Returns `true` when the current route matches the specified href. You can use this along with [`useLinkProps()`](#uselinkprops) to create your own custom styled links.
+
+### Examples
+
+```js
+// Will be true if currently at '/contacts'
+let isViewingContactsIndex = useActive('/contacts')
+
+// Will be true if viewing '/contacts' or any page nested within it
+let isViewingContacts = useActive('/contacts', { exact: false })
 ```
 
 
@@ -201,6 +223,38 @@ function Layout({ children }) {
 }
 ```
 
+## `useLinkProps()`
+
+```typescript
+useLinkProps(options: {
+  href: string | Partial<LocationObject>,
+  onClick?: Function,
+  prefetch?: boolean,
+}): HTMLAnchorProps
+```
+
+This hook accepts a subset of the props that `<Link>` accepts, and returns an object with `href`, `onClick`, and any other props that you'd want to spread onto an `<a>`. You can then spread these props onto an `<a>` to make custom links components.
+
+If the `href` is specified as a relative URL, it will be treated as relative to the current url. Navi normalizes the current URL so that trailing slashes have no effect.
+
+Any unknown options will be passed through to the returned props object.
+
+Use this along with [`useActive()`](#useactive) to create components that change their styles depending on the current URL.
+
+### Examples
+
+#### Navigation links with styled-components
+
+Say that you've built a `<ListItem>` component with [styled-components](https://www.styled-components.com/). You'd like to make the whole item behave as a link -- and you also want to highlight the item when the link points to the current page.
+
+```js
+//---
+viewerURL: /hats
+//--- index.js <-- styled-index.js
+//--- layout.js <-- styled-layout.js
+//--- list.js <-- styled-list.js
+//--- routes.js <-- styled-routes.js
+```
 
 ## `useLoadingRoute()`
 
@@ -258,4 +312,79 @@ function EmailForm() {
     </div>
   )
 }
+```
+
+
+## `useView()`
+
+Silimar to [`useViewElement()`](#useviewelement), this hook can act in place of the `<View />` element. However, instead of returning a ready-to-go-element, it returns an object with the view's raw `content`, a `connect()` function that you'll need to wrap it with, and an assortment of other bits and pieces.
+
+```typescript
+{
+  chunks: Chunk[]
+  connect: (node: React.ReactNode) => React.ReactElement<any>
+  content: any
+  element: React.ReactElement<any>
+  final: boolean
+  head: any
+}
+```
+
+The main reason you'd want to use the `useView()` hooks is when your view content contains data that you need to manually convert to a React element. For example, here's how it's used in [create-react-blog](../../create-react-navi-app/#create-react-blog) to extract a `readingTime` variable from the view content:
+
+```jsx
+import { useCurrentRoute, useView } from 'react-navi'
+
+function BlogPostLayout({ blogRoot }) {
+  let { title, data, url } = useCurrentRoute()
+  let { connect, content, head } = useView()
+  let { MDXComponent, readingTime } = content
+
+  // The content for posts is an MDX component, so we'll need
+  // to use <MDXProvider> to ensure that links are rendered
+  // with <Link>, and thus use pushState.
+  return connect(
+    <>
+      {head}
+      <article className={styles.container}>
+        <ArticleMeta
+          blogRoot={blogRoot}
+          meta={data}
+          title={title}
+          url={url}
+          readingTime={readingTime}
+        />
+        <MDXComponent />
+      </article>
+    </>,
+  )
+}
+```
+
+## `useViewElement()`
+
+Returns an element that renders exactly the same content that a [`<View />`](#view) element would render *at the time that `useViewElement()` was called.*
+
+```jsx
+function App() {
+  let view = useViewElement()
+
+  return (
+    <Layout>
+      {view}
+    </Layout>
+  )
+}
+```
+
+Generally, this behaves exactly the same as rendering a `<View />`. The main use for `useViewElement()` is in implementing animated transitions between routes. In this case, you'll often need to render both the *current* view and the *previous* view at the same time. And while `<View />` will always render the current view, it's possilbe to store the `view` element returned by `useViewElement()` until it is no longer needed.
+
+For example, here's an example of animated transitions using [react-spring](http://npmjs.com/package/react-spring) and `useViewElement()`:
+
+```js
+//---
+//--- app.js <-- animated-app.js
+//--- card.js <-- animated-card.js
+//--- index.js <-- animated-index.js
+//--- routes.js <-- animated-routes.js
 ```

@@ -1,0 +1,20 @@
+export const filename = __filename
+export const demoboardHelpers = {
+  'styled-index.js': require('!raw-loader!./styled-link-list/index.js'),
+  'styled-layout.js': require('!raw-loader!./styled-link-list/layout.js'),
+  'styled-list.js': require('!raw-loader!./styled-link-list/list.js'),
+  'styled-routes.js': require('!raw-loader!./styled-link-list/routes.js'),
+}
+
+Say that you've built a `<ListItem>` component with [styled-components](https://www.styled-components.com/). You'd like to make the whole item behave as a link -- and you also want to highlight the item when the link points to the current page.
+
+You can use Navi's [`useActive()`](../../reference/react-components-hooks/#useactive) hook to check whether the user is currently viewing a specified URL,  and [`useLinkProps()`](../../reference/react-components-hooks/#usecurrentroute) to get a `href` and `onClick` that's hooked into the browser history.
+
+```js
+//---
+viewerURL: /hats
+//--- index.js <-- styled-index.js
+//--- layout.js <-- styled-layout.js
+//--- list.js <-- styled-list.js
+//--- routes.js <-- styled-routes.js
+```
