@@ -9,7 +9,9 @@ You can view the documentation online at [Frontend Armory](https://frontarm.com/
 Getting Started
 ---------------
 
-Fork and clone the repository, then install with [yarn](https://yarnpkg.com/) and start the documentation server.
+Fork and clone the repository, then install the dependencies and peer depedencies with [yarn](https://yarnpkg.com/). Currently, you'll manually need to switch `peerDependencies` to `devDependencies` in `package.json` to do this, as yarn does not include a tool to install peer dependencies.
+
+Once both the peer dependencies and dependencies have been installed, you're ready to start the dev server.
 
 ```js
 yarn install
@@ -17,6 +19,8 @@ yarn start
 ```
 
 The site's pages are specified in <src/pages/index.html>. You can add, remove or edit content from here.
+
+*Note: the reason that dependencies aren't placed in `devDependencies` is that this package is used as part of a monorepo, and adding the peer deps to `devDependencies` causes conflicts with other packages.*
 
 
 Changes from vanilla create-react-app
