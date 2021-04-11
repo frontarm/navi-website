@@ -1,6 +1,6 @@
 export const filename = __filename
 
-[ZEIT Now](https://zeit.co/now) is a [cloud platform for serverless deployment](https://zeit.co/docs/v2/getting-started/introduction-to-now/) that allows you to deploy your Navi projects and then [push live to production](https://zeit.co/docs/v2/domains-and-aliases/aliasing-a-deployment/) on your personal domain or a free `.now.sh` suffixed URL.
+[Vercel Now](https://vercel.com/now) is a [cloud platform for serverless deployment](https://vercel.com/docs/v2/getting-started/introduction-to-now/) that allows you to deploy your Navi projects and then [push live to production](https://vercel.com/docs/v2/domains-and-aliases/aliasing-a-deployment/) on your personal domain or a free `.now.sh` suffixed URL.
 
 This guide will show you how you can deploy a Navi project in just a few steps:
 
@@ -10,7 +10,7 @@ If you haven't already set up your Navi-based project, use [Create React Navi Ap
 
 ## Step 2: Getting Now
 
-You can get Now by downloading [Now Desktop](https://zeit.co/docs/v2/getting-started/installation/#now-desktop), which will also install [Now CLI](https://zeit.co/docs/v2/getting-started/installation/#now-cli) and keep it up-to-date automatically.
+You can get Now by downloading [Vercel Now Desktop](https://vercel.com/docs/v2/getting-started/installation/#now-desktop), which will also install [Vercel Now CLI](https://vercel.com/docs/v2/getting-started/installation/#now-cli) and keep it up-to-date automatically.
 
 Opening Now Desktop will present you with a signup flow and a quick tutorial to get you acquainted.
 
@@ -43,9 +43,9 @@ The first piece of configuration is a `now.json` file, containing the following:
 ```
 
 To explain the above briefly, this `now.json` file tells Now to:
-- Build using [the latest Now 2.0 platform](https://zeit.co/docs/v2/platform/overview/#versioning).
-- Set [a project name](https://zeit.co/docs/v2/deployments/configuration/#name) for all deployments.
-- Build your application using [the @now/static-build builder](https://zeit.co/docs/v2/deployments/official-builders/static-build-now-static-build/) and configure the builder to look in the `build` directory for the built app.
+- Build using [the latest Now 2.0 platform](https://vercel.com/docs/v2/platform/overview/#versioning).
+- Set [a project name](https://vercel.com/docs/v2/deployments/configuration/#name) for all deployments.
+- Build your application using [the @now/static-build builder](https://vercel.com/docs/v2/deployments/official-builders/static-build-now-static-build/) and configure the builder to look in the `build` directory for the built app.
 
 With this in place, the final piece of configuration is to tell the @now/static-build builder how to build the app for Now to serve from the `build` directory.
 
@@ -71,5 +71,5 @@ now
 Now will then describe the build progress and provide you with a URL similar to this one: https://my-navi-project-7hq734oib.now.sh/
 
 ## Resources
-- [Visit the ZEIT Now documentation](https://zeit.co/docs) to learn more about what you can deploy and how you can configure your deployments to do more.
+- [Visit the Vercel Now documentation](https://vercel.com/docs) to learn more about what you can deploy and how you can configure your deployments to do more.
 
