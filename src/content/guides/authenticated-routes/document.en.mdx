@@ -235,7 +235,7 @@ editorPathname: /routes.js
 
 When serving a statically rendered site, each page's HTML will be generated ahead of time. This has big benefits for performance and SEO, but it presents a problem when your app has authenticated routes: if your HTML is generated ahead of time, what HTML should you generate for authenticated routes? What about for routes whose content changes with the environment?
 
-When building your app's HTML, Navi's rounting context defaults to an empty object `{}`. This means that using the redirect-to-login pattern discussed above, Navi will render authenticated routes as redirects to the login screen.
+When building your app's HTML, Navi's routing context defaults to an empty object `{}`. This means that using the redirect-to-login pattern discussed above, Navi will render authenticated routes as redirects to the login screen.
 
 The default behavior of `navi-scripts` is to render each of your site's redirects as a HTML file with a `<meta http-equiv="redirect">` tag. This means that out of the box, your redirect-to-login routes will work, even with static rendering! Here's what happens:
 
