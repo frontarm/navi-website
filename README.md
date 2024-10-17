@@ -1,7 +1,7 @@
-navi-docs
+navi-docs (Unmaintained)
 =========
 
-This repository contains the documentation website for [Navi](https://github.com/frontarm/navi).
+This _unmaintained_ repository contains the documentation website for [Navi](https://github.com/frontarm/navi).
 
 You can view the documentation online at [Frontend Armory](https://frontarm.com/navi/) -- this repository is primarily intended for use by contributors.
 
